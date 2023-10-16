@@ -1,3 +1,4 @@
+using Mono.Cecil.Cil;
 using UnityEngine;
 
 namespace Controller {
@@ -23,7 +24,7 @@ namespace Controller {
         [Header("Jump Grace Times")]
         [SerializeField, Range(0f, 1f)] private float coyoteTime = .2f;
         [SerializeField, Range(0f, 1f)] private float jumpBuffering = .2f;
-        
+        [Header("Outfit Selector")]
         [SerializeField] public Outfit[] outfits;
         
         private CharacterController characterController;
@@ -59,7 +60,7 @@ namespace Controller {
             SetForwardDirection();
             SetCharacterVelocity();
 
-            if (slopeSlideVelocity.magnitude < .2f) {
+            if (!Sliding()) {
                 AdjustVelocityToSlope(ref characterVelocity);
                 characterController.Move(characterVelocity * Time.deltaTime + platformVelocity);
             } else {
@@ -69,6 +70,8 @@ namespace Controller {
             
             platformVelocity = Vector3.zero;
             SetAnimationsParameters();
+
+            bool Sliding() { return slopeSlideVelocity.magnitude > .2f; }
         }
         
         private void SetHorizontalVelocity() {
@@ -77,11 +80,10 @@ namespace Controller {
         }
 
         private void AdjustVelocityToSlope(ref Vector3 velocity) {
-            
             if (grounded && Physics.Raycast(ray, out RaycastHit hitInfo, 1.75f)) {
                 Quaternion slopeRotation = Quaternion.FromToRotation(Vector3.up, hitInfo.normal);
                 velocity = slopeRotation * velocity;
-                velocity.y = velocity.y < 0 ? velocity.y : 0f;
+                velocity.y = velocity.y <= 0 ? velocity.y : 0f;
             }
         }
 

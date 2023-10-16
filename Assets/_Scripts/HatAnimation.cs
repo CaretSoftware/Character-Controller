@@ -13,15 +13,13 @@ public class HatAnimation : MonoBehaviour {
     
     private void Start() {
         origin = hat.localPosition;
-        proceduralAnimation.Input = origin;
     }
 
-    private void Update() {
+    private void LateUpdate() {
         target.y = -characterController.velocity.y * .05f;
         proceduralAnimation.Input = target;
         pos = proceduralAnimation.Output;
         pos.y = Mathf.Clamp(pos.y * magnitude, 0f, float.PositiveInfinity);
         hat.localPosition = origin + head.InverseTransformDirection(pos);
-        //hat.position += pos;
     }
 }

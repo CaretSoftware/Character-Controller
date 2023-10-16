@@ -8,8 +8,8 @@ public class ProceduralAnimation : MonoBehaviour {
     [SerializeField, Range(-10f, 10f), Tooltip("Initial response\n[<0 will anticipate, >1 will overshoot]")]
     private float r = -10f;
 
-    public Vector3 Input { get; set; } = Vector3.one;
-    public Vector3 Output { get; private set; } = Vector3.one;
+    public Vector3 Input { get; set; }
+    public Vector3 Output { get; private set; }
 
     private SecondOrderDynamics _secondOrderDynamics;
     
@@ -18,6 +18,8 @@ public class ProceduralAnimation : MonoBehaviour {
     private void OnValidate() => _secondOrderDynamics = new SecondOrderDynamics(f, z, r, Input);
 
     private void Update() => Output = _secondOrderDynamics.Update(Time.deltaTime, Input);
+
+    public void SetCurrent(Vector3 current) => _secondOrderDynamics.SetPos(current);
 
     public Vector2[] GetGraph(out float zero, out float one) {
         float resolution = .01f;
