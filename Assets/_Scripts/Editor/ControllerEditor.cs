@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -11,13 +12,20 @@ namespace Controller {
             DrawDefaultInspector();
 
             GUILayout.Label("Select Outfits");
-            
-            if (GUILayout.Button("None")) 
+            EditorGUILayout.BeginHorizontal();
+            if (GUILayout.Button("None")) {
+                Undo.RecordObjects(characterController.outfits.SelectMany(outfit => outfit.items).ToArray(), 
+                    "Select None");
                 SelectOutfit(characterController, null);
+            }
             
             foreach (Outfit outfit in characterController.outfits)
-                if (GUILayout.Button(outfit.items[0].name))
+                if (GUILayout.Button(outfit.items[0].name)){
+                    Undo.RecordObjects(characterController.outfits.SelectMany(outfit => outfit.items).ToArray(), 
+                        "Select Outfit");
                     SelectOutfit(characterController, outfit);
+                }
+            EditorGUILayout.EndHorizontal();
         }
         
         private void SelectOutfit(CharController characterController, Outfit selectedOutfit) {

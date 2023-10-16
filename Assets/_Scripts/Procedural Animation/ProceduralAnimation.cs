@@ -1,6 +1,4 @@
-﻿using System;
-using UnityEngine;
-using UnityEngine.Serialization;
+﻿using UnityEngine;
 
 public class ProceduralAnimation : MonoBehaviour {
     [SerializeField, Range(0f, 10f), Tooltip("Natural frequency of system\n[Hz or cycles per second]")] 
@@ -58,42 +56,42 @@ public class ProceduralAnimation : MonoBehaviour {
 /// https://youtu.be/KPoeNZZ6H4s
 /// </summary>
 public class SecondOrderDynamics {
-    private Vector3 prevPos;    // previous input
-    private Vector3 pos, vel;      // state variables
+    private Vector3 prev;    // previous input
+    private Vector3 curr, vel;      // state variables
     private float k1, k2, k3;   // dynamic constants
 
-    public SecondOrderDynamics(float f, float z, float r, Vector3 pos) {
+    public SecondOrderDynamics(float f, float z, float r, Vector3 curr) {
         
         // Compute constants
         k1 = z / (Mathf.PI * f);
         k2 = 1 / ((2f * Mathf.PI * f) * (2f * Mathf.PI * f));
         k3 = r * z / (2 * Mathf.PI * f);
         // Initialize variables
-        prevPos = pos;
-        this.pos = pos;
+        prev = curr;
+        this.curr = curr;
         vel = Vector3.zero;
     }
 
-    public Vector3 Update(float dT, Vector3 pos) {
+    public Vector3 Update(float dT, Vector3 curr) {
         // estimate velocity (if true velocity is used, anticipation cannot be modeled)
-        Vector3 vel = (pos - prevPos) / dT;
-        prevPos = pos;
+        Vector3 vel = (curr - prev) / dT;
+        prev = curr;
         
-        return Update(dT, pos, vel);
+        return Update(dT, curr, vel);
     }
     
-    private Vector3 Update(float dT, Vector3 pos, Vector3 estVel) {
+    private Vector3 Update(float dT, Vector3 curr, Vector3 estVel) {
         float k2Stable = Mathf.Max(k2, 
             dT*dT/2f + dT*k1/2f, dT*k1);                                    // clamp k2 to guarantee stability without jitter
-        this.pos += dT * vel;                                               // integrate position by velocity
-        vel += dT * (pos + k3*estVel - this.pos - k1*vel) / k2Stable;       // integrate velocity by acceleration
+        this.curr += dT * vel;                                               // integrate position by velocity
+        vel += dT * (curr + k3*estVel - this.curr - k1*vel) / k2Stable;       // integrate velocity by acceleration
         
-        return this.pos;
+        return this.curr;
     }
 
-    public void SetPos(Vector3 pos) {
-        this.pos = pos;
-        prevPos = pos;
+    public void SetPos(Vector3 current) {
+        curr = current;
+        prev = current;
         vel = Vector3.zero;
     }
 }

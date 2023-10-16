@@ -50,7 +50,6 @@ namespace Controller {
             radius = characterController.radius;
         }
 
-
         private void Update() {
             grounded = characterController.isGrounded;
 
@@ -194,6 +193,16 @@ namespace Controller {
             Vector3 currPosition = platform.position;
             platformVelocity = currPosition - lastPlatformPosition;
             lastPlatformPosition = currPosition;
+        }
+        
+        [ContextMenu("RESET")]
+        public void ResetPosition() {
+            this.enabled = false;
+            characterController.enabled = false;
+            transform.position = Vector3.zero;
+            transform.rotation = Quaternion.identity;
+            this.enabled = true;
+            characterController.enabled = true;
         }
     }
 }
