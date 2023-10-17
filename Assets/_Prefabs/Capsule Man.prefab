@@ -290,7 +290,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   proceduralAnimation: {fileID: 1943118232}
   hat: {fileID: 5664385605411194044}
-  magnitude: 0.25
+  head: {fileID: 1696592165900122209}
+  magnitude: 0.5
   characterController: {fileID: 5265070593993299990}
 --- !u!114 &1943118232
 MonoBehaviour:
@@ -304,9 +305,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bdc7cf0355ebac48828ea3e83e8c865, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  f: 7.75
-  z: 1.11
-  r: 1.97
+  f: 1.04
+  z: 2.54
+  r: 4.68
 --- !u!114 &5265070593993300013
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,4 +1,6 @@
+using Mono.Cecil.Cil;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Controller {
     [RequireComponent(typeof(CharacterController))]
@@ -23,7 +25,7 @@ namespace Controller {
         [Header("Jump Grace Times")]
         [SerializeField, Range(0f, 1f)] private float coyoteTime = .2f;
         [SerializeField, Range(0f, 1f)] private float jumpBuffering = .2f;
-        
+        [Header("Outfit Selector")]
         [SerializeField] public Outfit[] outfits;
         
         private CharacterController characterController;
@@ -43,13 +45,14 @@ namespace Controller {
         private Vector3 platformVelocity;
         private Ray ray;
         private float radius;
+        private Transform _transform;
         
         private void Awake() {
+            _transform = transform;
             characterController = GetComponent<CharacterController>();
             input = GetComponent<IInput>();
             radius = characterController.radius;
         }
-
 
         private void Update() {
             grounded = characterController.isGrounded;
@@ -60,7 +63,7 @@ namespace Controller {
             SetForwardDirection();
             SetCharacterVelocity();
 
-            if (slopeSlideVelocity.magnitude < .2f) {
+            if (!Sliding()) {
                 AdjustVelocityToSlope(ref characterVelocity);
                 characterController.Move(characterVelocity * Time.deltaTime + platformVelocity);
             } else {
@@ -70,6 +73,24 @@ namespace Controller {
             
             platformVelocity = Vector3.zero;
             SetAnimationsParameters();
+
+            bool Sliding() { return slopeSlideVelocity.magnitude > .2f; }
+        }
+
+        private Vector3 vertical;
+        private Vector3 horizontal;
+        private RaycastHit slopeHitInfo;
+        private Quaternion slopeRotation;
+        private void AdjustVelocityToSlope(ref Vector3 velocity) {
+            horizontal = velocity;
+            horizontal.y = 0f;
+            vertical.y = velocity.y;
+            if (grounded && Physics.Raycast(ray, out slopeHitInfo, 1.75f)) {
+                slopeRotation = Quaternion.FromToRotation(Vector3.up, slopeHitInfo.normal);
+                velocity = slopeRotation * horizontal;
+                velocity.y = Mathf.Min(0f, velocity.y);// velocity.y < 0 ? velocity.y : 0f;
+                velocity += vertical;
+            }
         }
         
         private void SetHorizontalVelocity() {
@@ -77,19 +98,10 @@ namespace Controller {
             horizontalVelocity.z = input.Axis.y * playerSpeed;
         }
 
-        private void AdjustVelocityToSlope(ref Vector3 velocity) {
-            
-            if (grounded && Physics.Raycast(ray, out RaycastHit hitInfo, 1.75f)) {
-                Quaternion slopeRotation = Quaternion.FromToRotation(Vector3.up, hitInfo.normal);
-                velocity = slopeRotation * velocity;
-                velocity.y = velocity.y < 0 ? velocity.y : 0f;
-            }
-        }
-
         private void SetForwardDirection() { 
-            // TODO Smooth forward direction
+            // TODO Smooth slerp(?) forward direction
             if (horizontalVelocity != Vector3.zero)
-                transform.forward = horizontalVelocity;
+                _transform.forward = horizontalVelocity;
         }
         
         private void SetVerticalVelocity() {
@@ -143,18 +155,25 @@ namespace Controller {
         private void OnControllerColliderHit(ControllerColliderHit hit) {
             PlatformCheck(hit);
         }
-        
+
+        private RaycastHit sphereHitInfo;
+        private RaycastHit rayHitInfo;
+        private Vector3 position;
+        private float slopeSlideMagnitude;
+        private float rayAngle;
+        private float angle;
         private void SetSlopeVelocity() {
-            ray.origin = transform.position + 1.01f * radius * Vector3.up;
+            position = _transform.position;
+            ray.origin = position + 1.01f * radius * Vector3.up;
             ray.direction = Vector3.down;
 
-            Debug.DrawRay(transform.position + Vector3.up, Vector3.down * 1.75f, Color.green);
-            if (Physics.SphereCast(ray, characterController.radius, out RaycastHit sphereHitInfo, 1.02f * radius)) {
-                float rayAngle = float.MaxValue;
-                if (Physics.Raycast(ray, out RaycastHit rayHitInfo, 1.75f)) {
+            Debug.DrawRay(position + Vector3.up, Vector3.down * 1.75f, Color.green);
+            if (Physics.SphereCast(ray, characterController.radius, out sphereHitInfo, 1.02f * radius)) {
+                rayAngle = float.MaxValue;
+                if (Physics.Raycast(ray, out rayHitInfo, 1.75f)) {
                     rayAngle = Vector3.Angle(rayHitInfo.normal, Vector3.up);
                 }
-                float angle = Mathf.Min(Vector3.Angle(sphereHitInfo.normal, Vector3.up), rayAngle);
+                angle = Mathf.Min(Vector3.Angle(sphereHitInfo.normal, Vector3.up), rayAngle);
                 
                 if (angle >= characterController.slopeLimit) {
                     slopeSlideVelocity =
@@ -163,7 +182,7 @@ namespace Controller {
                 }
             }
 
-            float slopeSlideMagnitude = Vector3.ProjectOnPlane(slopeSlideVelocity, Vector3.up).magnitude;
+            slopeSlideMagnitude = Vector3.ProjectOnPlane(slopeSlideVelocity, Vector3.up).magnitude;
             if (slopeSlideMagnitude == 0f)
                 return;
 
@@ -173,8 +192,9 @@ namespace Controller {
             slopeSlideVelocity = Vector3.zero;
         }
 
+        
         private void PlatformCheck(ControllerColliderHit hit) {
-            ray.origin = transform.position + Vector3.up * radius;
+            ray.origin = _transform.position + Vector3.up * radius;
             ray.direction = Vector3.down;
             if (!Physics.SphereCast(ray, characterController.radius, .5f, platformLayer))
                 platform = null;
@@ -185,7 +205,7 @@ namespace Controller {
             platform = hit.transform;
             lastPlatformPosition = platform.position;
             
-            Debug.Log($"collision {(hit.gameObject.layer)} {platformLayer.value} {((1 << hit.gameObject.layer) & platformLayer.value)}");
+            //Debug.Log($"collision {(hit.gameObject.layer)} {platformLayer.value} {((1 << hit.gameObject.layer) & platformLayer.value)}");
         }
         
         private void SetPlatformVelocity() {
@@ -194,6 +214,16 @@ namespace Controller {
             Vector3 currPosition = platform.position;
             platformVelocity = currPosition - lastPlatformPosition;
             lastPlatformPosition = currPosition;
+        }
+        
+        [ContextMenu("RESET")]
+        public void ResetPosition() {
+            this.enabled = false;
+            characterController.enabled = false;
+            _transform.position = Vector3.zero;
+            _transform.rotation = Quaternion.identity;
+            this.enabled = true;
+            characterController.enabled = true;
         }
     }
 }
