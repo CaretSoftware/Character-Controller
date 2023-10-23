@@ -1,12 +1,16 @@
 ﻿using UnityEngine;
 
-public abstract class State {
+public abstract class State : ScriptableObject {
     
     public StateMachine stateMachine;
-    
-    public abstract void Enter();
-    
-    public abstract void Run();
-    
-    public abstract void Exit();
+
+    public virtual void Enter() { }
+
+    public virtual void Update() { }
+
+    public virtual void LateUpdate() { }
+
+    public virtual void FixedUpdate() { }
+
+    public virtual void Exit() { }
 }
