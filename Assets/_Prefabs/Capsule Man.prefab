@@ -206,6 +206,9 @@ MonoBehaviour:
   fallingGravityScale: 3
   coyoteTime: 0.2
   jumpBuffering: 0.2
+  rotationSmoothTime: 0.1
+  groundSmoothTime: 0.1
+  airSmoothTime: 0.6
   outfits:
   - items:
     - {fileID: 5030556101086453254}
@@ -293,6 +296,7 @@ MonoBehaviour:
   head: {fileID: 1696592165900122209}
   magnitude: 0.5
   characterController: {fileID: 5265070593993299990}
+  hatRotationAngle: 45
 --- !u!114 &1943118232
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -355,52 +359,52 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 99170448934d3984a88f294b98cd5bdd,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.404
+      value: -0.446
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 99170448934d3984a88f294b98cd5bdd,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.116
+      value: 0.117
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 99170448934d3984a88f294b98cd5bdd,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.008
+      value: 0.005
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 99170448934d3984a88f294b98cd5bdd,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.031076156
+      value: -0.060167536
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 99170448934d3984a88f294b98cd5bdd,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.69879055
+      value: -0.6960562
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 99170448934d3984a88f294b98cd5bdd,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.05176768
+      value: -0.0813193
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 99170448934d3984a88f294b98cd5bdd,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.7127736
+      value: 0.71082544
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 99170448934d3984a88f294b98cd5bdd,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: -107.613
+      value: -191.5
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 99170448934d3984a88f294b98cd5bdd,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 16.384003
+      value: 91.04
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 99170448934d3984a88f294b98cd5bdd,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: -17.143005
+      value: -1.617981
       objectReference: {fileID: 0}
     - target: {fileID: -7511558181221131132, guid: 99170448934d3984a88f294b98cd5bdd,
         type: 3}

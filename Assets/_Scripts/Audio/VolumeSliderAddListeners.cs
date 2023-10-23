@@ -22,20 +22,20 @@ public class VolumeSliderAddListeners : MonoBehaviour {
         
         float volMaster = PlayerPrefs.GetFloat(SoundManager.preferencesVolumeMaster, masterVolumeSlider.value);
         masterVolumeSlider.value = volMaster;
-        masterVolumeSlider.onValueChanged.AddListener(val => SoundManager.Instance.ChangeMasterVolume(masterVolumeSlider.value));
-        masterVolumeSlider.onValueChanged.AddListener(val => SetPref(SoundManager.preferencesVolumeMaster ,masterVolumeSlider.value));
+        masterVolumeSlider.onValueChanged.AddListener( val => SoundManager.Instance.ChangeMasterVolume(val));
+        masterVolumeSlider.onValueChanged.AddListener(val => SetPref(SoundManager.preferencesVolumeMaster , val));
         masterVolumeSlider.onValueChanged?.Invoke(volMaster);
 
         float volMusic = PlayerPrefs.GetFloat(SoundManager.preferencesVolumeMusic, musicVolumeSlider.value);
         musicVolumeSlider.value = volMusic;
-        musicVolumeSlider.onValueChanged.AddListener(val => SoundManager.Instance.ChangeMusicVolume(musicVolumeSlider.value));
-        musicVolumeSlider.onValueChanged.AddListener(val => SetPref(SoundManager.preferencesVolumeMusic ,musicVolumeSlider.value));
+        musicVolumeSlider.onValueChanged.AddListener(val => SoundManager.Instance.ChangeMusicVolume(val));
+        musicVolumeSlider.onValueChanged.AddListener(val => SetPref(SoundManager.preferencesVolumeMusic , val));
         musicVolumeSlider.onValueChanged?.Invoke(volMusic);
 
         float volSFX = PlayerPrefs.GetFloat(SoundManager.preferencesVolumeSFX, sfxVolumeSlider.value);
         sfxVolumeSlider.value = volSFX;
-        sfxVolumeSlider.onValueChanged.AddListener(val => SoundManager.Instance.ChangeSfxVolume(sfxVolumeSlider.value));
-        sfxVolumeSlider.onValueChanged.AddListener(val => SetPref(SoundManager.preferencesVolumeSFX ,sfxVolumeSlider.value));
+        sfxVolumeSlider.onValueChanged.AddListener(val => SoundManager.Instance.ChangeSfxVolume(val));
+        sfxVolumeSlider.onValueChanged.AddListener(val => SetPref(SoundManager.preferencesVolumeSFX ,val));
         sfxVolumeSlider.onValueChanged?.Invoke(volSFX);
     }
 

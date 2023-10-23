@@ -13,6 +13,8 @@ namespace Controller {
             private set;
         }
         public bool JumpPressed { get; set; }
+        public float JumpPressedLast { get; }
+        public bool JumpReleased { get; set; }
         public bool JumpHold { get; set; }  // TODO AI not holding button TODO
         public Vector2 Axis { get; set; }
         public Transform ChaseTransform {

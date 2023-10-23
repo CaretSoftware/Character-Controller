@@ -6,21 +6,27 @@ namespace Controller {
         
     [CustomEditor(typeof(CharController))]
     public class ControllerEditor : Editor {
+        private CharController characterController;
+        
         public override void OnInspectorGUI() {
-            CharController characterController = (CharController)target;
+            characterController = (CharController)target;
 
             DrawDefaultInspector();
 
+            OutFitSelection();
+        }
+
+        private void OutFitSelection() {
             GUILayout.Label("Select Outfits");
             EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button("None")) {
                 Undo.RecordObjects(characterController.outfits.SelectMany(outfit => outfit.items).ToArray(), 
-                    "Select None");
+                    "Select Outfit None");
                 SelectOutfit(characterController, null);
             }
             
             foreach (Outfit outfit in characterController.outfits)
-                if (GUILayout.Button(outfit.items[0].name)){
+                if (GUILayout.Button(outfit.items[0].name)) {
                     Undo.RecordObjects(characterController.outfits.SelectMany(outfit => outfit.items).ToArray(), 
                         "Select Outfit");
                     SelectOutfit(characterController, outfit);
