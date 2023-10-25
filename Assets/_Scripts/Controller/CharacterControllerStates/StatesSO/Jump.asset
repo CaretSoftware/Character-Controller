@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: Jump
   m_EditorClassIdentifier: 
   stateMachine: {fileID: 0}
+  children: []
   jumpBufferDuration: 0.224
-  jumpHeight: 4
+  jumpHeight: 8.83
   airSmoothTime: 1.61
   airControlSmoothTime: 0.52
   gravity: -19.62

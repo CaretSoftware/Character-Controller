@@ -1,5 +1,8 @@
-﻿using System;
+﻿using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
+
+[SuppressMessage("ReSharper", "RedundantCheckBeforeAssignment")]
+[SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
 
 [CreateAssetMenu(menuName = "States/Character/Grounded")]
 public class Grounded : CharacterState {

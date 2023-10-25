@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
@@ -6,28 +7,45 @@ using UnityEngine;
 public class CharacterStateMachineEditor : Editor {
     private CharacterSM characterController;
     private SerializedProperty statesListProperty;
-    private string stateListPropertyName = "states";
+
+    private void OnEnable() => statesListProperty = serializedObject.FindProperty("states");
 
     public override void OnInspectorGUI() {
-        characterController = (CharacterSM)target;
-        List<State> states = characterController.states;
+        
+        serializedObject.Update();
 
-        int count = states.Count;
-        for (int i = 0; i < count; i++) {
-            if (states[i] != null) {
-                //EditorGUILayout.PrefixLabel(states[i].GetType().ToString());
-                Editor otherScriptEditor = CreateEditor(states[i]);
-                otherScriptEditor.OnInspectorGUI();
+        if (statesListProperty.isArray) {
+            for (int i = 0; i < statesListProperty.arraySize; i++) {
+                
+                SerializedProperty stateElement = statesListProperty.GetArrayElementAtIndex(i);
+                if (stateElement.objectReferenceValue != null)
+                {
+                    Editor stateEditor = CreateEditor(stateElement.objectReferenceValue);
+                    stateEditor.OnInspectorGUI();
+                }
             }
         }
+
+        //serializedObject.ApplyModifiedProperties();
+
+        //CharacterSM cSM = target as CharacterSM;
+        //List<State> states = statesListProperty.;
+        //int count = states.Count;
+        //for (int i = 0; i < count; i++) {
+        //    if (states[i] != null) {
+        //        //EditorGUILayout.PrefixLabel(states[i].GetType().ToString());
+        //        Editor otherScriptEditor = CreateEditor(states[i]);
+        //        otherScriptEditor.OnInspectorGUI();
+        //    }
+        //}
         
-        Undo.RecordObject(target, "States List Edit");
-        statesListProperty = serializedObject.FindProperty(stateListPropertyName);
+        //Undo.RecordObject(target, "States List Edit");
         EditorGUILayout.PropertyField(statesListProperty);
         serializedObject.ApplyModifiedProperties();
         //DrawDefaultInspector();
-        if (GUI.changed)
-            EditorUtility.SetDirty(target);
+        
+        //if (GUI.changed)
+        //    EditorUtility.SetDirty(target);
 
         //OutFitSelection();
     }
