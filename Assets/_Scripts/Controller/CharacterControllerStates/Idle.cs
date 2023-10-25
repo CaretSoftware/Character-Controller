@@ -1,11 +1,22 @@
-﻿using UnityEngine;
+﻿using System.Diagnostics.CodeAnalysis;
+using UnityEngine;
+
+[SuppressMessage("ReSharper", "RedundantCheckBeforeAssignment")]
+[SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
 
 [CreateAssetMenu(menuName = "States/Character/Idle")]
 public class Idle : Grounded {
-
     [SerializeField] private float timeToBored = 10f;
     private float timeIdling;
-    
+
+    private void OnValidate() {
+        foreach (CharacterState characterState in children) {
+            Idle copy = Cast<Idle>(characterState);
+            if (copy.timeToBored != timeToBored)
+                copy.timeToBored = timeToBored;
+        }
+    }
+
     public override void Enter() {
         // TODO Set Animation to idle
         setHorizontalVelocity?.Invoke(Vector3.zero);

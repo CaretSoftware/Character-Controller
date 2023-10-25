@@ -7,6 +7,8 @@ public class CharacterSM : StateMachine {
     private Transform _transform;
     private Animator _animator;
     private IInput input;
+    private ControllerVariables controllerVars; // TODO move character parameters to this TODO //
+    
     private Action<Vector3> setHorizontalVelocity;
     private Action<Vector3> setVerticalVelocity;
     private Action<float> setMaxVelocity;
@@ -19,7 +21,7 @@ public class CharacterSM : StateMachine {
     public float TerminalVelocity { get; private set; }
     public float JumpBufferDuration { get; private set; }
 
-    private void Start() {
+    protected override void Awake() {
         setJumpBufferDuration += SetJumpBufferDuration;
         setHorizontalVelocity += SetHorizontalVelocity;
         setVerticalVelocity += SetVerticalVelocity;
@@ -30,9 +32,14 @@ public class CharacterSM : StateMachine {
         _transform = transform;
         _animator = GetComponentInChildren<Animator>();
         input = GetComponent<IInput>();
-
+        
         foreach (State state in states) {
-            CharacterState instance = (CharacterState)state;
+            var instance = ((CharacterState)state).Copy();
+            _states.Add(instance.GetType(), instance);
+            currentState ??= instance;
+            
+            instance.stateMachine = this;
+            
             instance.Init(this, _characterController, transform, _animator, input,
                 setHorizontalVelocity, setVerticalVelocity, setMaxVelocity, setTerminalVelocity, setJumpBufferDuration);
             
@@ -45,6 +52,11 @@ public class CharacterSM : StateMachine {
             if (instance.GetType() == typeof(Move))
                 SetMaxVelocity(((Move)instance).CharacterMaxSpeed);
         }
+
+        queuedState = currentState;
+        
+        if (currentState != null)
+            currentState.Enter();
     }
 
     private void OnDestroy() {
@@ -96,7 +108,8 @@ public class CharacterSM : StateMachine {
         UnityEditor.Handles.BeginGUI();
         GUI.Label(rect, currentState.GetType().Name, LabelStyle);
         GUI.color = new Color(1f, 1f, 1f, .5f);
-        GUI.Label(next, lastState.GetType().Name, LabelStyle);
+        if (lastState != null)
+            GUI.Label(next, lastState.GetType().Name, LabelStyle);
         UnityEditor.Handles.EndGUI();
     }
 #endif

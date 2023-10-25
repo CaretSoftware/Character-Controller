@@ -1,5 +1,9 @@
-﻿using System;
+﻿using System.Diagnostics.CodeAnalysis;
+using System;
 using UnityEngine;
+
+[SuppressMessage("ReSharper", "RedundantCheckBeforeAssignment")]
+[SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
 
 [CreateAssetMenu(menuName = "States/Character/Falling")]
 public class Falling : CharacterState {
@@ -13,6 +17,14 @@ public class Falling : CharacterState {
         if (characterSm != null && characterSm.MaxVelocity != terminalVelocity) {
             TerminalVelocity = terminalVelocity;
             setTerminalVelocity?.Invoke(terminalVelocity);
+        }
+        
+        foreach (CharacterState characterState in children) {
+            Falling copy = Cast<Falling>(characterState);
+            if (copy.coyoteTime != coyoteTime)
+                copy.coyoteTime = coyoteTime;
+            if (copy.terminalVelocity != terminalVelocity)
+                copy.terminalVelocity = terminalVelocity;
         }
     }
     

@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using Controller;
 using UnityEngine;
 
+
 public class CharacterState : State {
+    public List<CharacterState> children = new List<CharacterState>();
+
     protected Action<Vector3> setHorizontalVelocity;
     protected Action<Vector3> setVerticalVelocity;
     protected Action<float> setMaxSpeed;
@@ -14,7 +18,7 @@ public class CharacterState : State {
     protected Transform myTransform;
     protected Animator animator;
     protected IInput input;
-    
+
     public void Init(
             CharacterSM characterSm, 
             CharacterController characterController,
@@ -38,4 +42,14 @@ public class CharacterState : State {
         this.setTerminalVelocity = setTerminalVelocity;
         this.setJumpBufferDuration = setJumpBufferDuration;
     }
+
+    private void OnDisable() => children.Clear();
+
+    public virtual CharacterState Copy() {
+        CharacterState instance = Instantiate(this);
+        children.Add(instance);
+        return instance;
+    }
+
+    protected static T Cast<T>(CharacterState state) where T : CharacterState => state as T;
 }

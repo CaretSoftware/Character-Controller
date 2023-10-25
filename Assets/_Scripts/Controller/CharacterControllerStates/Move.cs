@@ -1,11 +1,16 @@
-﻿using System;
+﻿using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
+
+[SuppressMessage("ReSharper", "RedundantCheckBeforeAssignment")]
+[SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
 
 [CreateAssetMenu(menuName = "States/Character/Move")]
 public class Move : Grounded {
-    [HideInInspector] public float CharacterMaxSpeed => characterMaxSpeed;
+    
     [SerializeField] private float characterMaxSpeed = 5f;
     [SerializeField, Range(0f, 1f)] private float groundSmoothTime = .1f;
+    
+    public float CharacterMaxSpeed => characterMaxSpeed;
     private Ray ray;
     
     public override void Enter() { }
@@ -13,6 +18,14 @@ public class Move : Grounded {
     private void OnValidate() {
         if (characterSm != null && characterSm.MaxVelocity != characterMaxSpeed)
             setMaxSpeed?.Invoke(characterMaxSpeed);
+        
+        foreach (CharacterState characterState in children) {
+            Move copy = Cast<Move>(characterState);
+            if (copy.characterMaxSpeed != characterMaxSpeed)
+                copy.characterMaxSpeed = characterMaxSpeed;
+            if (copy.groundSmoothTime != groundSmoothTime)
+                copy.groundSmoothTime = groundSmoothTime;
+        }
     }
 
     public override void Update() {

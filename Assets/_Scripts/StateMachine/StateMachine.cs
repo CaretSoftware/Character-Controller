@@ -9,14 +9,13 @@ public class StateMachine : MonoBehaviour {
     protected State lastState;
 
     protected Dictionary<Type, State> _states = new Dictionary<Type, State>();
-    [SerializeField] public List<State> states;
+    [SerializeField] protected List<State> states;
     
-    private void Awake() {
+    protected virtual void Awake() {
         foreach (State state in states) {
-            State instance = state;
-            instance.stateMachine = this;
-            _states.Add(instance.GetType(), instance);
-            currentState ??= instance;
+            state.stateMachine = this;
+            _states.Add(state.GetType(), state);
+            currentState ??= state;
         }
 
         queuedState = currentState;

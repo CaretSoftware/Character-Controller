@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Idle
   m_EditorClassIdentifier: 
   stateMachine: {fileID: 0}
-  jumpBufferTime: 0.3
-  timeToBored: 10
+  children: []
+  timeToBored: 9.41

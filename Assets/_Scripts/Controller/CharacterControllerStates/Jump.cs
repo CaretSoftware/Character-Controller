@@ -1,5 +1,8 @@
-﻿using System;
+﻿using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
+
+[SuppressMessage("ReSharper", "RedundantCheckBeforeAssignment")]
+[SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
 
 [CreateAssetMenu(menuName = "States/Character/Jump")]
 public class Jump : CharacterState {
@@ -19,6 +22,26 @@ public class Jump : CharacterState {
     private void OnValidate() {
         if (characterSm != null && characterSm.JumpBufferDuration != jumpBufferDuration)
             setJumpBufferDuration?.Invoke(jumpBufferDuration);
+        
+        foreach (CharacterState characterState in children) {
+            Jump copy = Cast<Jump>(characterState);
+            if (copy.jumpBufferDuration != jumpBufferDuration)
+                copy.jumpBufferDuration = jumpBufferDuration;
+            if (copy.jumpHeight != jumpHeight)
+                copy.jumpHeight = jumpHeight;
+            if (copy.airSmoothTime != airSmoothTime)
+                copy.airSmoothTime = airSmoothTime;
+            if (copy.airControlSmoothTime != airControlSmoothTime)
+                copy.airControlSmoothTime = airControlSmoothTime;
+            if (copy.gravity != gravity)
+                copy.gravity = gravity;
+            if (copy.fallGravityMultiplier != fallGravityMultiplier)
+                copy.fallGravityMultiplier = fallGravityMultiplier;
+            if (copy.minApexVelocityThreshold != minApexVelocityThreshold)
+                copy.minApexVelocityThreshold = minApexVelocityThreshold;
+            if (copy.maxApexVelocityThreshold != maxApexVelocityThreshold)
+                copy.maxApexVelocityThreshold = maxApexVelocityThreshold;
+        }
     }
 
     public override void Enter() {
