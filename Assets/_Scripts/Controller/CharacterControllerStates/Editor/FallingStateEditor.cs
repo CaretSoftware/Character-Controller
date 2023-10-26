@@ -13,7 +13,8 @@ public class FallingStateEditor : CharacterStateEditor {
         terminalVelocity = serializedObject.FindProperty("terminalVelocity");
     }
 
-    protected override void DisplayFields() {
+    protected override void DisplayFields(bool selected) {
+        base.DisplayFields(selected);
         EditorGUILayout.Slider(coyoteTime, 0f, 1f, new GUIContent (coyoteTime.name));
         terminalVelocity.floatValue = EditorGUILayout.FloatField(terminalVelocity.name, terminalVelocity.floatValue);
     }

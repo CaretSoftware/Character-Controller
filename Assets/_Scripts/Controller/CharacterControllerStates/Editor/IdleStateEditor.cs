@@ -11,7 +11,8 @@ public class IdleStateEditor : CharacterStateEditor {
         timeToBored = serializedObject.FindProperty("timeToBored");
     }
 
-    protected override void DisplayFields() {
+    protected override void DisplayFields(bool selected) {
+        base.DisplayFields(selected);
         EditorGUILayout.Slider(timeToBored, 0f, 10f, new GUIContent (timeToBored.name));
     }
 }

@@ -24,10 +24,10 @@ public class CharacterStateEditor : Editor {
             normal = { textColor = Color.white }
         };
 
-    
     private Color inspectorGray = new Color(56 / 256f, 56 / 256f, 56 / 256f, 1f);
     private Color shadedGray = new Color(.175f, .175f, .18f, 1f);
     private GUIStyle tabStyle;
+    private static int staticTabOffset;
 
     protected virtual void OnEnable() => stateSelected += StateSelected;
 
@@ -41,7 +41,8 @@ public class CharacterStateEditor : Editor {
         
         // Selection
         bool selected = SelectedCharacterState.characterState != null && SelectedCharacterState.characterState.GetType() == target.GetType();
-        int selectedOffset = selected ? 5 : 0;
+        int previousSelectedOffset = previousSelected ? -5 : 0;
+        int selectedOffset = selected ? 5 : previousSelectedOffset;
         LabelStyle.contentOffset = new Vector2(0, -selectedOffset);
         
         EditorGUILayout.BeginHorizontal();
@@ -68,12 +69,17 @@ public class CharacterStateEditor : Editor {
         EditorGUILayout.EndHorizontal();
         
         // Show Variables
-        DisplayFields();
+        DisplayFields(selected);
         
         serializedObject.ApplyModifiedProperties();
     }
 
-    protected virtual void DisplayFields() { }
+    private static bool previousSelected;
+    protected virtual void DisplayFields(bool selected) {
+        int previousSelectedOffset = previousSelected ? +5 : 0;
+        EditorGUILayout.Space(selected ? -5 : previousSelectedOffset);
+        previousSelected = selected;
+    }
     
     /*  // Draw Color behind inspector
      *  serializedObject.Update();
@@ -88,6 +94,18 @@ public class CharacterStateEditor : Editor {
         EditorGUILayout.EndVertical();
      */
     
+    /*
+    GUI.BeginClip(rect);
+    Handles.color = Color.red;
+    Handles.DrawAAPolyLine(
+        Texture2D.whiteTexture,
+        15,
+        Vector3.zero,
+        new Vector3(120, 91, 0),
+        new Vector3(220, 91, 0),
+        new Vector3(350, 20, 0));
+    GUI.EndClip();
+    */
     
     // Display Dialogue Window
     //if (EditorUtility.DisplayDialog("Warning!", 
