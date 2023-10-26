@@ -26,7 +26,8 @@ public class JumpStateEditor : CharacterStateEditor {
         maxApexVelocityThreshold = serializedObject.FindProperty("maxApexVelocityThreshold");
     }
 
-    protected override void DisplayFields() {
+    protected override void DisplayFields(bool selected) {
+        base.DisplayFields(selected);
         EditorGUILayout.Slider(jumpHeight, 0f, 10f, new GUIContent (jumpHeight.name));
         EditorGUILayout.Slider(jumpBufferTime, 0f, 1f, new GUIContent (jumpBufferTime.name));
         EditorGUILayout.Slider(airSmoothTime, 0f, 2f, new GUIContent (airSmoothTime.name));

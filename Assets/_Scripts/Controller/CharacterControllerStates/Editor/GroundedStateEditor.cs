@@ -9,5 +9,7 @@ public class GroundedStateEditor : CharacterStateEditor {
         targetName = target.name;
     }
 
-    protected override void DisplayFields() { }
+    protected override void DisplayFields(bool selected) {
+        base.DisplayFields(selected);
+    }
 }

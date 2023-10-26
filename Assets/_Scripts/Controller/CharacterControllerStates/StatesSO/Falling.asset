@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Falling
   m_EditorClassIdentifier: 
   stateMachine: {fileID: 0}
-  coyoteTime: 0.487
+  instanceCopies: []
+  coyoteTime: 0.2
   terminalVelocity: -50
   <TerminalVelocity>k__BackingField: -50

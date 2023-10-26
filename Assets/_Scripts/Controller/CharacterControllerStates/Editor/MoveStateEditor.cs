@@ -13,7 +13,8 @@ public class MoveStateEditor : CharacterStateEditor {
         characterMaxSpeed = serializedObject.FindProperty("characterMaxSpeed");
     }
 
-    protected override void DisplayFields() {
+    protected override void DisplayFields(bool selected) {
+        base.DisplayFields(selected);
         EditorGUILayout.Slider(groundSmoothTime, 0f, 1f, new GUIContent (groundSmoothTime.name));
         EditorGUILayout.Slider(characterMaxSpeed, 0f, 10f, new GUIContent (characterMaxSpeed.name));
     }

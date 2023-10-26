@@ -33,7 +33,7 @@ public class CharacterStateMachineEditor : Editor {
 
     public override void OnInspectorGUI() {
         serializedObject.Update();
-
+        
         if (statesListProperty.isArray) {
             for (int i = 0; i < statesListProperty.arraySize; i++) {
                 SerializedProperty stateElement = statesListProperty.GetArrayElementAtIndex(i);
