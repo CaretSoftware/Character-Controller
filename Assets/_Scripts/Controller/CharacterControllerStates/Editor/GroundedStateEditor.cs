@@ -4,7 +4,8 @@ using UnityEngine;
 [CustomEditor(typeof(Grounded))]
 public class GroundedStateEditor : CharacterStateEditor {
 
-    private void OnEnable() {
+    protected override void OnEnable() {
+        base.OnEnable();
         targetName = target.name;
     }
 

@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using Controller;
 using UnityEngine;
 
-
 public class CharacterState : State {
-    public List<CharacterState> children = new List<CharacterState>();
+    public List<CharacterState> instanceCopies = new List<CharacterState>();
 
     protected Action<Vector3> setHorizontalVelocity;
     protected Action<Vector3> setVerticalVelocity;
@@ -43,11 +42,11 @@ public class CharacterState : State {
         this.setJumpBufferDuration = setJumpBufferDuration;
     }
 
-    private void OnDisable() => children.Clear();
+    private void OnDisable() => instanceCopies.Clear();
 
     public virtual CharacterState Copy() {
         CharacterState instance = Instantiate(this);
-        children.Add(instance);
+        instanceCopies.Add(instance);
         return instance;
     }
 

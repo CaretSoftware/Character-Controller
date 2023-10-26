@@ -6,7 +6,8 @@ public class MoveStateEditor : CharacterStateEditor {
     SerializedProperty characterMaxSpeed;
     SerializedProperty groundSmoothTime;
 
-    void OnEnable() {
+    protected override void OnEnable() {
+        base.OnEnable();
         targetName = target.name;
         groundSmoothTime = serializedObject.FindProperty("groundSmoothTime");
         characterMaxSpeed = serializedObject.FindProperty("characterMaxSpeed");

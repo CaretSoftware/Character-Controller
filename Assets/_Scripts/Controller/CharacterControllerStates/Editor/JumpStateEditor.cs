@@ -13,7 +13,8 @@ public class JumpStateEditor : CharacterStateEditor {
     SerializedProperty minApexVelocityThreshold;
     SerializedProperty maxApexVelocityThreshold;
     
-    void OnEnable() {
+    protected override void OnEnable() {
+        base.OnEnable();
         targetName = target.name;
         jumpHeight = serializedObject.FindProperty("jumpHeight");
         jumpBufferTime = serializedObject.FindProperty("jumpBufferDuration");

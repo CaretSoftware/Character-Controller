@@ -1,51 +1,53 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEditor;
+﻿using UnityEditor;
+using UnityEditorInternal;
 using UnityEngine;
 
 [CustomEditor(typeof(CharacterSM))]
 public class CharacterStateMachineEditor : Editor {
     private CharacterSM characterController;
     private SerializedProperty statesListProperty;
+    private ReorderableList reorderableList;
 
-    private void OnEnable() => statesListProperty = serializedObject.FindProperty("states");
+    private void OnEnable() {
+        statesListProperty = serializedObject.FindProperty("states");
+        
+        reorderableList = new ReorderableList(serializedObject, statesListProperty, true, true, true, true);
+
+        reorderableList.onSelectCallback = (ReorderableList list) => {
+            SerializedProperty stateElement = statesListProperty?.GetArrayElementAtIndex(list.index);
+            if (stateElement is { propertyType: SerializedPropertyType.ObjectReference, objectReferenceValue: CharacterState state })
+                CharacterStateEditor.stateSelected?.Invoke(state);
+        };
+        reorderableList.drawElementCallback =
+            (Rect rect, int index, bool isActive, bool isFocused) => {
+                SerializedProperty stateElement = statesListProperty?.GetArrayElementAtIndex(index);
+                var element = reorderableList.serializedProperty.GetArrayElementAtIndex(index);
+                rect.y += 2;
+                EditorGUI.PropertyField(
+                    new Rect(rect.x, rect.y, rect.width, EditorGUIUtility.singleLineHeight),
+                    element,
+                    GUIContent.none);
+            };
+        reorderableList.drawHeaderCallback = (Rect rect) => { EditorGUI.LabelField(rect, "Character States"); };
+    }
 
     public override void OnInspectorGUI() {
-        
         serializedObject.Update();
 
         if (statesListProperty.isArray) {
             for (int i = 0; i < statesListProperty.arraySize; i++) {
-                
                 SerializedProperty stateElement = statesListProperty.GetArrayElementAtIndex(i);
-                if (stateElement.objectReferenceValue != null)
-                {
+                if (stateElement.objectReferenceValue != null) {
                     Editor stateEditor = CreateEditor(stateElement.objectReferenceValue);
                     stateEditor.OnInspectorGUI();
                 }
             }
         }
 
-        //serializedObject.ApplyModifiedProperties();
+        EditorGUILayout.Space(EditorGUIUtility.singleLineHeight);
+        reorderableList.DoLayoutList();
 
-        //CharacterSM cSM = target as CharacterSM;
-        //List<State> states = statesListProperty.;
-        //int count = states.Count;
-        //for (int i = 0; i < count; i++) {
-        //    if (states[i] != null) {
-        //        //EditorGUILayout.PrefixLabel(states[i].GetType().ToString());
-        //        Editor otherScriptEditor = CreateEditor(states[i]);
-        //        otherScriptEditor.OnInspectorGUI();
-        //    }
-        //}
-        
-        //Undo.RecordObject(target, "States List Edit");
-        EditorGUILayout.PropertyField(statesListProperty);
         serializedObject.ApplyModifiedProperties();
-        //DrawDefaultInspector();
-        
-        //if (GUI.changed)
-        //    EditorUtility.SetDirty(target);
 
         //OutFitSelection();
     }

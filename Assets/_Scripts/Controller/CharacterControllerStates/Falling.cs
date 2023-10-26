@@ -19,7 +19,7 @@ public class Falling : CharacterState {
             setTerminalVelocity?.Invoke(terminalVelocity);
         }
         
-        foreach (CharacterState characterState in children) {
+        foreach (CharacterState characterState in instanceCopies) {
             Falling copy = Cast<Falling>(characterState);
             if (copy.coyoteTime != coyoteTime)
                 copy.coyoteTime = coyoteTime;
