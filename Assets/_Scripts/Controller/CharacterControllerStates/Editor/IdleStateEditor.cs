@@ -5,7 +5,8 @@ using UnityEngine;
 public class IdleStateEditor : CharacterStateEditor {
     private SerializedProperty timeToBored;
 
-    private void OnEnable() {
+    protected override void OnEnable() {
+        base.OnEnable();
         targetName = target.name;
         timeToBored = serializedObject.FindProperty("timeToBored");
     }

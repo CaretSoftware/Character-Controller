@@ -19,7 +19,7 @@ public class Move : Grounded {
         if (characterSm != null && characterSm.MaxVelocity != characterMaxSpeed)
             setMaxSpeed?.Invoke(characterMaxSpeed);
         
-        foreach (CharacterState characterState in children) {
+        foreach (CharacterState characterState in instanceCopies) {
             Move copy = Cast<Move>(characterState);
             if (copy.characterMaxSpeed != characterMaxSpeed)
                 copy.characterMaxSpeed = characterMaxSpeed;

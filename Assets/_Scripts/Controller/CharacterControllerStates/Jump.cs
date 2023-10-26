@@ -23,7 +23,7 @@ public class Jump : CharacterState {
         if (characterSm != null && characterSm.JumpBufferDuration != jumpBufferDuration)
             setJumpBufferDuration?.Invoke(jumpBufferDuration);
         
-        foreach (CharacterState characterState in children) {
+        foreach (CharacterState characterState in instanceCopies) {
             Jump copy = Cast<Jump>(characterState);
             if (copy.jumpBufferDuration != jumpBufferDuration)
                 copy.jumpBufferDuration = jumpBufferDuration;

@@ -6,7 +6,8 @@ public class FallingStateEditor : CharacterStateEditor {
     SerializedProperty coyoteTime;
     SerializedProperty terminalVelocity;
 
-    void OnEnable() {
+    protected override void OnEnable() {
+        base.OnEnable();
         targetName = target.name;
         coyoteTime = serializedObject.FindProperty("coyoteTime");
         terminalVelocity = serializedObject.FindProperty("terminalVelocity");
