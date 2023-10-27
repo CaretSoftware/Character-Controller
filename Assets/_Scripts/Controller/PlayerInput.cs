@@ -15,7 +15,7 @@ namespace Controller {
 
         public float JumpPressedLast { get; private set; }
 
-        public bool JumpReleased { get; set; }
+        public bool JumpReleased { get; set; } = true;
         public bool JumpHold { get; set; }
         public Vector2 Axis { get; set; }
         private bool locked;
