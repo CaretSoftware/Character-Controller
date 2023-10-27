@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
@@ -9,7 +10,7 @@ public static class SelectedCharacterState {
 public class CharacterStateEditor : Editor {
     public static Action<CharacterState> stateSelected;
 
-    protected string targetName;
+    protected string targetName = string.Empty;
 
     private GUIStyle labelStyle;
     private GUIStyle LabelStyle =>
@@ -29,13 +30,18 @@ public class CharacterStateEditor : Editor {
     private GUIStyle tabStyle;
     private static int staticTabOffset;
 
-    protected virtual void OnEnable() => stateSelected += StateSelected;
+    protected virtual void OnEnable() {
+        guiContentLabelContent = new GUIContent(targetName);
+        stateSelected += StateSelected;
+    }
 
     protected virtual void OnDisable() => stateSelected -= StateSelected;
 
     protected void StateSelected(CharacterState characterState) => 
             SelectedCharacterState.characterState = characterState;
 
+    protected static GUIContent guiContentLabelContent;
+    
     public override void OnInspectorGUI() {
         serializedObject.Update();
         
@@ -48,9 +54,10 @@ public class CharacterStateEditor : Editor {
         EditorGUILayout.BeginHorizontal();
         
         // State Label
-        GUIContent labelContent = new GUIContent(targetName);
+        guiContentLabelContent.text = targetName;
+        GUIContent labelContent = guiContentLabelContent;
         Vector2 labelSize = LabelStyle.CalcSize(labelContent);
-        EditorGUILayout.LabelField(labelContent, labelStyle, GUILayout.Width(labelSize.x));
+        EditorGUILayout.LabelField(labelContent, LabelStyle, GUILayout.Width(labelSize.x));
         
         Rect lineRect = EditorGUILayout.GetControlRect(false, EditorGUIUtility.singleLineHeight);
 
@@ -58,7 +65,7 @@ public class CharacterStateEditor : Editor {
         EditorGUI.DrawRect(new Rect(20, lineRect.y - selectedOffset, labelSize.x, 1), shadedGray);
         EditorGUI.DrawRect(new Rect(20, lineRect.y - selectedOffset, 1, EditorGUIUtility.singleLineHeight), shadedGray);
         EditorGUI.DrawRect(new Rect(20 + labelSize.x, lineRect.y - selectedOffset, 1, EditorGUIUtility.singleLineHeight), shadedGray);
-
+        
         // Draw Tab Shading
         for (int i = 0; i < EditorGUIUtility.singleLineHeight; i++) {
             Color c = Color.Lerp(inspectorGray, shadedGray, (i / EditorGUIUtility.singleLineHeight));

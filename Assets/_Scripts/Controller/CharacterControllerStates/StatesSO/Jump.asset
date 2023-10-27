@@ -13,12 +13,13 @@ MonoBehaviour:
   m_Name: Jump
   m_EditorClassIdentifier: 
   stateMachine: {fileID: 0}
-  children: []
-  jumpBufferDuration: 0.224
-  jumpHeight: 8.83
-  airSmoothTime: 1.61
-  airControlSmoothTime: 0.52
-  gravity: -19.62
+  instanceCopies:
+  - {fileID: 0}
+  jumpBufferDuration: 0.2
+  jumpHeight: 5
+  airSmoothTime: 0.1
+  airControlSmoothTime: 0.959
+  gravity: -20
   fallGravityMultiplier: 3
-  minApexVelocityThreshold: -0.9838338
+  minApexVelocityThreshold: -0.46153978
   maxApexVelocityThreshold: 0.004618883

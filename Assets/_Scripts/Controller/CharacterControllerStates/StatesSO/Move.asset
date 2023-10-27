@@ -13,5 +13,7 @@ MonoBehaviour:
   m_Name: Move
   m_EditorClassIdentifier: 
   stateMachine: {fileID: 0}
+  instanceCopies:
+  - {fileID: 0}
   characterMaxSpeed: 7
   groundSmoothTime: 0.1
