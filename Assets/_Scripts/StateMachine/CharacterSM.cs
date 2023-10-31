@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Controller;
 using UnityEngine;
 
@@ -148,6 +147,7 @@ public class CharacterSM : StateMachine {
     }
     
 #if UNITY_EDITOR
+    private static CharacterSM _characterSm;
     private readonly int textWidth = 200;
     private readonly int padding = 24;
 
@@ -162,6 +162,8 @@ public class CharacterSM : StateMachine {
         };
 
     private void OnGUI() {
+        _characterSm ??= this;
+        if (_characterSm != this) return;
         Rect rect = new Rect {
             xMin = Screen.width - textWidth - padding, 
             yMin = padding, 

@@ -10,10 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7c1dfe01f57b4352bbbef37325791c52, type: 3}
-  m_Name: Move
+  m_Name: Capsule Man Move
   m_EditorClassIdentifier: 
   stateMachine: {fileID: 0}
-  instanceCopies: []
+  instanceCopies:
+  - {fileID: 0}
   characterMaxSpeed: 7
   groundSmoothTime: 0.1
-  rotateSmoothTime: 0.1
+  rotationSmoothTime: 0.1
