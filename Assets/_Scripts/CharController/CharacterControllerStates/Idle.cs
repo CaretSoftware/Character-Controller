@@ -12,6 +12,7 @@ public class Idle : Grounded {
     private void OnValidate() {
         foreach (CharacterState characterState in instanceCopies) {
             Idle copy = Cast<Idle>(characterState);
+            if (copy == null) continue;
             if (copy.timeToBored != timeToBored)
                 copy.timeToBored = timeToBored;
         }
