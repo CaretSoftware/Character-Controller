@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Controller {
+namespace Character {
     public class FootDust : MonoBehaviour {
         [SerializeField] private UnityEngine.CharacterController characterController;
         [SerializeField] private ParticleSystem dustParticleSystem;

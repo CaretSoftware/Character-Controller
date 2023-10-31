@@ -3547,8 +3547,8 @@ MonoBehaviour:
   states:
   - {fileID: 11400000, guid: 684f115e69d8dc54ca02b6ca96cf94f7, type: 2}
   - {fileID: 11400000, guid: 1c1bbeed3ba6b3240aa500c1daf6fd58, type: 2}
-  - {fileID: 11400000, guid: 77cf1fd71972a0d4189f41fcf8d1c740, type: 2}
   - {fileID: 11400000, guid: c3ffe31965da20d4cb013abda9e150a7, type: 2}
+  - {fileID: 11400000, guid: 77cf1fd71972a0d4189f41fcf8d1c740, type: 2}
   - {fileID: 11400000, guid: ce22ce2fa3bec77408b4b05a8b07e0b4, type: 2}
 --- !u!114 &1208066216
 MonoBehaviour:
@@ -3633,7 +3633,7 @@ MonoBehaviour:
   magnitude: 0.5
   characterController: {fileID: 1208066217}
   hatRotationAngle: 45
-  debug: 1
+  speed: 0.05
 --- !u!114 &1208066221
 MonoBehaviour:
   m_ObjectHideFlags: 0

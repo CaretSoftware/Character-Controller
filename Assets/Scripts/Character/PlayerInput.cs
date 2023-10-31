@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Controller {
+namespace Character {
     [SelectionBase]
     public class PlayerInput : MonoBehaviour, IInput {
         private bool jumpPressed;

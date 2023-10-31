@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Controller;
+using Character;
 using UnityEngine;
 
 public class CharacterState : State {
@@ -19,14 +19,14 @@ public class CharacterState : State {
     protected Action<float> setJumpBufferDuration;
     protected Action<float> rotateForward;
     
-    protected CharacterSM characterSm;
+    protected CharacterStateMachine characterStateMachine;
     protected CharacterController characterController;
     protected Transform myTransform;
     protected Animator animator;
     protected IInput input;
 
     public void Init(
-            CharacterSM characterSm, 
+            CharacterStateMachine characterStateMachine, 
             CharacterController characterController,
             Transform characterTransform,
             Animator animator,
@@ -38,7 +38,7 @@ public class CharacterState : State {
             Action<float> setJumpBufferDuration,
             Action<float> rotateForward) {
         
-        this.characterSm = characterSm;
+        this.characterStateMachine = characterStateMachine;
         this.characterController = characterController;
         this.myTransform = characterTransform;
         this.animator = animator;

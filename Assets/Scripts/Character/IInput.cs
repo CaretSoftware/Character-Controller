@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Controller {
+namespace Character {
     public interface IInput {
         public bool JumpPressed { get; set; }
         public float JumpPressedLast { get; }

@@ -24,7 +24,7 @@ public class Jump : CharacterState {
 
     private void OnValidate() {
         graphArray = null; // forces redrawing of graph
-        if (characterSm != null && characterSm.JumpBufferDuration != jumpBufferDuration)
+        if (characterStateMachine != null && characterStateMachine.JumpBufferDuration != jumpBufferDuration)
             setJumpBufferDuration?.Invoke(jumpBufferDuration);
         
         foreach (CharacterState characterStateCopy in instanceCopies) {
@@ -54,8 +54,8 @@ public class Jump : CharacterState {
         animator.SetBool(IsGrounded, false);
 
         verticalVelocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
-        smoothInput.x = (characterSm.HorizontalVelocity.x / characterSm.MaxVelocity) * Mathf.Abs(input.Axis.x);
-        smoothInput.y = (characterSm.HorizontalVelocity.z / characterSm.MaxVelocity) * Mathf.Abs(input.Axis.y);
+        smoothInput.x = (characterStateMachine.HorizontalVelocity.x / characterStateMachine.MaxVelocity) * Mathf.Abs(input.Axis.x);
+        smoothInput.y = (characterStateMachine.HorizontalVelocity.z / characterStateMachine.MaxVelocity) * Mathf.Abs(input.Axis.y);
         xCurrentVelocity = smoothInput.x;
         yCurrentVelocity = smoothInput.y;
         jumpReleased = false;
@@ -70,15 +70,15 @@ public class Jump : CharacterState {
         setVerticalVelocity?.Invoke(verticalVelocity);
         setHorizontalVelocity?.Invoke(GetHorizontalVelocity(ref smoothInput, input.Axis, ref xCurrentVelocity, ref yCurrentVelocity, Time.deltaTime));
         rotateForward?.Invoke(rotationSmoothTime);
-        characterController.Move(Time.deltaTime * (characterSm.VerticalVelocity + characterSm.HorizontalVelocity));
+        characterController.Move(Time.deltaTime * (characterStateMachine.VerticalVelocity + characterStateMachine.HorizontalVelocity));
         
         if (verticalVelocity.y < 0f && characterController.isGrounded)
-            characterSm.TransitionTo<Grounded>();
+            characterStateMachine.TransitionTo<Grounded>();
     }
 
     private Vector3 GetVerticalVelocity(Vector3 verticalVelocity, float gravityMultiplier, float deltaTime) {
         verticalVelocity.y += gravity * gravityMultiplier * deltaTime;
-        float terminalVelocity = characterSm != null ? characterSm.TerminalVelocity : -20f;
+        float terminalVelocity = characterStateMachine != null ? characterStateMachine.TerminalVelocity : -20f;
         verticalVelocity.y = Mathf.Max(-Mathf.Abs(terminalVelocity), verticalVelocity.y);
         return verticalVelocity;
     }
@@ -99,8 +99,8 @@ public class Jump : CharacterState {
     private Vector3 GetHorizontalVelocity(ref Vector2 smoothInput, Vector2 input, ref float xCurrentVelocity, ref float yCurrentVelocity, float deltaTime) {
         float currSmoothX = input.x == 0 ? airSmoothTime : airControlSmoothTime;
         float currSmoothY = input.y == 0 ? airSmoothTime : airControlSmoothTime;
-        float terminalVelocity = characterSm != null ? characterSm.TerminalVelocity : -50f;
-        float maxVelocity = characterSm != null ? characterSm.MaxVelocity : 5f;
+        float terminalVelocity = characterStateMachine != null ? characterStateMachine.TerminalVelocity : -50f;
+        float maxVelocity = characterStateMachine != null ? characterStateMachine.MaxVelocity : 5f;
         
         smoothInput.x = Mathf.SmoothDamp(smoothInput.x, input.x, ref xCurrentVelocity, currSmoothX, -terminalVelocity, deltaTime);
         smoothInput.y = Mathf.SmoothDamp(smoothInput.y, input.y, ref yCurrentVelocity, currSmoothY, -terminalVelocity, deltaTime);

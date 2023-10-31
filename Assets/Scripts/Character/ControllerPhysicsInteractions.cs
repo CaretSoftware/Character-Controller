@@ -2,7 +2,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace Controller {
+namespace Character {
     [RequireComponent(typeof(CharacterController))]
     public class ControllerPhysicsInteractions : MonoBehaviour {
     

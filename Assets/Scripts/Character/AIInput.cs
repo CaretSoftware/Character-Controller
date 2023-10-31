@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-namespace Controller {
+namespace Character {
     public class AIInput : MonoBehaviour, IInput {
         public delegate void StuckDelegate(AIInput ai, Vector3 position);
         public static StuckDelegate stuck;

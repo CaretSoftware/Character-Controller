@@ -1,4 +1,4 @@
-﻿using Controller;
+﻿using Character;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "States/Character/AccelerationMove")]
@@ -13,12 +13,12 @@ public class AccelerationMove : CharacterState {
 
     public override void Update() {
 
-        Vector3 horizontal = HandleHorizontalMovement(characterSm.HorizontalVelocity);
+        Vector3 horizontal = HandleHorizontalMovement(characterStateMachine.HorizontalVelocity);
         setHorizontalVelocity?.Invoke(horizontal);
-        characterController.Move((horizontal + characterSm.VerticalVelocity) * Time.deltaTime);
+        characterController.Move((horizontal + characterStateMachine.VerticalVelocity) * Time.deltaTime);
         
-        if (characterSm.HorizontalVelocity.sqrMagnitude <= float.Epsilon)
-            characterSm.TransitionTo<Idle>();
+        if (characterStateMachine.HorizontalVelocity.sqrMagnitude <= float.Epsilon)
+            characterStateMachine.TransitionTo<Idle>();
     }
 
     private Vector3 HandleHorizontalMovement(Vector3 velocity) {

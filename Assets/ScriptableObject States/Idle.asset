@@ -13,5 +13,7 @@ MonoBehaviour:
   m_Name: Idle
   m_EditorClassIdentifier: 
   stateMachine: {fileID: 0}
-  instanceCopies: []
+  instanceCopies:
+  - {fileID: 0}
+  - {fileID: 0}
   timeToBored: 8

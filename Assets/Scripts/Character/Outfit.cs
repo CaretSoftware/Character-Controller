@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Controller {
+namespace Character {
     [System.Serializable]
     public class Outfit {
         public GameObject[] items;

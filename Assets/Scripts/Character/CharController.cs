@@ -1,7 +1,6 @@
 using UnityEngine;
-using UnityEngine.Serialization;
 
-namespace Controller {
+namespace Character {
     [RequireComponent(typeof(CharacterController))]
     public class CharController : MonoBehaviour {
         private const float UngroundedDelay = 0.05f;

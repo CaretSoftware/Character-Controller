@@ -17,4 +17,4 @@ MonoBehaviour:
   - {fileID: 0}
   characterMaxSpeed: 7
   groundSmoothTime: 0.1
-  rotationSmoothTime: 0.1
+  rotationSmoothTime: 0.293

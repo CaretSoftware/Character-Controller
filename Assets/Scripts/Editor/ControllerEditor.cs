@@ -2,7 +2,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-namespace Controller {
+namespace Character {
         
     [CustomEditor(typeof(CharController))]
     public class ControllerEditor : Editor {

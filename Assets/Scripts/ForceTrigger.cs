@@ -1,5 +1,5 @@
 ﻿using System;
-using Controller;
+using Character;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]

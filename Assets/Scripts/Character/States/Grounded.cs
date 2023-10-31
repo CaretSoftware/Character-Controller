@@ -6,9 +6,11 @@ using UnityEngine;
 
 [CreateAssetMenu(menuName = "States/Character/Grounded")]
 public class Grounded : CharacterState {
-
     public override void Enter() {
         setVerticalVelocity?.Invoke(new Vector3(0f, -9.81f, 0f));
+        Vector3 velocity = characterController.velocity;
+        velocity.y = -1f;
+        characterController.Move(velocity * Time.deltaTime);
         animator.SetBool(IsGrounded, true);
     }
 
@@ -16,21 +18,21 @@ public class Grounded : CharacterState {
         Vector3 velocity = characterController.velocity;
         velocity.y = 0f;
         animator.SetFloat(MoveZ, velocity.magnitude);
-        animator.SetBool(Sliding, characterSm.SlopeSlideVelocity.magnitude > 5f);
+        animator.SetBool(Sliding, characterStateMachine.SlopeSlideVelocity.magnitude > 5f);
 
         if (characterController.velocity.sqrMagnitude <= float.Epsilon)
-            characterSm.TransitionTo<Idle>();
+            characterStateMachine.TransitionTo<Idle>();
 
         if (input.Axis.sqrMagnitude > 0f 
             || Vector3.ProjectOnPlane(characterController.velocity, Vector3.up).sqrMagnitude > .1f
             || GroundSlope() >= characterController.slopeLimit)
-            characterSm.TransitionTo<Move>();
+            characterStateMachine.TransitionTo<Move>();
 
         if (!characterController.isGrounded)
-            characterSm.TransitionTo<Falling>();
+            characterStateMachine.TransitionTo<Falling>();
 
-        if (input.JumpPressed || Time.time <= input.JumpPressedLast + characterSm.JumpBufferDuration)
-            characterSm.TransitionTo<Jump>();
+        if (input.JumpPressed || Time.time <= input.JumpPressedLast + characterStateMachine.JumpBufferDuration)
+            characterStateMachine.TransitionTo<Jump>();
     }
 
     private Ray ray;
