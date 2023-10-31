@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Unity.Collections;
 using UnityEngine;
 
 [SuppressMessage("ReSharper", "RedundantCheckBeforeAssignment")]
@@ -6,33 +7,39 @@ using UnityEngine;
 
 [CreateAssetMenu(menuName = "States/Character/Move")]
 public class Move : Grounded {
-    
+
     [SerializeField] private float characterMaxSpeed = 5f;
     [SerializeField, Range(0f, 1f)] private float groundSmoothTime = .1f;
-    
+    [SerializeField, Range(0f, 1f)] private float rotationSmoothTime = .1f;
     public float CharacterMaxSpeed => characterMaxSpeed;
     private Ray ray;
-    
-    public override void Enter() { }
+
+    public override void Enter() {
+        //animator.SetBool(IsMoving, true);
+    }
 
     private void OnValidate() {
         if (characterSm != null && characterSm.MaxVelocity != characterMaxSpeed)
             setMaxSpeed?.Invoke(characterMaxSpeed);
         
         foreach (CharacterState characterState in instanceCopies) {
+            if (characterState == null) continue;
             Move copy = Cast<Move>(characterState);
             if (copy.characterMaxSpeed != characterMaxSpeed)
                 copy.characterMaxSpeed = characterMaxSpeed;
             if (copy.groundSmoothTime != groundSmoothTime)
                 copy.groundSmoothTime = groundSmoothTime;
+            if (copy.rotationSmoothTime != rotationSmoothTime)
+                copy.rotationSmoothTime = rotationSmoothTime;
         }
     }
 
     public override void Update() {
+        rotateForward?.Invoke(rotationSmoothTime);
         Vector3 horizontalVelocity = SetHorizontalVelocity(characterSm.HorizontalVelocity);
         AdjustVelocityToSlope(ref horizontalVelocity);
         setHorizontalVelocity?.Invoke(horizontalVelocity);
-        characterController.Move((horizontalVelocity + characterSm.VerticalVelocity) * Time.deltaTime);
+        characterController.Move((horizontalVelocity + characterSm.VerticalVelocity + characterSm.SlopeSlideVelocity) * Time.deltaTime);
         base.Update();
     }
 
@@ -44,7 +51,6 @@ public class Move : Grounded {
         float currSmoothY = input.Axis.y != 0 ? 0f : groundSmoothTime;
         smoothInput.x = Mathf.SmoothDamp(smoothInput.x, input.Axis.x, ref xCurrentVelocity, currSmoothX);
         smoothInput.y = Mathf.SmoothDamp(smoothInput.y, input.Axis.y, ref yCurrentVelocity, currSmoothY);
-        
         horizontalVelocity.x = Mathf.Abs(smoothInput.x) > .1f ? smoothInput.x * characterMaxSpeed : 0f;
         horizontalVelocity.z = Mathf.Abs(smoothInput.y) > .1f ? smoothInput.y * characterMaxSpeed : 0f;
         return horizontalVelocity;
@@ -72,5 +78,7 @@ public class Move : Grounded {
 
     public override void FixedUpdate() { }
 
-    public override void Exit() { }
+    public override void Exit() {
+        animator.SetBool(Sliding, false);
+    }
 }

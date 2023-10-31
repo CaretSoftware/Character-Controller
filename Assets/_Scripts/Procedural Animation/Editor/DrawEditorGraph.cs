@@ -8,10 +8,6 @@ public class DrawEditorGraph : Editor {
     public static readonly Color lineColor0 = new Color(.15f, .15f, .15f);
     public static readonly Color lineColor1 = new Color(.3f, .3f, .3f);
 
-    public DrawEditorGraph() {
-        _previousTexture2D = new Texture2D(1, 1);
-    }
-
     public static void DrawGraph(Vector2[] dataPoints, float zero, float one, Color backgroundColor, Color graphColor, Color lineColorZero, Color lineColorOne) {
         int inspectorWidth = (int)EditorGUIUtility.currentViewWidth;
         

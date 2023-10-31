@@ -17,9 +17,12 @@ MonoBehaviour:
   - {fileID: 0}
   jumpBufferDuration: 0.2
   jumpHeight: 5
-  airSmoothTime: 0.1
-  airControlSmoothTime: 0.959
+  airSmoothTime: 1.55
+  airControlSmoothTime: 0.486
   gravity: -20
   fallGravityMultiplier: 3
   minApexVelocityThreshold: -0.46153978
   maxApexVelocityThreshold: 0.004618883
+  rotationSmoothTime: 1
+  graphArray: []
+  one: 0

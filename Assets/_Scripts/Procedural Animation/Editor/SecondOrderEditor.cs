@@ -13,9 +13,10 @@ public class SecondOrderEditor : Editor {
     }
 
     public override void OnInspectorGUI() {
+        ProceduralAnimation component = target as ProceduralAnimation;
+        
         DrawDefaultInspector();
         
-        ProceduralAnimation component = target as ProceduralAnimation;
         Vector2[] dataPoints = component.GetGraph(out float zero, out float one);
 
         DrawEditorGraph.DrawGraph(dataPoints, zero, one, DrawEditorGraph._inspectorGray, 

@@ -19,6 +19,7 @@ public class Idle : Grounded {
 
     public override void Enter() {
         // TODO Set Animation to idle
+        //animator.SetBool(IsMoving, false);
         setHorizontalVelocity?.Invoke(Vector3.zero);
         timeIdling = 0f;
     }
@@ -26,7 +27,7 @@ public class Idle : Grounded {
     public override void Update() {
         timeIdling += Time.deltaTime;
         if (timeIdling >= timeToBored) {
-            Debug.Log("Bored");
+            animator.SetBool(Bored, true);
             timeIdling = 0f;
         }
         base.Update();
@@ -36,5 +37,7 @@ public class Idle : Grounded {
 
     public override void FixedUpdate() { }
 
-    public override void Exit() { }
+    public override void Exit() {
+        animator.SetBool(Bored, false);
+    }
 }

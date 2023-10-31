@@ -1,12 +1,13 @@
 ﻿using System;
 using UnityEngine;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 
 public class StateMachine : MonoBehaviour {
 
     protected State currentState;
     protected State queuedState;
-    protected State lastState;
+    protected List<State> stateHistory = new List<State>();
 
     protected Dictionary<Type, State> _states = new Dictionary<Type, State>();
     [SerializeField] protected List<State> states;
@@ -19,15 +20,21 @@ public class StateMachine : MonoBehaviour {
         }
 
         queuedState = currentState;
-        currentState?.Enter();
+        if (currentState != null)
+            currentState.Enter();
+        
+        stateHistory.Add(currentState);
     }
 
-    private void Update() {
+    protected virtual void Update() {
         if (currentState != queuedState) {
             currentState.Exit();
-            lastState = currentState;
             currentState = queuedState;
             currentState.Enter();
+            
+            if (stateHistory.Count > 7)
+                stateHistory.RemoveAt(0);
+            stateHistory.Add(currentState);
         }
 
         currentState.Update();

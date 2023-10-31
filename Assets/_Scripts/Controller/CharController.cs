@@ -5,9 +5,9 @@ namespace Controller {
     [RequireComponent(typeof(CharacterController))]
     public class CharController : MonoBehaviour {
         private const float UngroundedDelay = 0.05f;
-        private static readonly int MoveZ = Animator.StringToHash("MoveZ");
+        private static readonly int MoveZ = Animator.StringToHash("ForwardVelocity");
         private static readonly int IsJumping = Animator.StringToHash("Jump");
-        private static readonly int IsMoving = Animator.StringToHash("IsMoving");
+        //private static readonly int IsMoving = Animator.StringToHash("IsMoving");
         private static readonly int IsGrounded = Animator.StringToHash("IsGrounded");
 
         [SerializeField] private Animator animator;
@@ -184,9 +184,10 @@ namespace Controller {
         private void SetAnimationsParameters() {
             if (grounded) groundedTime = Time.time + UngroundedDelay;
             if (grounded && input.JumpPressed) animator.SetTrigger(IsJumping);
+            
             animationGrounded = Time.time < groundedTime;
             animator.SetBool(IsGrounded, animationGrounded);
-            animator.SetBool(IsMoving, Mathf.Abs(Vector3.ProjectOnPlane(horizontalVelocity, Vector3.up).magnitude) > 0);
+            //animator.SetBool(IsMoving, Mathf.Abs(Vector3.ProjectOnPlane(horizontalVelocity, Vector3.up).magnitude) > 0);
             animator.SetFloat(MoveZ, horizontalVelocity.magnitude);
         }
         

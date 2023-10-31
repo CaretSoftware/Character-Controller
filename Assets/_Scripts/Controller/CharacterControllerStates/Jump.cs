@@ -6,7 +6,6 @@ using UnityEngine;
 
 [CreateAssetMenu(menuName = "States/Character/Jump")]
 public class Jump : CharacterState {
-    public float JumpBufferDuration => jumpBufferDuration;
     [SerializeField, Range(0f, 1f)] private float jumpBufferDuration = .2f;
     [SerializeField, Range(0f, 10f)] private float jumpHeight = 4;
     [SerializeField, Range(0f, 1f)] private float airSmoothTime = .5f;
@@ -15,18 +14,21 @@ public class Jump : CharacterState {
     [SerializeField, Range(1f, 20f)] private float fallGravityMultiplier = 10f;
     [SerializeField, Range(-2f, 0f)] private float minApexVelocityThreshold = -.62f;
     [SerializeField, Range(0f, 2f)] private float maxApexVelocityThreshold = .2f;
+    [SerializeField, Range(0f, 1f)] private float rotationSmoothTime = .25f;
+    
     private Vector3 verticalVelocity;
     private float gravityMultiplier = 1f;
     private bool jumpReleased;
+    
+    public float JumpBufferDuration => jumpBufferDuration;
 
     private void OnValidate() {
+        graphArray = null; // forces redrawing of graph
         if (characterSm != null && characterSm.JumpBufferDuration != jumpBufferDuration)
             setJumpBufferDuration?.Invoke(jumpBufferDuration);
         
-        Debug.Log(instanceCopies.Count);
-        
-        foreach (CharacterState characterState in instanceCopies) {
-            Jump copy = Cast<Jump>(characterState);
+        foreach (CharacterState characterStateCopy in instanceCopies) {
+            Jump copy = Cast<Jump>(characterStateCopy);
             if (copy == null) continue;
             if (copy.jumpBufferDuration != jumpBufferDuration)
                 copy.jumpBufferDuration = jumpBufferDuration;
@@ -48,6 +50,9 @@ public class Jump : CharacterState {
     }
 
     public override void Enter() {
+        animator.SetTrigger(IsJumping);
+        animator.SetBool(IsGrounded, false);
+
         verticalVelocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         smoothInput.x = (characterSm.HorizontalVelocity.x / characterSm.MaxVelocity) * Mathf.Abs(input.Axis.x);
         smoothInput.y = (characterSm.HorizontalVelocity.z / characterSm.MaxVelocity) * Mathf.Abs(input.Axis.y);
@@ -63,7 +68,8 @@ public class Jump : CharacterState {
         gravityMultiplier = SetJumpApexGravityMultiplier(jumpReleased, input.JumpHold, verticalVelocity);
         verticalVelocity = GetVerticalVelocity(verticalVelocity, gravityMultiplier, Time.deltaTime);
         setVerticalVelocity?.Invoke(verticalVelocity);
-        setHorizontalVelocity?.Invoke(GetHorizontalVelocity(smoothInput, input.Axis, ref xCurrentVelocity, ref yCurrentVelocity, Time.deltaTime));
+        setHorizontalVelocity?.Invoke(GetHorizontalVelocity(ref smoothInput, input.Axis, ref xCurrentVelocity, ref yCurrentVelocity, Time.deltaTime));
+        rotateForward?.Invoke(rotationSmoothTime);
         characterController.Move(Time.deltaTime * (characterSm.VerticalVelocity + characterSm.HorizontalVelocity));
         
         if (verticalVelocity.y < 0f && characterController.isGrounded)
@@ -71,33 +77,12 @@ public class Jump : CharacterState {
     }
 
     private Vector3 GetVerticalVelocity(Vector3 verticalVelocity, float gravityMultiplier, float deltaTime) {
-        
-        //if (_input.JumpPressed)
-        //    jumpBufferTime = Time.time + jumpBuffering;
-        //if (_characterController.isGrounded && characterSm.VerticalVelocity.y < 0f)// && slopeSlideVelocity.magnitude == 0f)
-        //    verticalVelocity = 0f;
-            //_setVerticalVelocity?.Invoke(Vector3.zero);
-            
-        //SetJumpApexGravityScale();
-
         verticalVelocity.y += gravity * gravityMultiplier * deltaTime;
         float terminalVelocity = characterSm != null ? characterSm.TerminalVelocity : -20f;
         verticalVelocity.y = Mathf.Max(-Mathf.Abs(terminalVelocity), verticalVelocity.y);
         return verticalVelocity;
-        /*
-        if (JumpBuffer() || (_input.JumpPressed && CoyoteTime())) {
-            //platform = null;
-            float verticalVelocity = Mathf.Sqrt(jumpHeight * -2f * gravity);
-            _setVerticalVelocity?.Invoke(Vector3.up * verticalVelocity);
-            jumpReleased = false;
-        }
-        */
-
-        //bool JumpBuffer() { return Time.time <= jumpBufferTime; }
-        //bool CoyoteTime() { return Time.time <= coyoteTimeLast && characterVelocity.y < 0f; }
     }
 
-    
     private float SetJumpApexGravityMultiplier(bool jumpReleased, bool jumpHold, Vector3 verticalVelocity) {
         float gravityMultiplier = !jumpReleased && (jumpHold && verticalVelocity.y > minApexVelocityThreshold) 
             ? 1f : fallGravityMultiplier;
@@ -110,34 +95,40 @@ public class Jump : CharacterState {
     private float xCurrentVelocity;
     private float yCurrentVelocity;
     private Vector2 smoothInput;
-    private Vector3 GetHorizontalVelocity(Vector2 smoothInput, Vector2 input, ref float xCurrentVelocity, ref float yCurrentVelocity, float deltaTime) {
+    
+    private Vector3 GetHorizontalVelocity(ref Vector2 smoothInput, Vector2 input, ref float xCurrentVelocity, ref float yCurrentVelocity, float deltaTime) {
         float currSmoothX = input.x == 0 ? airSmoothTime : airControlSmoothTime;
         float currSmoothY = input.y == 0 ? airSmoothTime : airControlSmoothTime;
         float terminalVelocity = characterSm != null ? characterSm.TerminalVelocity : -50f;
         float maxVelocity = characterSm != null ? characterSm.MaxVelocity : 5f;
-        smoothInput.x = Mathf.SmoothDamp(smoothInput.x, input.x, ref xCurrentVelocity, currSmoothX, terminalVelocity, deltaTime);
-        smoothInput.y = Mathf.SmoothDamp(smoothInput.y, input.y, ref yCurrentVelocity, currSmoothY, terminalVelocity, deltaTime);
+        
+        smoothInput.x = Mathf.SmoothDamp(smoothInput.x, input.x, ref xCurrentVelocity, currSmoothX, -terminalVelocity, deltaTime);
+        smoothInput.y = Mathf.SmoothDamp(smoothInput.y, input.y, ref yCurrentVelocity, currSmoothY, -terminalVelocity, deltaTime);
         Vector3 horizontalVelocity;
-        horizontalVelocity.x = Mathf.Abs(smoothInput.x) > .1f ? smoothInput.x * maxVelocity : 0f;
+        horizontalVelocity.x = smoothInput.x * (Mathf.Abs(smoothInput.x) > .1f ? maxVelocity : 0f);
         horizontalVelocity.y = 0f;
-        horizontalVelocity.z = Mathf.Abs(smoothInput.y) > .1f ? smoothInput.y * maxVelocity : 0f;
+        horizontalVelocity.z = smoothInput.y * (Mathf.Abs(smoothInput.y) > .1f ? maxVelocity : 0f);
         return horizontalVelocity;
     }
     
-    public override void LateUpdate() {
-    }
+    public override void LateUpdate() { }
 
-    public override void FixedUpdate() {
-    }
+    public override void FixedUpdate() { }
 
-    public override void Exit() {
-    }
+    public override void Exit() { }
 
+    private const int GraphResolution = 100;
+    [SerializeField, HideInInspector] private Vector2[] graphArray;
+    [SerializeField, HideInInspector] private float one;
     public Vector2[] JumpGraph(out float zero, out float one) {
+        zero = 0f;
+        if (graphArray != null) {
+            one = this.one;
+            return graphArray;
+        }
+        
         ResetSimulation();
-        float resolution = 100f;
         Vector3 pos = Vector3.zero;
-        float min = 0f;
         float height = -1f;
         float length = -1f;
 
@@ -145,9 +136,7 @@ public class Jump : CharacterState {
         float time = 0f;
         int safety = 0;
         do {
-            //for (int i = 0; i < 100; i++) {
             pos += SimulateTimeStep(timeStep) * timeStep;
-            //min = Mathf.Min(min, pos.y);
             height = Mathf.Max(height, pos.y);
             length = Mathf.Max(length, pos.x);
             time += timeStep;
@@ -157,21 +146,17 @@ public class Jump : CharacterState {
         length += 2f;
         ResetSimulation();
         pos = Vector3.zero;
-        timeStep = time / resolution;
+        timeStep = time / GraphResolution;
 
         Vector2[] points = new Vector2[100];
         points[0] = Vector2.zero;
-        int lastValidIndex = 0;
-        for (int i = 1; i < resolution; i++) {
+        for (int i = 1; i < GraphResolution; i++) {
             pos += SimulateTimeStep(timeStep) * timeStep;
             float x = Mathf.InverseLerp(0f, length, pos.x);
             float y = Mathf.InverseLerp(0f, height, pos.y);
             points[i] = new Vector2(Mathf.Lerp(.01f, .99f, x), Mathf.LerpUnclamped(.01f, .99f, y));
         }
-
-        zero = 0f;
         one = Mathf.InverseLerp(0f, height, 1f);
-
         return points;
     }
 
@@ -182,10 +167,10 @@ public class Jump : CharacterState {
     private float simYCurrentVelocity;
     private Vector2 simSmoothInput;
     
-    private Vector3 SimulateTimeStep(float timeStep, bool releaseJumpAtApex = false) {
+    private Vector3 SimulateTimeStep(float timeStep) {
         simGravityMultiplier = SetJumpApexGravityMultiplier(false, true, simVerticalVelocity);
         simVerticalVelocity = GetVerticalVelocity(simVerticalVelocity, simGravityMultiplier, timeStep);
-        simHorizontalVelocity = GetHorizontalVelocity(simSmoothInput, Vector2.right, ref simXCurrentVelocity, ref simYCurrentVelocity, timeStep);
+        simHorizontalVelocity = GetHorizontalVelocity(ref simSmoothInput, Vector2.right, ref simXCurrentVelocity, ref simYCurrentVelocity, timeStep);
         return (simVerticalVelocity + simHorizontalVelocity);
     }
     

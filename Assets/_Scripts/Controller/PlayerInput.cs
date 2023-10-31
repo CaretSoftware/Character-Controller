@@ -13,7 +13,7 @@ namespace Controller {
             }
         }
 
-        public float JumpPressedLast { get; private set; }
+        public float JumpPressedLast { get; private set; } = Mathf.NegativeInfinity;
 
         public bool JumpReleased { get; set; } = true;
         public bool JumpHold { get; set; }
