@@ -1,12 +1,11 @@
 ﻿using UnityEditor;
-using UnityEditor.UIElements;
 using UnityEngine;
-using UnityEngine.UI;
 
 [CustomEditor(typeof(Jump))]
 public class JumpStateEditor : CharacterStateEditor {
     private SerializedProperty jumpBufferTime;
-
+    
+    
     SerializedProperty jumpHeight;
     SerializedProperty airSmoothTime;
     SerializedProperty airControlSmoothTime;
@@ -14,15 +13,16 @@ public class JumpStateEditor : CharacterStateEditor {
     SerializedProperty fallGravityMultiplier;
     SerializedProperty minApexVelocityThreshold;
     SerializedProperty maxApexVelocityThreshold;
-    
+    SerializedProperty rotationSmoothTime;
+
     private GUIContent guiContentJumpHeight;
-    private GUIContent guiContentjumpBufferTime;
-    private GUIContent guiContentairSmoothTime;
-    private GUIContent guiContentairControlSmoothTime;
-    private GUIContent guiContentgravity;
-    private GUIContent guiContentfallGravityMultiplier;
-    
-    //private static GUIStyle labelStyle;// = EditorStyles.label;
+    private GUIContent guiContentJumpBufferTime;
+    private GUIContent guiContentAirSmoothTime;
+    private GUIContent guiContentAirControlSmoothTime;
+    private GUIContent guiContentGravity;
+    private GUIContent guiContentFallGravityMultiplier;
+    private GUIContent guiContentRotationSmoothTime;
+
     protected override void OnEnable() {
         base.OnEnable();
         targetName = target.name;
@@ -34,13 +34,15 @@ public class JumpStateEditor : CharacterStateEditor {
         fallGravityMultiplier = serializedObject.FindProperty("fallGravityMultiplier");
         minApexVelocityThreshold = serializedObject.FindProperty("minApexVelocityThreshold");
         maxApexVelocityThreshold = serializedObject.FindProperty("maxApexVelocityThreshold");
+        rotationSmoothTime = serializedObject.FindProperty("rotationSmoothTime");
         
         guiContentJumpHeight = new GUIContent(jumpHeight.name);
-        guiContentjumpBufferTime = new GUIContent(jumpBufferTime.name);
-        guiContentairSmoothTime = new GUIContent(airSmoothTime.name);
-        guiContentairControlSmoothTime = new GUIContent(airControlSmoothTime.name);
-        guiContentgravity = new GUIContent(gravity.name);
-        guiContentfallGravityMultiplier = new GUIContent(fallGravityMultiplier.name);
+        guiContentJumpBufferTime = new GUIContent(jumpBufferTime.name);
+        guiContentAirSmoothTime = new GUIContent(airSmoothTime.name);
+        guiContentAirControlSmoothTime = new GUIContent(airControlSmoothTime.name);
+        guiContentGravity = new GUIContent(gravity.name);
+        guiContentFallGravityMultiplier = new GUIContent(fallGravityMultiplier.name);
+        guiContentRotationSmoothTime = new GUIContent(rotationSmoothTime.name);
     }
 
     private float angle = 0f;
@@ -57,7 +59,7 @@ if (false ){
         EditorGUILayout.LabelField("Vertical Slider Example");
 
         float sliderHeight = 100f;
-        float sliderWidth = 20f;
+        //float sliderWidth = 20f;
 
         Rect r = EditorGUILayout.GetControlRect(false, sliderHeight);
         // Calculate the position of the slider
@@ -119,16 +121,19 @@ if (false ){
 
     ///////////////
         EditorGUILayout.Slider(jumpHeight, 0f, 10f, new GUIContent (guiContentJumpHeight));
-        EditorGUILayout.Slider(jumpBufferTime, 0f, 1f, new GUIContent (guiContentjumpBufferTime));
-        EditorGUILayout.Slider(airSmoothTime, 0f, 2f, new GUIContent (guiContentairSmoothTime));
-        EditorGUILayout.Slider(airControlSmoothTime, 0f, 1f, new GUIContent (guiContentairControlSmoothTime));
-        EditorGUILayout.Slider(gravity, -20f, 0f, new GUIContent (guiContentgravity));
-        EditorGUILayout.Slider(fallGravityMultiplier, 1f, 20f, new GUIContent (guiContentfallGravityMultiplier));
+        EditorGUILayout.Slider(airSmoothTime, 0f, 2f, new GUIContent (guiContentAirSmoothTime));
+        EditorGUILayout.Slider(airControlSmoothTime, 0f, 1f, new GUIContent (guiContentAirControlSmoothTime));
+        
         float min = minApexVelocityThreshold.floatValue;
         float max = maxApexVelocityThreshold.floatValue;
         EditorGUILayout.MinMaxSlider("Apex Velocity Thresholds", ref min, ref max, -2, 2);
         minApexVelocityThreshold.floatValue = min;
         maxApexVelocityThreshold.floatValue = max;
+        
+        EditorGUILayout.Slider(gravity, -20f, 0f, new GUIContent (guiContentGravity));
+        EditorGUILayout.Slider(fallGravityMultiplier, 1f, 20f, new GUIContent (guiContentFallGravityMultiplier));
+        EditorGUILayout.Slider(jumpBufferTime, 0f, 1f, new GUIContent (guiContentJumpBufferTime));
+        EditorGUILayout.Slider(rotationSmoothTime, 0f, 1f, guiContentRotationSmoothTime);
     }
 
     private Texture2D _previousTexture2D;

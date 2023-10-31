@@ -8,7 +8,7 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "States/Character/Falling")]
 public class Falling : CharacterState {
     [SerializeField] private float coyoteTime = .2f;
-    [SerializeField] private float terminalVelocity = -30f;
+    [SerializeField] private float terminalVelocity = -50f; // TODO Do I need the private variable?
     [field: SerializeField] public float TerminalVelocity { get; private set; }
 
     private float timeFalling;
@@ -29,6 +29,8 @@ public class Falling : CharacterState {
     }
     
     public override void Enter() {
+        animator.SetBool(IsGrounded, false);
+
         timeFalling = 0f;
     }
 

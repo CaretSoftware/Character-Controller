@@ -5,12 +5,19 @@ using UnityEngine;
 
 public class CharacterState : State {
     public List<CharacterState> instanceCopies = new List<CharacterState>();
+    
+    protected static readonly int MoveZ = Animator.StringToHash("ForwardVelocity");
+    protected static readonly int IsJumping = Animator.StringToHash("Jump");
+    protected static readonly int IsGrounded = Animator.StringToHash("IsGrounded");
+    protected static readonly int Bored = Animator.StringToHash("Bored");
+    protected static readonly int Sliding = Animator.StringToHash("Sliding");
 
     protected Action<Vector3> setHorizontalVelocity;
     protected Action<Vector3> setVerticalVelocity;
     protected Action<float> setMaxSpeed;
     protected Action<float> setTerminalVelocity;
     protected Action<float> setJumpBufferDuration;
+    protected Action<float> rotateForward;
     
     protected CharacterSM characterSm;
     protected CharacterController characterController;
@@ -28,7 +35,8 @@ public class CharacterState : State {
             Action<Vector3> setVerticalVelocity,
             Action<float> setMaxSpeed,
             Action<float> setTerminalVelocity,
-            Action<float> setJumpBufferDuration) {
+            Action<float> setJumpBufferDuration,
+            Action<float> rotateForward) {
         
         this.characterSm = characterSm;
         this.characterController = characterController;
@@ -40,6 +48,7 @@ public class CharacterState : State {
         this.setMaxSpeed = setMaxSpeed;
         this.setTerminalVelocity = setTerminalVelocity;
         this.setJumpBufferDuration = setJumpBufferDuration;
+        this.rotateForward = rotateForward;
     }
 
     private void OnDisable() => instanceCopies.Clear();
