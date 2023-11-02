@@ -142,6 +142,7 @@ namespace Character {
 
             if (slopeSlideMagnitude > 5f)                                       // TODO parameter
                 return;
+             
             SlopeSlideVelocity = Vector3.zero;
         }
         
