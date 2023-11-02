@@ -19,14 +19,14 @@ public class Move : Grounded {
     }
 
     private void OnValidate() {
-        if (characterMovement != null && characterMovement.MaxVelocity != characterMaxSpeed)
-            setMaxSpeed?.Invoke(characterMaxSpeed);
-        
         foreach (CharacterState characterState in instanceCopies) {
-            if (characterState == null) continue;
             Move copy = Cast<Move>(characterState);
-            if (copy.characterMaxSpeed != characterMaxSpeed)
+            if (copy == null) continue;
+            
+            if (copy.characterMaxSpeed != characterMaxSpeed) {
                 copy.characterMaxSpeed = characterMaxSpeed;
+                copy.setMaxSpeed?.Invoke(characterMaxSpeed);
+            }
             if (copy.groundSmoothTime != groundSmoothTime)
                 copy.groundSmoothTime = groundSmoothTime;
             if (copy.rotationSmoothTime != rotationSmoothTime)

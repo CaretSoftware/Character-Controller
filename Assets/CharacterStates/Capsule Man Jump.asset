@@ -10,19 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b2c556ad7935446bb4e2619a1c1d3d35, type: 3}
-  m_Name: Adam Jump
+  m_Name: Capsule Man Jump
   m_EditorClassIdentifier: 
   stateMachine: {fileID: 0}
-  instanceCopies:
-  - {fileID: 0}
-  jumpBufferDuration: 0.2
-  jumpHeight: 2
-  airSmoothTime: 0.53
-  airControlSmoothTime: 0.345
+  instanceCopies: []
+  jumpBufferDuration: 0.4
+  jumpHeight: 5
+  airSmoothTime: 1.55
+  airControlSmoothTime: 0.486
   gravity: -20
-  fallGravityMultiplier: 2.6
-  minApexVelocityThreshold: -1.4050926
-  maxApexVelocityThreshold: -0.67126226
-  rotationSmoothTime: 0.329
+  fallGravityMultiplier: 3
+  minApexVelocityThreshold: 0.23503327
+  maxApexVelocityThreshold: 1.0421287
+  rotationSmoothTime: 1
   graphArray: []
   one: 0

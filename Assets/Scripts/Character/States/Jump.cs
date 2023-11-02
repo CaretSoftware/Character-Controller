@@ -24,14 +24,14 @@ public class Jump : CharacterState {
 
     private void OnValidate() {
         graphArray = null; // forces redrawing of graph
-        if (characterMovement != null && characterMovement.JumpBufferDuration != jumpBufferDuration)
-            setJumpBufferDuration?.Invoke(jumpBufferDuration);
-        
         foreach (CharacterState characterStateCopy in instanceCopies) {
             Jump copy = Cast<Jump>(characterStateCopy);
             if (copy == null) continue;
-            if (copy.jumpBufferDuration != jumpBufferDuration)
+            
+            if (copy.jumpBufferDuration != jumpBufferDuration) {
                 copy.jumpBufferDuration = jumpBufferDuration;
+                copy.setJumpBufferDuration?.Invoke(jumpBufferDuration);
+            }
             if (copy.jumpHeight != jumpHeight)
                 copy.jumpHeight = jumpHeight;
             if (copy.airSmoothTime != airSmoothTime)
@@ -65,7 +65,7 @@ public class Jump : CharacterState {
         if (input.JumpReleased)
             jumpReleased = true;
         
-        gravityMultiplier = SetJumpApexGravityMultiplier(jumpReleased, input.JumpHold, verticalVelocity);
+        gravityMultiplier = SetJumpApexGravityMultiplier(input.JumpReleased, input.JumpHold, verticalVelocity);
         verticalVelocity = GetVerticalVelocity(verticalVelocity, gravityMultiplier, Time.deltaTime);
         setVerticalVelocity?.Invoke(verticalVelocity);
         setHorizontalVelocity?.Invoke(GetHorizontalVelocity(ref smoothInput, input.Axis, ref xCurrentVelocity, ref yCurrentVelocity, Time.deltaTime));

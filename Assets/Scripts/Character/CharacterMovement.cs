@@ -2,6 +2,7 @@
 using UnityEngine;
 
 namespace Character {
+    [SelectionBase]
     public class CharacterMovement : StateMachine {
         private CharacterController _characterController;
         private Transform _transform;
@@ -55,8 +56,9 @@ namespace Character {
                 
                 if (instance.GetType() == typeof(Move))
                     SetMaxVelocity(((Move)instance).CharacterMaxSpeed);
+                
             }
-
+            
             queuedState = currentState;
             
             if (currentState != null)
@@ -78,7 +80,9 @@ namespace Character {
             rotateForward -= RotateForward;
         }
 
-        private void SetJumpBufferDuration(float jumpBufferDuration) => JumpBufferDuration = jumpBufferDuration;
+        private void SetJumpBufferDuration(float jumpBufferDuration) {
+            JumpBufferDuration = jumpBufferDuration;
+        }
 
         private void SetVerticalVelocity(Vector3 verticalVelocity) => VerticalVelocity = verticalVelocity;
 

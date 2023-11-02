@@ -8,23 +8,23 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "States/Character/Falling")]
 public class Falling : CharacterState {
     [SerializeField] private float coyoteTime = .2f;
-    [SerializeField] private float terminalVelocity = -50f; // TODO Do I need the private variable?
+    [SerializeField] private float terminalVelocity = -50f; // Serialized variable used in editor script
     [field: SerializeField] public float TerminalVelocity { get; private set; }
 
     private float timeFalling;
     
     private void OnValidate() {
-        if (characterMovement != null && characterMovement.MaxVelocity != terminalVelocity) {
-            TerminalVelocity = terminalVelocity;
-            setTerminalVelocity?.Invoke(terminalVelocity);
-        }
         
         foreach (CharacterState characterState in instanceCopies) {
             Falling copy = Cast<Falling>(characterState);
+            if (copy == null) continue;
+            
+            if (copy.terminalVelocity != terminalVelocity) {
+                copy.terminalVelocity = terminalVelocity;
+                copy.setTerminalVelocity?.Invoke(terminalVelocity);
+            }
             if (copy.coyoteTime != coyoteTime)
                 copy.coyoteTime = coyoteTime;
-            if (copy.terminalVelocity != terminalVelocity)
-                copy.terminalVelocity = terminalVelocity;
         }
     }
     

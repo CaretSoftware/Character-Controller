@@ -4991,6 +4991,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74e852aa2aa446c7a758c022080b7c15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  inputReader: {fileID: 11400000, guid: fe7f5238dc5eb32499d82bf79f1917fd, type: 2}
 --- !u!143 &1208066217
 CharacterController:
   m_ObjectHideFlags: 0
@@ -5466,6 +5467,12 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5265070593993299984, guid: de83e25dfccca03419dfd6681d4d424b,
+        type: 3}
+      propertyPath: inputReader
+      value: 
+      objectReference: {fileID: 11400000, guid: fe7f5238dc5eb32499d82bf79f1917fd,
+        type: 2}
     - target: {fileID: 5265070593993299987, guid: de83e25dfccca03419dfd6681d4d424b,
         type: 3}
       propertyPath: mass
@@ -8415,6 +8422,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74e852aa2aa446c7a758c022080b7c15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  inputReader: {fileID: 11400000, guid: fe7f5238dc5eb32499d82bf79f1917fd, type: 2}
 --- !u!114 &1946190629
 MonoBehaviour:
   m_ObjectHideFlags: 0

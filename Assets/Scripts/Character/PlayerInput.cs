@@ -1,7 +1,7 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Character {
-    [SelectionBase]
     public class PlayerInput : MonoBehaviour, IInput {
         private bool jumpPressed;
         public bool JumpPressed {
@@ -18,27 +18,42 @@ namespace Character {
         public bool JumpReleased { get; set; } = true;
         public bool JumpHold { get; set; }
         public Vector2 Axis { get; set; }
-        private bool locked;
 
         private void Awake() {
-            AchievementManager.onLevelFinishedDelegate += LockControls;
+            inputReader.MoveEvent += HandleMove;
+            inputReader.JumpEvent += HandleJump;
+            inputReader.JumpCancelledEvent += HandleCancelledJump;
         }
 
         private void OnDestroy() {
-            AchievementManager.onLevelFinishedDelegate -= LockControls;
+            inputReader.MoveEvent -= HandleMove;
+            inputReader.JumpEvent -= HandleJump;
+            inputReader.JumpCancelledEvent -= HandleCancelledJump;
         }
 
-        private void LockControls() => locked = true;
+        private void LateUpdate() {
+            if (JumpPressed)
+                JumpPressed = false;
+        }
 
-        private void Update() {
-            if (locked) return;
-            JumpPressed = Input.GetButtonDown("Jump");
-            JumpReleased = Input.GetButtonUp("Jump");
-            JumpHold = Input.GetButton("Jump");
-            Vector2 axis = new Vector2(Input.GetAxisRaw("Horizontal"),Input.GetAxisRaw("Vertical"));
-            if (axis.magnitude > 1f)
-                axis.Normalize();
-            Axis = axis;
+        [SerializeField] private InputReader inputReader;
+
+        private void HandleMove(Vector2 dir) {
+            Axis = dir;
+            if (Axis.magnitude > 1f)
+                Axis.Normalize();
+        }
+
+        private void HandleJump() {
+            JumpPressed = true;
+            JumpHold = true;
+            JumpReleased = false;
+        }
+
+        private void HandleCancelledJump() {
+            JumpPressed = false;
+            JumpHold = false;
+            JumpReleased = true;
         }
     }
 }
