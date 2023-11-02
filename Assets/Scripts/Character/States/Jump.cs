@@ -18,7 +18,6 @@ public class Jump : CharacterState {
     
     private Vector3 verticalVelocity;
     private float gravityMultiplier = 1f;
-    private bool jumpReleased;
     
     public float JumpBufferDuration => jumpBufferDuration;
 
@@ -58,13 +57,9 @@ public class Jump : CharacterState {
         smoothInput.y = (characterMovement.HorizontalVelocity.z / characterMovement.MaxVelocity) * Mathf.Abs(input.Axis.y);
         xCurrentVelocity = smoothInput.x;
         yCurrentVelocity = smoothInput.y;
-        jumpReleased = false;
     }
 
     public override void Update() {
-        if (input.JumpReleased)
-            jumpReleased = true;
-        
         gravityMultiplier = SetJumpApexGravityMultiplier(input.JumpReleased, input.JumpHold, verticalVelocity);
         verticalVelocity = GetVerticalVelocity(verticalVelocity, gravityMultiplier, Time.deltaTime);
         setVerticalVelocity?.Invoke(verticalVelocity);
