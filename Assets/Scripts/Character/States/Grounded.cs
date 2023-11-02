@@ -18,21 +18,21 @@ public class Grounded : CharacterState {
         Vector3 velocity = characterController.velocity;
         velocity.y = 0f;
         animator.SetFloat(MoveZ, velocity.magnitude);
-        animator.SetBool(Sliding, characterStateMachine.SlopeSlideVelocity.magnitude > 5f);
+        animator.SetBool(Sliding, characterMovement.SlopeSlideVelocity.magnitude > 5f);
 
         if (characterController.velocity.sqrMagnitude <= float.Epsilon)
-            characterStateMachine.TransitionTo<Idle>();
+            characterMovement.TransitionTo<Idle>();
 
         if (input.Axis.sqrMagnitude > 0f 
             || Vector3.ProjectOnPlane(characterController.velocity, Vector3.up).sqrMagnitude > .1f
             || GroundSlope() >= characterController.slopeLimit)
-            characterStateMachine.TransitionTo<Move>();
+            characterMovement.TransitionTo<Move>();
 
         if (!characterController.isGrounded)
-            characterStateMachine.TransitionTo<Falling>();
+            characterMovement.TransitionTo<Falling>();
 
-        if (input.JumpPressed || Time.time <= input.JumpPressedLast + characterStateMachine.JumpBufferDuration)
-            characterStateMachine.TransitionTo<Jump>();
+        if (input.JumpPressed || Time.time <= input.JumpPressedLast + characterMovement.JumpBufferDuration)
+            characterMovement.TransitionTo<Jump>();
     }
 
     private Ray ray;

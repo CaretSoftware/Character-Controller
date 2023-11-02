@@ -19,7 +19,7 @@ public class Move : Grounded {
     }
 
     private void OnValidate() {
-        if (characterStateMachine != null && characterStateMachine.MaxVelocity != characterMaxSpeed)
+        if (characterMovement != null && characterMovement.MaxVelocity != characterMaxSpeed)
             setMaxSpeed?.Invoke(characterMaxSpeed);
         
         foreach (CharacterState characterState in instanceCopies) {
@@ -36,10 +36,10 @@ public class Move : Grounded {
 
     public override void Update() {
         rotateForward?.Invoke(rotationSmoothTime);
-        Vector3 horizontalVelocity = SetHorizontalVelocity(characterStateMachine.HorizontalVelocity);
+        Vector3 horizontalVelocity = SetHorizontalVelocity(characterMovement.HorizontalVelocity);
         AdjustVelocityToSlope(ref horizontalVelocity);
         setHorizontalVelocity?.Invoke(horizontalVelocity);
-        characterController.Move((horizontalVelocity + characterStateMachine.VerticalVelocity + characterStateMachine.SlopeSlideVelocity) * Time.deltaTime);
+        characterController.Move((horizontalVelocity + characterMovement.VerticalVelocity + characterMovement.SlopeSlideVelocity) * Time.deltaTime);
         base.Update();
     }
 

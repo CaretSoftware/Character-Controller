@@ -3,9 +3,9 @@ using UnityEditorInternal;
 using UnityEngine;
 
 namespace Character {
-    [CustomEditor(typeof(CharacterStateMachine))]
+    [CustomEditor(typeof(CharacterMovement))]
     public class CharacterStateMachineEditor : Editor {
-        private CharacterStateMachine characterStateMachineController;
+        private CharacterMovement characterMovementController;
         private SerializedProperty statesListProperty;
         private ReorderableList reorderableList;
 

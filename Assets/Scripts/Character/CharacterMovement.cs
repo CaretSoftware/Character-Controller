@@ -2,7 +2,7 @@
 using UnityEngine;
 
 namespace Character {
-    public class CharacterStateMachine : StateMachine {
+    public class CharacterMovement : StateMachine {
         private CharacterController _characterController;
         private Transform _transform;
         private Animator _animator;
@@ -146,7 +146,7 @@ namespace Character {
         }
         
     #if UNITY_EDITOR
-        private static CharacterStateMachine _characterStateMachine;
+        private static CharacterMovement _characterMovement;
         private readonly int textWidth = 200;
         private readonly int padding = 24;
 
@@ -161,8 +161,8 @@ namespace Character {
             };
 
         private void OnGUI() {
-            _characterStateMachine ??= this;
-            if (_characterStateMachine != this) return;
+            _characterMovement ??= this;
+            if (_characterMovement != this) return;
             Rect rect = new Rect {
                 xMin = Screen.width - textWidth - padding, 
                 yMin = padding, 

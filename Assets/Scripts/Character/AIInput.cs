@@ -156,7 +156,7 @@ namespace Character {
             float agentYPos = agent.nextPosition.y;
             Vector3 agentPosition = transformPosition + direction.normalized  
                 * Mathf.Min(agentMaxDistance, direction.magnitude);                 // Limit navMesh Agent distance
-            agentPosition.y = agentYPos;                                                    // Keep agent on floor
+            agentPosition.y = agentYPos;                                                // Keep agent on floor
             agent.nextPosition = agentPosition;
         
             // Stop? / Move?

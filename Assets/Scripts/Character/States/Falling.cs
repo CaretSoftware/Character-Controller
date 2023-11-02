@@ -14,7 +14,7 @@ public class Falling : CharacterState {
     private float timeFalling;
     
     private void OnValidate() {
-        if (characterStateMachine != null && characterStateMachine.MaxVelocity != terminalVelocity) {
+        if (characterMovement != null && characterMovement.MaxVelocity != terminalVelocity) {
             TerminalVelocity = terminalVelocity;
             setTerminalVelocity?.Invoke(terminalVelocity);
         }
@@ -38,21 +38,21 @@ public class Falling : CharacterState {
         timeFalling += Time.deltaTime;
         // TODO set Vertical Velocity in characterSM
         // TODO limit falling speed by terminal velocity
-        Vector3 verticalVelocity = characterStateMachine.VerticalVelocity;
+        Vector3 verticalVelocity = characterMovement.VerticalVelocity;
         verticalVelocity.y += Time.deltaTime * -9.81f;
         verticalVelocity.y = Mathf.Max(-Mathf.Abs(terminalVelocity), verticalVelocity.y);
         
         setVerticalVelocity?.Invoke(verticalVelocity);
         //setHorizontalVelocity?.Invoke(verticalVelocity);
-        characterController.Move(Time.deltaTime * (characterStateMachine.VerticalVelocity + characterStateMachine.HorizontalVelocity));
+        characterController.Move(Time.deltaTime * (characterMovement.VerticalVelocity + characterMovement.HorizontalVelocity));
 
         if (coyoteTime < timeFalling && input.JumpPressed) {
             Debug.Log("Coyote Time");
-            characterStateMachine.TransitionTo<Jump>();
+            characterMovement.TransitionTo<Jump>();
         }
         
         if (characterController.isGrounded)
-            characterStateMachine.TransitionTo<Grounded>();
+            characterMovement.TransitionTo<Grounded>();
     }
 
     public override void LateUpdate() {
