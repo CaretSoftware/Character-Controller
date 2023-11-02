@@ -15,6 +15,7 @@ MonoBehaviour:
   stateMachine: {fileID: 0}
   instanceCopies:
   - {fileID: 0}
+  - {fileID: 0}
   characterMaxSpeed: 7
   groundSmoothTime: 0.1
-  rotationSmoothTime: 0.293
+  rotationSmoothTime: 0.056

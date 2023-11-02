@@ -33,7 +33,6 @@ namespace Character {
             
             _characterController = GetComponent<CharacterController>();
             _characterController.Move(Vector3.down); // Moving sets IsGrounded variable
-            Debug.Log(_characterController.isGrounded);
             _transform = transform;
             _animator = GetComponent<Animator>();
             input = GetComponent<IInput>();
