@@ -3,9 +3,9 @@ using UnityEditorInternal;
 using UnityEngine;
 
 namespace Character {
-    [CustomEditor(typeof(CharacterMovement))]
+    [CustomEditor(typeof(MovementStateMachine))]
     public class CharacterStateMachineEditor : Editor {
-        private CharacterMovement characterMovementController;
+        private MovementStateMachine movementStateMachineController;
         private SerializedProperty statesListProperty;
         private ReorderableList reorderableList;
 
@@ -52,6 +52,8 @@ namespace Character {
 
             serializedObject.ApplyModifiedProperties();
 
+            DrawDefaultInspector(); // TODO
+            
             //OutFitSelection();
         }
 

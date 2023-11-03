@@ -1,9 +1,10 @@
 ﻿using System;
+using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 
 namespace Character {
     [SelectionBase]
-    public class CharacterMovement : StateMachine {
+    public class MovementStateMachine : StateMachine {
         private CharacterController _characterController;
         private Transform _transform;
         private Animator _animator;
@@ -68,7 +69,6 @@ namespace Character {
         }
 
         protected override void Update() {
-            SetSlopeSlideVelocity();
             base.Update();
         }
 
@@ -109,49 +109,9 @@ namespace Character {
                 _transform.eulerAngles = smoothRotation;
             }
         }
-        
-        private RaycastHit sphereHitInfo;
-        private RaycastHit rayHitInfo;
-        private float slopeSlideMagnitude;
-        private float rayAngle;
-        private float angle;
-        private Ray ray;
-        private void SetSlopeSlideVelocity() {
-            SlopeSlideVelocity -= SlopeSlideVelocity * (Time.deltaTime * 3f);   // TODO Smooth damp
-            float radius = _characterController.radius;
-            Vector3 position = _transform.position;
-            
-            ray.origin = position + 1.01f * radius * Vector3.up;
-            ray.direction = Vector3.down;
 
-            Debug.DrawRay(position + Vector3.up, Vector3.down * 1.75f, Color.green);
-                
-            if (Physics.SphereCast(ray, _characterController.radius, out sphereHitInfo, 1.02f * radius)) {
-                rayAngle = float.MaxValue;
-                if (Physics.Raycast(ray, out rayHitInfo, 1.75f)) {
-                    rayAngle = Vector3.Angle(rayHitInfo.normal, Vector3.up);
-                }
-                angle = Mathf.Min(Vector3.Angle(sphereHitInfo.normal, Vector3.up), rayAngle);
-                    
-                if (angle >= _characterController.slopeLimit) {
-                    SlopeSlideVelocity =
-                        Vector3.ProjectOnPlane(new Vector3(0f, -Mathf.Abs(VerticalVelocity.y), 0f), sphereHitInfo.normal);
-                    return;
-                }
-            }
-
-            slopeSlideMagnitude = Vector3.ProjectOnPlane(SlopeSlideVelocity, Vector3.up).magnitude;
-            if (slopeSlideMagnitude == 0f)
-                return;
-
-            if (slopeSlideMagnitude > 5f)                                       // TODO parameter
-                return;
-             
-            SlopeSlideVelocity = Vector3.zero;
-        }
-        
-    #if UNITY_EDITOR
-        private static CharacterMovement _characterMovement;
+#if UNITY_EDITOR
+        private static MovementStateMachine _movementStateMachine;
         private readonly int textWidth = 200;
         private readonly int padding = 24;
 
@@ -166,8 +126,8 @@ namespace Character {
             };
 
         private void OnGUI() {
-            _characterMovement ??= this;
-            if (_characterMovement != this) return;
+            _movementStateMachine ??= this;
+            if (_movementStateMachine != this) return;
             Rect rect = new Rect {
                 xMin = Screen.width - textWidth - padding, 
                 yMin = padding, 
@@ -188,6 +148,6 @@ namespace Character {
             
             UnityEditor.Handles.EndGUI();
         }
-    #endif
+#endif
     }
 }

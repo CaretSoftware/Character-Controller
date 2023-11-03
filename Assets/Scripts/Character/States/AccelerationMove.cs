@@ -13,12 +13,12 @@ public class AccelerationMove : CharacterState {
 
     public override void Update() {
 
-        Vector3 horizontal = HandleHorizontalMovement(characterMovement.HorizontalVelocity);
+        Vector3 horizontal = HandleHorizontalMovement(movementStateMachine.HorizontalVelocity);
         setHorizontalVelocity?.Invoke(horizontal);
-        characterController.Move((horizontal + characterMovement.VerticalVelocity) * Time.deltaTime);
+        characterController.Move((horizontal + movementStateMachine.VerticalVelocity) * Time.deltaTime);
         
-        if (characterMovement.HorizontalVelocity.sqrMagnitude <= float.Epsilon)
-            characterMovement.TransitionTo<Idle>();
+        if (movementStateMachine.HorizontalVelocity.sqrMagnitude <= float.Epsilon)
+            movementStateMachine.TransitionTo<Idle>();
     }
 
     private Vector3 HandleHorizontalMovement(Vector3 velocity) {

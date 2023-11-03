@@ -3,6 +3,8 @@ using UnityEngine;
 
 namespace Character {
     public class PlayerInput : MonoBehaviour, IInput {
+        [SerializeField] private InputReader inputReader;
+        
         private bool jumpPressed;
         public bool JumpPressed {
             get => jumpPressed;
@@ -14,7 +16,6 @@ namespace Character {
         }
 
         public float JumpPressedLast { get; private set; } = Mathf.NegativeInfinity;
-
         public bool JumpReleased { get; set; } = true;
         public bool JumpHold { get; set; }
         public Vector2 Axis { get; set; }
@@ -35,8 +36,6 @@ namespace Character {
             if (JumpPressed)
                 JumpPressed = false;
         }
-
-        [SerializeField] private InputReader inputReader;
 
         private void HandleMove(Vector2 dir) {
             Axis = dir;
