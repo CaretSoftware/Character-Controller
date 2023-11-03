@@ -13,11 +13,8 @@ MonoBehaviour:
   m_Name: Slide
   m_EditorClassIdentifier: 
   stateMachine: {fileID: 0}
-  instanceCopies: []
-  characterMaxSpeed: 5
+  instanceCopies:
+  - {fileID: 0}
   groundSmoothTime: 0.291
-  rotationSmoothTime: 0.1
+  rotationSmoothTime: 0.2
   slipSpeed: 5
-  stair: 0
-  slope: 0
-  slipVelocity: {x: 0, y: 0, z: 0}
