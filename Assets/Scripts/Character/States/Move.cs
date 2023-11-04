@@ -15,7 +15,9 @@ public class Move : Grounded {
     private Ray ray;
 
     public override void Enter() {
-        //animator.SetBool(IsMoving, true);
+        xCurrentVelocity = 0f;
+        yCurrentVelocity = 0f;
+        smoothInput = Vector2.zero;
     }
 
     private void OnValidate() {
@@ -36,10 +38,10 @@ public class Move : Grounded {
 
     public override void Update() {
         rotateForward?.Invoke(rotationSmoothTime);
-        Vector3 horizontalVelocity = SetHorizontalVelocity(characterMovement.HorizontalVelocity);
+        Vector3 horizontalVelocity = SetHorizontalVelocity(movementStateMachine.HorizontalVelocity);
         AdjustVelocityToSlope(ref horizontalVelocity);
         setHorizontalVelocity?.Invoke(horizontalVelocity);
-        characterController.Move((horizontalVelocity + characterMovement.VerticalVelocity + characterMovement.SlopeSlideVelocity) * Time.deltaTime);
+        characterController.Move((horizontalVelocity + movementStateMachine.VerticalVelocity) * Time.deltaTime);
         base.Update();
     }
 
@@ -54,24 +56,6 @@ public class Move : Grounded {
         horizontalVelocity.x = Mathf.Abs(smoothInput.x) > .1f ? smoothInput.x * characterMaxSpeed : 0f;
         horizontalVelocity.z = Mathf.Abs(smoothInput.y) > .1f ? smoothInput.y * characterMaxSpeed : 0f;
         return horizontalVelocity;
-    }
-    
-    private Vector3 horizontal;
-    private RaycastHit slopeHitInfo;
-    private Quaternion slopeRotation;
-    private void AdjustVelocityToSlope(ref Vector3 velocity) {
-        horizontal = velocity;
-        horizontal.y = 0f;
-        ray.origin = myTransform.position + characterController.radius * Vector3.up;
-        ray.direction = Vector3.down;
-
-        float maxDistance = (characterController.radius + characterController.skinWidth) / Mathf.Cos(characterController.slopeLimit * Mathf.Deg2Rad);
-        
-        if (Physics.Raycast(ray, out slopeHitInfo, maxDistance)){
-            slopeRotation = Quaternion.FromToRotation(Vector3.up, slopeHitInfo.normal);
-            velocity = slopeRotation * horizontal;
-        }
-        Debug.DrawRay(myTransform.position + Vector3.up * characterController.radius, Vector3.down * maxDistance);
     }
 
     public override void LateUpdate() { }

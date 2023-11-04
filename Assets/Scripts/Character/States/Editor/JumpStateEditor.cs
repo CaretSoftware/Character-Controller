@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using System;
+using UnityEditor;
 using UnityEngine;
 
 [CustomEditor(typeof(Jump))]
@@ -45,81 +46,12 @@ public class JumpStateEditor : CharacterStateEditor {
         guiContentRotationSmoothTime = new GUIContent(rotationSmoothTime.name);
     }
 
-    private float angle = 0f;
-    private static float verticalSliderValue = -90f;
-
     protected override void DisplayFields(bool selected) {
 
         base.DisplayFields(selected);
-        ///////////////
-
-if (false ){
-    //// Vertical slider
-
-        EditorGUILayout.LabelField("Vertical Slider Example");
-
-        float sliderHeight = 100f;
-        //float sliderWidth = 20f;
-
-        Rect r = EditorGUILayout.GetControlRect(false, sliderHeight);
-        // Calculate the position of the slider
-
-        // Draw the slider
-        verticalSliderValue = GUI.VerticalSlider(r, verticalSliderValue, -90.0f, 90.0f);
-
-        //EditorGUILayout.LabelField("Value: " + verticalSliderValue.ToString("F1"));
-
-
-
-
-        //// Slanted Text
-
-        angle = verticalSliderValue;
-
-        GUIContent[] labelContents = new[] {
-            new GUIContent("Slanted Text"),
-            new GUIContent("Slanted Text l"),
-            new GUIContent("Slanted Text long"),
-            new GUIContent("Slanted Text longest"),
-        };
-
-        Vector2 labelSize = Vector2.zero;
-        for (int i = 0; i < labelContents.Length; i++) {
-            Vector2 currLabelSize = EditorStyles.label.CalcSize(labelContents[i]);
-            labelSize = currLabelSize.x > labelSize.x ? currLabelSize : labelSize;
-        }
-
-        Rect textRect = EditorGUILayout.GetControlRect(false, labelSize.x);
-        Rect off = textRect;
-
-        EditorGUILayout.BeginVertical();
-
-        // Apply the rotation to the GUI
-        float padding = 10;
-        float startX = off.x;
-        off.x -= labelSize.x;
-        off.y -= labelSize.x / 2 - 3;
-        GUIUtility.RotateAroundPivot(angle, new Vector2(textRect.x, textRect.y));
-
-        for (int i = 0; i < labelContents.Length; i++) {
-            // Draw the slanted text using GUI
-            labelSize = EditorStyles.label.CalcSize(labelContents[i]);
-            off.x = startX - labelSize.x - padding; // Height
-            GUI.Label(off, labelContents[i]);
-            off.y += labelSize.y * 1.5f; // Width
-        }
-
-        // Reset the GUI matrix to avoid affecting other GUI elements
-        GUIUtility.RotateAroundPivot(-angle, new Vector2(textRect.x, textRect.y));
-
-        // Use EditorGUI.EndVertical to reset the pivot
-        EditorGUILayout.EndVertical();
-
-}
-
+        
         DrawJumpDiagram();
-
-    ///////////////
+        
         EditorGUILayout.Slider(jumpHeight, 0f, 10f, new GUIContent (guiContentJumpHeight));
         EditorGUILayout.Slider(airSmoothTime, 0f, 2f, new GUIContent (guiContentAirSmoothTime));
         EditorGUILayout.Slider(airControlSmoothTime, 0f, 1f, new GUIContent (guiContentAirControlSmoothTime));
@@ -188,27 +120,32 @@ if (false ){
         // Display the graph in the inspector
         GUILayout.Label(graphTexture);
     }
-    
-    private static void DrawCapsule(Texture2D texture, float one) {
-        float unitPixels = texture.height * one;
 
-        // Define capsule parameters
+    private static Color _capsuleColor = new Color(177f/255f, 252f/255f, 89f/255f);
+    private static void DrawCapsule(Texture2D texture, float one) {
+        // Capsule parameters
+        float unitPixels = texture.height * one;
+        const float lineWidthPercentage = .8f; 
+        const int lineWidthMinimum = 5; 
         int capsuleWidth = (int)(unitPixels + 1); // Width of the capsule
         int capsuleHeight = (int)(unitPixels * 2f); // Height of the capsule
         int centerX = capsuleWidth / 2  + 1;
         int centerY = (int)(unitPixels * 1.5f);
         int radius = capsuleWidth / 2;
-
+        int innerRadius = Math.Max((int)(radius * lineWidthPercentage), radius - lineWidthMinimum);
+        int lineWidth = radius - innerRadius;
+        
         // Draw the capsule
         for (int x = 2; x < capsuleWidth; x++) {
             for (int y = 0; y < capsuleHeight && y < texture.height; y++) {
-                // Calculate the distance from the center of the capsule
+                // Calculate the minimum distance from the centers of the circles
                 float distance = Mathf.Sqrt(Mathf.Pow(x - centerX, 2) + Mathf.Pow(y - centerY, 2));
                 float distance2 = Mathf.Sqrt(Mathf.Pow(x - centerX, 2) + Mathf.Pow(y - radius, 2));
                 float min = Mathf.Min(distance, distance2);
 
-                if (min <= radius || (y > radius && y < centerY)) {
-                    texture.SetPixel(x, y, Color.cyan);
+                if (min <= radius && min >= innerRadius && (y < radius || y >= centerY)                         // end-caps
+                    || ((x < lineWidth + 2 || x + lineWidth > radius * 2) && (y >= radius && y < centerY))) {   // sides
+                    texture.SetPixel(x, y, _capsuleColor);
                 }
             }
         }

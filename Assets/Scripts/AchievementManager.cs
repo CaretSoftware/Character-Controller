@@ -13,7 +13,6 @@ using UnityEngine;
 // Paws - Pause the game
 // Don't forget your Duolingo! - Play the game at 23:55
 // Track-star - Finish the level under 30 seconds
-// TODO You've got a point - Get a high score
 
 public class AchievementManager : MonoBehaviour {
     private const int AchievementNoCatCount = 0;

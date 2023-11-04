@@ -8,7 +8,7 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "States/Character/Falling")]
 public class Falling : CharacterState {
     [SerializeField] private float coyoteTime = .2f;
-    [SerializeField] private float terminalVelocity = -50f; // Serialized variable used in editor script
+    [SerializeField] private float terminalVelocity = -50f;
     [field: SerializeField] public float TerminalVelocity { get; private set; }
 
     private float timeFalling;
@@ -30,29 +30,23 @@ public class Falling : CharacterState {
     
     public override void Enter() {
         animator.SetBool(IsGrounded, false);
-
         timeFalling = 0f;
     }
 
     public override void Update() {
         timeFalling += Time.deltaTime;
-        // TODO set Vertical Velocity in characterSM
-        // TODO limit falling speed by terminal velocity
-        Vector3 verticalVelocity = characterMovement.VerticalVelocity;
+        Vector3 verticalVelocity = movementStateMachine.VerticalVelocity;
         verticalVelocity.y += Time.deltaTime * -9.81f;
         verticalVelocity.y = Mathf.Max(-Mathf.Abs(terminalVelocity), verticalVelocity.y);
-        
         setVerticalVelocity?.Invoke(verticalVelocity);
-        //setHorizontalVelocity?.Invoke(verticalVelocity);
-        characterController.Move(Time.deltaTime * (characterMovement.VerticalVelocity + characterMovement.HorizontalVelocity));
+        
+        characterController.Move(Time.deltaTime * (movementStateMachine.VerticalVelocity + movementStateMachine.HorizontalVelocity));
 
-        if (coyoteTime < timeFalling && input.JumpPressed) {
-            Debug.Log("Coyote Time");
-            characterMovement.TransitionTo<Jump>();
-        }
+        if (timeFalling < coyoteTime && input.JumpPressed)
+            movementStateMachine.TransitionTo<Jump>();
         
         if (characterController.isGrounded)
-            characterMovement.TransitionTo<Grounded>();
+            movementStateMachine.TransitionTo<Grounded>();
     }
 
     public override void LateUpdate() {

@@ -52,11 +52,34 @@ public class Jump : CharacterState {
         animator.SetTrigger(IsJumping);
         animator.SetBool(IsGrounded, false);
 
+        Vector3 slopeNormal = SlopeNormal();
+        Quaternion slopeRotation = Quaternion.identity;
+        if (Vector3.Angle(slopeNormal, Vector3.up) > characterController.slopeLimit)
+            slopeRotation = Quaternion.FromToRotation(Vector3.up, Vector3.Lerp(Vector3.up, slopeNormal, .5f));
         verticalVelocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
-        smoothInput.x = (characterMovement.HorizontalVelocity.x / characterMovement.MaxVelocity) * Mathf.Abs(input.Axis.x);
-        smoothInput.y = (characterMovement.HorizontalVelocity.z / characterMovement.MaxVelocity) * Mathf.Abs(input.Axis.y);
+        Vector3 horizontalVelocity = slopeRotation * (movementStateMachine.HorizontalVelocity + verticalVelocity);
+        float percent = Vector3.Dot(slopeNormal, Vector3.up);
+        verticalVelocity.y *= percent;
+        
+        smoothInput.x = (horizontalVelocity.x / movementStateMachine.MaxVelocity);// * Mathf.Abs(input.Axis.x));
+        smoothInput.y = (horizontalVelocity.z / movementStateMachine.MaxVelocity);// * Mathf.Abs(input.Axis.y));
         xCurrentVelocity = smoothInput.x;
         yCurrentVelocity = smoothInput.y;
+    }
+
+    private Ray ray;
+    private RaycastHit sphereHitInfo;
+    private Vector3 SlopeNormal() {
+        float radius = characterController.radius * myTransform.localScale.x;
+        Vector3 position = myTransform.position;
+
+        ray.origin = position + 1.01f * radius * Vector3.up;
+        ray.direction = Vector3.down;
+
+        // Spherecast Slope angle
+        if (Physics.SphereCast(ray, radius, out sphereHitInfo, 2.1f * radius))
+            return sphereHitInfo.normal;
+        return Vector3.up;
     }
 
     public override void Update() {
@@ -65,15 +88,15 @@ public class Jump : CharacterState {
         setVerticalVelocity?.Invoke(verticalVelocity);
         setHorizontalVelocity?.Invoke(GetHorizontalVelocity(ref smoothInput, input.Axis, ref xCurrentVelocity, ref yCurrentVelocity, Time.deltaTime));
         rotateForward?.Invoke(rotationSmoothTime);
-        characterController.Move(Time.deltaTime * (characterMovement.VerticalVelocity + characterMovement.HorizontalVelocity));
+        characterController.Move(Time.deltaTime * (movementStateMachine.VerticalVelocity + movementStateMachine.HorizontalVelocity));
         
         if (verticalVelocity.y < 0f && characterController.isGrounded)
-            characterMovement.TransitionTo<Grounded>();
+            movementStateMachine.TransitionTo<Grounded>();
     }
 
     private Vector3 GetVerticalVelocity(Vector3 verticalVelocity, float gravityMultiplier, float deltaTime) {
         verticalVelocity.y += gravity * gravityMultiplier * deltaTime;
-        float terminalVelocity = characterMovement != null ? characterMovement.TerminalVelocity : -20f;
+        float terminalVelocity = movementStateMachine != null ? movementStateMachine.TerminalVelocity : -20f;
         verticalVelocity.y = Mathf.Max(-Mathf.Abs(terminalVelocity), verticalVelocity.y);
         return verticalVelocity;
     }
@@ -94,8 +117,8 @@ public class Jump : CharacterState {
     private Vector3 GetHorizontalVelocity(ref Vector2 smoothInput, Vector2 input, ref float xCurrentVelocity, ref float yCurrentVelocity, float deltaTime) {
         float currSmoothX = input.x == 0 ? airSmoothTime : airControlSmoothTime;
         float currSmoothY = input.y == 0 ? airSmoothTime : airControlSmoothTime;
-        float terminalVelocity = characterMovement != null ? characterMovement.TerminalVelocity : -50f;
-        float maxVelocity = characterMovement != null ? characterMovement.MaxVelocity : 5f;
+        float terminalVelocity = movementStateMachine != null ? movementStateMachine.TerminalVelocity : -50f;
+        float maxVelocity = movementStateMachine != null ? movementStateMachine.MaxVelocity : 5f;
         
         smoothInput.x = Mathf.SmoothDamp(smoothInput.x, input.x, ref xCurrentVelocity, currSmoothX, -terminalVelocity, deltaTime);
         smoothInput.y = Mathf.SmoothDamp(smoothInput.y, input.y, ref yCurrentVelocity, currSmoothY, -terminalVelocity, deltaTime);
@@ -112,6 +135,7 @@ public class Jump : CharacterState {
 
     public override void Exit() { }
 
+#if UNITY_EDITOR
     private const int GraphResolution = 100;
     [SerializeField, HideInInspector] private Vector2[] graphArray;
     [SerializeField, HideInInspector] private float one;
@@ -179,4 +203,5 @@ public class Jump : CharacterState {
         simVerticalVelocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         simXCurrentVelocity = 0f;
     }
+#endif
 }

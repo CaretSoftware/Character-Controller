@@ -19,14 +19,14 @@ public class CharacterState : State {
     protected Action<float> setJumpBufferDuration;
     protected Action<float> rotateForward;
     
-    protected CharacterMovement characterMovement;
+    protected MovementStateMachine movementStateMachine;
     protected CharacterController characterController;
     protected Transform myTransform;
     protected Animator animator;
     protected IInput input;
 
     public void Init(
-            CharacterMovement characterMovement, 
+            MovementStateMachine movementStateMachine, 
             CharacterController characterController,
             Transform characterTransform,
             Animator animator,
@@ -38,7 +38,7 @@ public class CharacterState : State {
             Action<float> setJumpBufferDuration,
             Action<float> rotateForward) {
         
-        this.characterMovement = characterMovement;
+        this.movementStateMachine = movementStateMachine;
         this.characterController = characterController;
         this.myTransform = characterTransform;
         this.animator = animator;

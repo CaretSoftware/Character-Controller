@@ -9,11 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e747cbdca0e54c8b9bfb76abccb71709, type: 3}
-  m_Name: Falling
+  m_Script: {fileID: 11500000, guid: 18fc806243d74a1b8593b60c4a0c0d4f, type: 3}
+  m_Name: Slide
   m_EditorClassIdentifier: 
   stateMachine: {fileID: 0}
-  instanceCopies: []
-  coyoteTime: 0.15
-  terminalVelocity: -50
-  <TerminalVelocity>k__BackingField: -50
+  instanceCopies:
+  - {fileID: 0}
+  slipSpeed: 10
+  minSlideVelocity: 5.8
+  inputSmoothTime: 0.1
+  rotationSmoothTime: 0.2
