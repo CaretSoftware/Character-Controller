@@ -52,8 +52,6 @@ namespace Character {
 
             serializedObject.ApplyModifiedProperties();
 
-            DrawDefaultInspector(); // TODO
-            
             //OutFitSelection();
         }
 
