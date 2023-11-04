@@ -52,11 +52,34 @@ public class Jump : CharacterState {
         animator.SetTrigger(IsJumping);
         animator.SetBool(IsGrounded, false);
 
+        Vector3 slopeNormal = SlopeNormal();
+        Quaternion slopeRotation = Quaternion.identity;
+        if (Vector3.Angle(slopeNormal, Vector3.up) > characterController.slopeLimit)
+            slopeRotation = Quaternion.FromToRotation(Vector3.up, Vector3.Lerp(Vector3.up, slopeNormal, .5f));
         verticalVelocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
-        smoothInput.x = (movementStateMachine.HorizontalVelocity.x / movementStateMachine.MaxVelocity) * Mathf.Abs(input.Axis.x);
-        smoothInput.y = (movementStateMachine.HorizontalVelocity.z / movementStateMachine.MaxVelocity) * Mathf.Abs(input.Axis.y);
+        Vector3 horizontalVelocity = slopeRotation * (movementStateMachine.HorizontalVelocity + verticalVelocity);
+        float percent = Vector3.Dot(slopeNormal, Vector3.up);
+        verticalVelocity.y *= percent;
+        
+        smoothInput.x = (horizontalVelocity.x / movementStateMachine.MaxVelocity);// * Mathf.Abs(input.Axis.x));
+        smoothInput.y = (horizontalVelocity.z / movementStateMachine.MaxVelocity);// * Mathf.Abs(input.Axis.y));
         xCurrentVelocity = smoothInput.x;
         yCurrentVelocity = smoothInput.y;
+    }
+
+    private Ray ray;
+    private RaycastHit sphereHitInfo;
+    private Vector3 SlopeNormal() {
+        float radius = characterController.radius * myTransform.localScale.x;
+        Vector3 position = myTransform.position;
+
+        ray.origin = position + 1.01f * radius * Vector3.up;
+        ray.direction = Vector3.down;
+
+        // Spherecast Slope angle
+        if (Physics.SphereCast(ray, radius, out sphereHitInfo, 2.1f * radius))
+            return sphereHitInfo.normal;
+        return Vector3.up;
     }
 
     public override void Update() {
@@ -112,6 +135,7 @@ public class Jump : CharacterState {
 
     public override void Exit() { }
 
+#if UNITY_EDITOR
     private const int GraphResolution = 100;
     [SerializeField, HideInInspector] private Vector2[] graphArray;
     [SerializeField, HideInInspector] private float one;
@@ -179,4 +203,5 @@ public class Jump : CharacterState {
         simVerticalVelocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         simXCurrentVelocity = 0f;
     }
+#endif
 }

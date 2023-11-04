@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stateMachine: {fileID: 0}
   instanceCopies: []
-  coyoteTime: 0.994
+  coyoteTime: 0.15
   terminalVelocity: -50
   <TerminalVelocity>k__BackingField: -50

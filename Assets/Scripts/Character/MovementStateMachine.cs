@@ -23,7 +23,6 @@ namespace Character {
         public float MaxVelocity { get; private set; }
         public float TerminalVelocity { get; private set; }
         public float JumpBufferDuration { get; private set; }
-        public Vector3 SlopeSlideVelocity { get; private set; }
 
         protected override void Awake() {
             setJumpBufferDuration += SetJumpBufferDuration;

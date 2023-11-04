@@ -18,7 +18,6 @@ public class Move : Grounded {
         xCurrentVelocity = 0f;
         yCurrentVelocity = 0f;
         smoothInput = Vector2.zero;
-        animator.SetBool(Sliding, movementStateMachine.SlopeSlideVelocity.magnitude > 5f);
     }
 
     private void OnValidate() {
@@ -41,9 +40,8 @@ public class Move : Grounded {
         rotateForward?.Invoke(rotationSmoothTime);
         Vector3 horizontalVelocity = SetHorizontalVelocity(movementStateMachine.HorizontalVelocity);
         AdjustVelocityToSlope(ref horizontalVelocity);
-        //setVerticalVelocity?.Invoke(characterMovement.VerticalVelocity +  Time.deltaTime * -9.81f * Vector3.up);
         setHorizontalVelocity?.Invoke(horizontalVelocity);
-        characterController.Move((horizontalVelocity + movementStateMachine.VerticalVelocity + movementStateMachine.SlopeSlideVelocity) * Time.deltaTime);
+        characterController.Move((horizontalVelocity + movementStateMachine.VerticalVelocity) * Time.deltaTime);
         base.Update();
     }
 

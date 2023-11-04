@@ -8,7 +8,7 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "States/Character/Falling")]
 public class Falling : CharacterState {
     [SerializeField] private float coyoteTime = .2f;
-    [SerializeField] private float terminalVelocity = -50f; // Serialized variable used in editor script
+    [SerializeField] private float terminalVelocity = -50f;
     [field: SerializeField] public float TerminalVelocity { get; private set; }
 
     private float timeFalling;
@@ -39,15 +39,11 @@ public class Falling : CharacterState {
         verticalVelocity.y += Time.deltaTime * -9.81f;
         verticalVelocity.y = Mathf.Max(-Mathf.Abs(terminalVelocity), verticalVelocity.y);
         setVerticalVelocity?.Invoke(verticalVelocity);
-
         
-        //setHorizontalVelocity?.Invoke(verticalVelocity);
         characterController.Move(Time.deltaTime * (movementStateMachine.VerticalVelocity + movementStateMachine.HorizontalVelocity));
 
-        if (coyoteTime < timeFalling && input.JumpPressed) {
-            Debug.Log("Coyote Time");
+        if (timeFalling < coyoteTime && input.JumpPressed)
             movementStateMachine.TransitionTo<Jump>();
-        }
         
         if (characterController.isGrounded)
             movementStateMachine.TransitionTo<Grounded>();

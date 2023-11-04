@@ -7,16 +7,14 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "States/Character/Grounded")]
 public class Grounded : CharacterState {
     public override void Enter() {
-        //setVerticalVelocity?.Invoke(new Vector3(0f, -9.81f, 0f));
-        
         Vector3 horizontalVelocity = movementStateMachine.HorizontalVelocity;
         AdjustVelocityToSlope(ref horizontalVelocity);
         setHorizontalVelocity?.Invoke(horizontalVelocity);
         if (GroundSlope() >= characterController.slopeLimit)
             setVerticalVelocity?.Invoke(Vector3.down * 9.81f);
-        //Vector3 velocity = characterController.velocity;
-        //velocity.y = -1f;
-        characterController.Move((movementStateMachine.HorizontalVelocity + movementStateMachine.VerticalVelocity) * Time.deltaTime);
+        characterController.Move(
+                (movementStateMachine.HorizontalVelocity + movementStateMachine.VerticalVelocity) 
+                * Time.deltaTime);
         animator.SetBool(IsGrounded, true);
     }
 
