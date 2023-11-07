@@ -9482,7 +9482,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 183
   radius: 1.18
-  smoothTime: 0.5
+  smoothTime: 0.3
 --- !u!1 &963501845
 GameObject:
   m_ObjectHideFlags: 0
@@ -12463,7 +12463,7 @@ HingeJoint:
   m_Anchor: {x: 0.007, y: 0.035, z: 0.0119}
   m_Axis: {x: 0, y: 1, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -0.000033828896, y: 0.00045327097, z: -0.00017991569}
+  m_ConnectedAnchor: {x: -0.000033828896, y: 0.0004532598, z: -0.00017991569}
   serializedVersion: 2
   m_UseSpring: 1
   m_Spring:

@@ -22,12 +22,13 @@ public class TankAlignToSurface : MonoBehaviour {
 
     public void Update() {
         RayCastToSurface(out Vector3 surfaceNormal);
-
-        normal = Vector3.Slerp(normal, surfaceNormal, smoothTime * Time.deltaTime);
-        Debug.DrawRay(transform.position, normal, Color.blue, Time.deltaTime * 2f, false);
-        tankTransform.position = tankParentTransform.position;
+        if (surfaceNormal.y < 0f)
+            surfaceNormal = -surfaceNormal;
+        Physics.SphereCast(transform.position + Vector3.up * 3.1f, 3f, Vector3.down, out RaycastHit hit, 3f, layerMask);
+        normal = Vector3.SmoothDamp(normal, surfaceNormal, ref currentVelocity, smoothTime);
+        
         var fwd = Vector3.ProjectOnPlane(tankParentTransform.forward, normal);
-        //tankTransform.rotation = quaternion.Euler(-90f, 0f, 0f) * Quaternion.LookRotation(fwd, normal);
+        tankTransform.rotation = Quaternion.LookRotation(fwd, normal);
     }
 
     private bool RayCastToSurface(out Vector3 surfaceNormal) {
@@ -51,7 +52,7 @@ public class TankAlignToSurface : MonoBehaviour {
         Vector3 V = raycastHits[2] - raycastHits[0];
 
         // Calculate the surface normal
-        surfaceNormal = Vector3.Cross(V, U);
+        surfaceNormal = Vector3.Cross( U, V);
         surfaceNormal.Normalize();
         
         return true;
