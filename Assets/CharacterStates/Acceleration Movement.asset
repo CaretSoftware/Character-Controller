@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4a549ee3bf0b4ca790b1169a65db7eca, type: 3}
-  m_Name: AccelerationMove
+  m_Name: Acceleration Movement
   m_EditorClassIdentifier: 
   stateMachine: {fileID: 0}
   turnSpeedModifier: 20

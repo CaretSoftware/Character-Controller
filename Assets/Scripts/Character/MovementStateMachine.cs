@@ -9,7 +9,6 @@ namespace Character {
         private Transform _transform;
         private Animator _animator;
         private IInput input;
-        private ControllerVariables controllerVars; // TODO move character parameters to this TODO //
         
         private Action<Vector3> setHorizontalVelocity;
         private Action<Vector3> setVerticalVelocity;
