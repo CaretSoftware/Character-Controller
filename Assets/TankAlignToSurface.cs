@@ -22,8 +22,7 @@ public class TankAlignToSurface : MonoBehaviour {
 
     public void Update() {
         RayCastToSurface(out Vector3 surfaceNormal);
-        if (surfaceNormal.y < 0f)
-            surfaceNormal = -surfaceNormal;
+        
         Physics.SphereCast(transform.position + Vector3.up * 3.1f, 3f, Vector3.down, out RaycastHit hit, 3f, layerMask);
         normal = Vector3.SmoothDamp(normal, surfaceNormal, ref currentVelocity, smoothTime);
         
@@ -33,9 +32,10 @@ public class TankAlignToSurface : MonoBehaviour {
 
     private bool RayCastToSurface(out Vector3 surfaceNormal) {
         raycastHits.Clear();
-        for (int i = 0; i < raycastPoints.Length; i++) {
+        
+        for (int i = 0; i < raycastPoints.Length; i++)
             raycastHits.Add(RayHit(tankTransform.TransformPoint(raycastPoints[i])));
-        }
+        
         if (raycastHits.Count < 4) {
             surfaceNormal = normal;
             return false;
@@ -45,6 +45,7 @@ public class TankAlignToSurface : MonoBehaviour {
             if (a.y == b.y) return 0;
             return a.y > b.y ? -1 : 1;
         });
+        
         raycastHits.RemoveAt(raycastHits.Count - 1);
 
         // Calculate vectors lying on the plane
@@ -55,11 +56,15 @@ public class TankAlignToSurface : MonoBehaviour {
         surfaceNormal = Vector3.Cross( U, V);
         surfaceNormal.Normalize();
         
+        // Vectors might be clockwise, invert surfaceNormal if it is
+        if (surfaceNormal.y < 0f)
+            surfaceNormal = -surfaceNormal;
+        
         return true;
     }
 
     private Vector3 RayHit(Vector3 position) {
-        if (Physics.Raycast(position, Vector3.down, out RaycastHit hit, 3f, layerMask)) {
+        if (Physics.SphereCast(position + (radius + 0.1f) * Vector3.up, radius, Vector3.down, out RaycastHit hit, 3f, layerMask)) {
             return hit.point;
         }
 
