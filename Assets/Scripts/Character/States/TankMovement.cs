@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [CreateAssetMenu(menuName = "States/Tank/Movement")]
 public class TankMovement : CharacterState {
@@ -22,7 +24,7 @@ public class TankMovement : CharacterState {
     public override void Update() {
         Vector2 inputAxis = input.Axis;
         if (inputAxis == Vector2.zero) {
-            characterController.Move(Vector3.zero);
+            characterController.Move(Time.deltaTime * 9.81f * Vector3.down);
             return;
         }
         
@@ -45,7 +47,7 @@ public class TankMovement : CharacterState {
             dampedVelocity = Mathf.SmoothDamp(dampedVelocity, 0f, ref currentVelocity, smoothDeceleration);
         }
         
-        characterController.Move(Time.deltaTime * dampedVelocity * forward);
+        characterController.Move(Time.deltaTime * dampedVelocity * forward + Time.deltaTime * 9.81f * Vector3.down);
         
         if (inputMagnitude >= .1f && dotProduct < .95f) {
             dampedRotationVelocity =
@@ -66,7 +68,7 @@ public class TankMovement : CharacterState {
     private void Rotate(float direction, float inputMagnitude) {
         myTransform.Rotate(Vector3.up, direction * inputMagnitude * dampedRotationVelocity * Time.deltaTime);
     }
-    
+
     public override void Exit() {
         base.Exit();
     }
