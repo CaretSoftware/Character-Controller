@@ -22,19 +22,20 @@ public class TankAlignToSurface : MonoBehaviour {
 
     public void Update() {
         RayCastToSurface(out Vector3 surfaceNormal);
-
-        normal = Vector3.Slerp(normal, surfaceNormal, smoothTime * Time.deltaTime);
-        Debug.DrawRay(transform.position, normal, Color.blue, Time.deltaTime * 2f, false);
-        tankTransform.position = tankParentTransform.position;
+        
+        Physics.SphereCast(transform.position + Vector3.up * 3.1f, 3f, Vector3.down, out RaycastHit hit, 3f, layerMask);
+        normal = Vector3.SmoothDamp(normal, surfaceNormal, ref currentVelocity, smoothTime);
+        
         var fwd = Vector3.ProjectOnPlane(tankParentTransform.forward, normal);
-        //tankTransform.rotation = quaternion.Euler(-90f, 0f, 0f) * Quaternion.LookRotation(fwd, normal);
+        tankTransform.rotation = Quaternion.LookRotation(fwd, normal);
     }
 
     private bool RayCastToSurface(out Vector3 surfaceNormal) {
         raycastHits.Clear();
-        for (int i = 0; i < raycastPoints.Length; i++) {
+        
+        for (int i = 0; i < raycastPoints.Length; i++)
             raycastHits.Add(RayHit(tankTransform.TransformPoint(raycastPoints[i])));
-        }
+        
         if (raycastHits.Count < 4) {
             surfaceNormal = normal;
             return false;
@@ -44,6 +45,7 @@ public class TankAlignToSurface : MonoBehaviour {
             if (a.y == b.y) return 0;
             return a.y > b.y ? -1 : 1;
         });
+        
         raycastHits.RemoveAt(raycastHits.Count - 1);
 
         // Calculate vectors lying on the plane
@@ -51,14 +53,18 @@ public class TankAlignToSurface : MonoBehaviour {
         Vector3 V = raycastHits[2] - raycastHits[0];
 
         // Calculate the surface normal
-        surfaceNormal = Vector3.Cross(V, U);
+        surfaceNormal = Vector3.Cross( U, V);
         surfaceNormal.Normalize();
+        
+        // Vectors might be clockwise, invert surfaceNormal if it is
+        if (surfaceNormal.y < 0f)
+            surfaceNormal = -surfaceNormal;
         
         return true;
     }
 
     private Vector3 RayHit(Vector3 position) {
-        if (Physics.Raycast(position, Vector3.down, out RaycastHit hit, 3f, layerMask)) {
+        if (Physics.SphereCast(position + (radius + 0.1f) * Vector3.up, radius, Vector3.down, out RaycastHit hit, 3f, layerMask)) {
             return hit.point;
         }
 
