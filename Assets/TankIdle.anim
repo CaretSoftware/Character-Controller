@@ -171,7 +171,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: Capsule Man (1)/Character_Pelvis/Character_Spine1/Character_Spine2/Character_Ribcage/Character_Neck/Character_Head
+    path: Turret/Capsule Man (1)/Character_Pelvis/Character_Spine1/Character_Spine2/Character_Ribcage/Character_Neck/Character_Head
   m_PositionCurves:
   - curve:
       serializedVersion: 2
@@ -251,7 +251,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: Capsule Man (1)/Character_Pelvis/Character_Spine1/Character_Spine2/Character_Ribcage
+    path: Turret/Capsule Man (1)/Character_Pelvis/Character_Spine1/Character_Spine2/Character_Ribcage
   - curve:
       serializedVersion: 2
       m_Curve:
@@ -294,7 +294,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: Capsule Man (1)/Character_Pelvis/Character_Spine1/Character_Spine2
+    path: Turret/Capsule Man (1)/Character_Pelvis/Character_Spine1/Character_Spine2
   m_ScaleCurves: []
   m_FloatCurves: []
   m_PPtrCurves: []
@@ -306,7 +306,7 @@ AnimationClip:
   m_ClipBindingConstant:
     genericBindings:
     - serializedVersion: 2
-      path: 1335936056
+      path: Turret/1335936056
       attribute: 1
       script: {fileID: 0}
       typeID: 4
@@ -315,7 +315,7 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     - serializedVersion: 2
-      path: 3052811334
+      path: Turret/3052811334
       attribute: 1
       script: {fileID: 0}
       typeID: 4
@@ -324,7 +324,7 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     - serializedVersion: 2
-      path: 154480179
+      path: Turret/154480179
       attribute: 4
       script: {fileID: 0}
       typeID: 4
@@ -333,7 +333,7 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     - serializedVersion: 2
-      path: 1537618076
+      path: Turret/1537618076
       attribute: 4
       script: {fileID: 0}
       typeID: 4
@@ -434,7 +434,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.x
-    path: Capsule Man (1)/Character_Pelvis/Character_Spine1/Character_Spine2/Character_Ribcage/Character_Neck
+    path: Turret/Capsule Man (1)/Character_Pelvis/Character_Spine1/Character_Spine2/Character_Ribcage/Character_Neck
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -509,7 +509,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.y
-    path: Capsule Man (1)/Character_Pelvis/Character_Spine1/Character_Spine2/Character_Ribcage/Character_Neck
+    path: Turret/Capsule Man (1)/Character_Pelvis/Character_Spine1/Character_Spine2/Character_Ribcage/Character_Neck
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -566,7 +566,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.z
-    path: Capsule Man (1)/Character_Pelvis/Character_Spine1/Character_Spine2/Character_Ribcage/Character_Neck
+    path: Turret/Capsule Man (1)/Character_Pelvis/Character_Spine1/Character_Spine2/Character_Ribcage/Character_Neck
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -641,7 +641,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.x
-    path: Capsule Man (1)/Character_Pelvis/Character_Spine1/Character_Spine2/Character_Ribcage/Character_Neck/Character_Head
+    path: Turret/Capsule Man (1)/Character_Pelvis/Character_Spine1/Character_Spine2/Character_Ribcage/Character_Neck/Character_Head
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -716,7 +716,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.y
-    path: Capsule Man (1)/Character_Pelvis/Character_Spine1/Character_Spine2/Character_Ribcage/Character_Neck/Character_Head
+    path: Turret/Capsule Man (1)/Character_Pelvis/Character_Spine1/Character_Spine2/Character_Ribcage/Character_Neck/Character_Head
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -773,7 +773,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.z
-    path: Capsule Man (1)/Character_Pelvis/Character_Spine1/Character_Spine2/Character_Ribcage/Character_Neck/Character_Head
+    path: Turret/Capsule Man (1)/Character_Pelvis/Character_Spine1/Character_Spine2/Character_Ribcage/Character_Neck/Character_Head
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -812,7 +812,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.x
-    path: Capsule Man (1)/Character_Pelvis/Character_Spine1/Character_Spine2/Character_Ribcage
+    path: Turret/Capsule Man (1)/Character_Pelvis/Character_Spine1/Character_Spine2/Character_Ribcage
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -869,7 +869,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.y
-    path: Capsule Man (1)/Character_Pelvis/Character_Spine1/Character_Spine2/Character_Ribcage
+    path: Turret/Capsule Man (1)/Character_Pelvis/Character_Spine1/Character_Spine2/Character_Ribcage
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -917,7 +917,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.z
-    path: Capsule Man (1)/Character_Pelvis/Character_Spine1/Character_Spine2/Character_Ribcage
+    path: Turret/Capsule Man (1)/Character_Pelvis/Character_Spine1/Character_Spine2/Character_Ribcage
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -956,7 +956,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.x
-    path: Capsule Man (1)/Character_Pelvis/Character_Spine1/Character_Spine2
+    path: Turret/Capsule Man (1)/Character_Pelvis/Character_Spine1/Character_Spine2
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -986,7 +986,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.y
-    path: Capsule Man (1)/Character_Pelvis/Character_Spine1/Character_Spine2
+    path: Turret/Capsule Man (1)/Character_Pelvis/Character_Spine1/Character_Spine2
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -1025,7 +1025,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.z
-    path: Capsule Man (1)/Character_Pelvis/Character_Spine1/Character_Spine2
+    path: Turret/Capsule Man (1)/Character_Pelvis/Character_Spine1/Character_Spine2
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -1038,7 +1038,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.z
-    path: Capsule Man (1)/Character_Pelvis/Character_Spine1/Character_Spine2/Character_Ribcage/Character_Neck/Character_Head
+    path: Turret/Capsule Man (1)/Character_Pelvis/Character_Spine1/Character_Spine2/Character_Ribcage/Character_Neck/Character_Head
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -1050,7 +1050,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.y
-    path: Capsule Man (1)/Character_Pelvis/Character_Spine1/Character_Spine2/Character_Ribcage/Character_Neck/Character_Head
+    path: Turret/Capsule Man (1)/Character_Pelvis/Character_Spine1/Character_Spine2/Character_Ribcage/Character_Neck/Character_Head
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -1062,7 +1062,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.x
-    path: Capsule Man (1)/Character_Pelvis/Character_Spine1/Character_Spine2/Character_Ribcage/Character_Neck/Character_Head
+    path: Turret/Capsule Man (1)/Character_Pelvis/Character_Spine1/Character_Spine2/Character_Ribcage/Character_Neck/Character_Head
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -1074,7 +1074,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.x
-    path: Capsule Man (1)/Character_Pelvis/Character_Spine1/Character_Spine2/Character_Ribcage/Character_Neck
+    path: Turret/Capsule Man (1)/Character_Pelvis/Character_Spine1/Character_Spine2/Character_Ribcage/Character_Neck
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -1086,7 +1086,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.y
-    path: Capsule Man (1)/Character_Pelvis/Character_Spine1/Character_Spine2/Character_Ribcage/Character_Neck
+    path: Turret/Capsule Man (1)/Character_Pelvis/Character_Spine1/Character_Spine2/Character_Ribcage/Character_Neck
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -1098,7 +1098,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.z
-    path: Capsule Man (1)/Character_Pelvis/Character_Spine1/Character_Spine2/Character_Ribcage/Character_Neck
+    path: Turret/Capsule Man (1)/Character_Pelvis/Character_Spine1/Character_Spine2/Character_Ribcage/Character_Neck
     classID: 4
     script: {fileID: 0}
     flags: 0
