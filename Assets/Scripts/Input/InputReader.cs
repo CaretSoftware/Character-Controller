@@ -1,39 +1,52 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Rendering.Universal;
 
 [CreateAssetMenu(menuName = "InputReader")]
-public class InputReader : ScriptableObject, InputHandler.ICharacterMovementActions, InputHandler.IUIActions {
+public class InputReader : ScriptableObject, InputHandler.ICharacterActionMapActions, InputHandler.IUIActionMapActions {
     private InputHandler gameInput;
 
     private void OnEnable() {
         if (gameInput == null) {
             gameInput = new InputHandler();
             
-            gameInput.CharacterMovement.SetCallbacks(this);
-            gameInput.UI.SetCallbacks(this);
+            gameInput.CharacterActionMap.SetCallbacks(this);
+            gameInput.UIActionMap.SetCallbacks(this);
             
             SetCharacterMovement();
         }
     }
 
     public void SetUI() {
-        gameInput.CharacterMovement.Disable();
-        gameInput.UI.Enable();
+        gameInput.CharacterActionMap.Disable();
+        gameInput.UIActionMap.Enable();
     }
     
     public void SetCharacterMovement() {
-        gameInput.CharacterMovement.Enable();
-        gameInput.UI.Disable();
-    } 
+        gameInput.CharacterActionMap.Enable();
+        gameInput.UIActionMap.Disable();
+    }
+
+    //private InputActionMap[] actionMaps;
+    //public void SetActionMap(InputActionMap actionMap) {
+    //    foreach (var actMap in actionMaps) {
+    //        if (actMap == actionMap)
+    //            actionMap.Enable();
+    //        else
+    //            actMap.Disable();
+    //    }
+    //}
     
     public event Action<Vector2> MoveEvent;
 
     public event Action JumpEvent;
     public event Action JumpCancelledEvent;
+    
+    public event Action InteractEvent;
+    public event Action InteractCanceledEvent;
+
+    public event Action FireEvent;
+    public event Action FireCanceledEvent;
 
     public event Action PauseEvent;
     public event Action ResumeEvent;
@@ -48,6 +61,22 @@ public class InputReader : ScriptableObject, InputHandler.ICharacterMovementActi
         
         if (context.phase == InputActionPhase.Canceled)
             JumpCancelledEvent?.Invoke();
+    }
+
+    public void OnFire(InputAction.CallbackContext context) {
+        if (context.phase == InputActionPhase.Performed)
+            FireEvent?.Invoke();
+        
+        if (context.phase == InputActionPhase.Canceled)
+            FireCanceledEvent?.Invoke();
+    }
+    
+    public void OnInteract(InputAction.CallbackContext context) {
+        if (context.phase == InputActionPhase.Performed) 
+            InteractEvent?.Invoke();
+        
+        if (context.phase == InputActionPhase.Canceled)
+            InteractCanceledEvent?.Invoke();
     }
 
     public void OnPause(InputAction.CallbackContext context) {
