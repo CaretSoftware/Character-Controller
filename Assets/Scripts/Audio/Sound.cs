@@ -4,4 +4,8 @@
     Reward,
     PoppingCork,
     Achievement,
+    ToiletSeatUp,
+    ToiletSeatDown,
+    TankStartUp,
+    TankIdle,
 }

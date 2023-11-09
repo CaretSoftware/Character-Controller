@@ -1,17 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 [CreateAssetMenu(menuName = "States/Tank/Movement")]
 public class TankMovement : CharacterState {
     [SerializeField] private float forwardVelocity = 2f;
     [SerializeField] private float rotationVelocity = 30f;
     
-    public override void Enter() {
-        base.Enter();
-    }
+    public override void Enter() { }
 
     private float dampedVelocity;
     private float dampedRotationVelocity;
