@@ -8,4 +8,6 @@
     ToiletSeatDown,
     TankStartUp,
     TankIdle,
+    CarHornSmall,
+    CannonShot,
 }

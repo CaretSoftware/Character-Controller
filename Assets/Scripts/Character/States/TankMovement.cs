@@ -2,20 +2,37 @@ using UnityEngine;
 
 [CreateAssetMenu(menuName = "States/Tank/Movement")]
 public class TankMovement : CharacterState {
+    public delegate void TankExit();
+    public static TankExit tankExit;
+    private static readonly int TankEntered = Animator.StringToHash("TankEntered");
+    private static readonly int Fire = Animator.StringToHash("Fire");
+    
     [SerializeField] private float forwardVelocity = 2f;
     [SerializeField] private float rotationVelocity = 30f;
+    [SerializeField] private float smoothAcceleration = .2f;
+    [SerializeField] private float smoothDeceleration = .05f;
+    [SerializeField] private float smoothRotationAcceleration = .5f;
+    [SerializeField] private float reloadTime = 1f;
     
-    public override void Enter() { }
-
     private float dampedVelocity;
     private float dampedRotationVelocity;
     private float currentVelocity;
     private float currentRotationVelocity;
-    [SerializeField] private float smoothAcceleration = .2f;
-    [SerializeField] private float smoothDeceleration = .05f;
-    [SerializeField] private float smoothRotationAcceleration = .5f;
-    
+    private bool reloaded = true;
+    private float lastShotTime;
+
+    public override void Enter() {
+        animator.SetBool(TankEntered, true);
+        tankExit += ExitTank;
+    }
+
+    private void ExitTank() => movementStateMachine.TransitionTo<TankOff>();
+
     public override void Update() {
+        FireCannon();
+        
+        SoundHorn();
+        
         Vector2 inputAxis = input.Axis;
         if (inputAxis == Vector2.zero) {
             characterController.Move(Time.deltaTime * 9.81f * Vector3.down);
@@ -53,17 +70,31 @@ public class TankMovement : CharacterState {
                             smoothRotationAcceleration);
         }
         
-        //if (dotProduct < .98f)
         Rotate(direction, inputMagnitude);
-
-        DebugScript.debug = dotProduct;
     }
 
-    private void Rotate(float direction, float inputMagnitude) {
+    private void FireCannon() {
+        if (input.FireReleased) {
+            reloaded = true;
+        }
+        if (input.FirePressed && reloaded && Time.time >= lastShotTime) {
+            lastShotTime = Time.time + reloadTime;
+            reloaded = false;
+            SoundManager.PlaySound(Sound.CannonShot);
+            animator.SetTrigger(Fire);
+        }
+    }
+
+    private void SoundHorn() {
+        if (input.JumpPressed)
+            SoundManager.PlaySound(Sound.CarHornSmall);
+    }
+    
+    private void Rotate(float direction, float inputMagnitude) =>
         myTransform.Rotate(Vector3.up, direction * inputMagnitude * dampedRotationVelocity * Time.deltaTime);
-    }
 
     public override void Exit() {
-        base.Exit();
+        animator.SetBool(TankEntered, false);
+        tankExit -= ExitTank;
     }
 }

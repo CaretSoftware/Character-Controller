@@ -11,7 +11,6 @@ public class TankAudioEvents : MonoBehaviour {
     [SerializeField] private float engineThrottlePitch = 1.2f;
     private Character.IInput input;
     private CharacterController characterController;
-    
     private double tractorStartDuration;
     private double idleStartTime;
     
@@ -36,7 +35,6 @@ public class TankAudioEvents : MonoBehaviour {
         idleSource.volume = idleVolume = 1f;
         startSource.volume = 1f;
         
-        Debug.Log("TANK START");
         startSource.Play();
         idleStartTime = AudioSettings.dspTime + tractorStartDuration;
         // Queue tractorIdle to play when tractorStart ends

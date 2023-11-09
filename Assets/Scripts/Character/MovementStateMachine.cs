@@ -34,7 +34,7 @@ namespace Character {
             _characterController = GetComponent<CharacterController>();
             _characterController.Move(Vector3.down); // Moving sets IsGrounded variable
             _transform = transform;
-            _animator = GetComponent<Animator>();
+            _animator = GetComponentInChildren<Animator>();
             input = GetComponent<IInput>();
             
             foreach (State state in states) {

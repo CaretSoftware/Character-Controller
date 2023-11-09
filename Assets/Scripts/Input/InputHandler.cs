@@ -24,7 +24,7 @@ public partial class @InputHandler: IInputActionCollection2, IDisposable
     ""name"": ""Input"",
     ""maps"": [
         {
-            ""name"": ""CharacterMovement"",
+            ""name"": ""CharacterActionMap"",
             ""id"": ""947a51c7-b89f-403a-9aec-2bc4b6a002d9"",
             ""actions"": [
                 {
@@ -49,6 +49,24 @@ public partial class @InputHandler: IInputActionCollection2, IDisposable
                     ""name"": ""Pause"",
                     ""type"": ""Button"",
                     ""id"": ""b134e63a-4e0a-4041-ad4b-f6c025d4317d"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Interact"",
+                    ""type"": ""Button"",
+                    ""id"": ""e6ce4796-de6d-454f-9c32-d9aba48c0e72"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Fire"",
+                    ""type"": ""Button"",
+                    ""id"": ""7b0d05c3-8fb4-438c-b30e-19950eca7abe"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -220,11 +238,33 @@ public partial class @InputHandler: IInputActionCollection2, IDisposable
                     ""action"": ""Pause"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""14e27c5a-cc0f-4b1b-9088-39af52f53e9f"",
+                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3a7b73bc-16d5-4eba-8dad-9b4dc81644b6"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Fire"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
         {
-            ""name"": ""UI"",
+            ""name"": ""UIActionMap"",
             ""id"": ""fc7cc2e3-067d-4aef-90df-0fac8381fdcb"",
             ""actions"": [
                 {
@@ -265,14 +305,16 @@ public partial class @InputHandler: IInputActionCollection2, IDisposable
     ],
     ""controlSchemes"": []
 }");
-        // CharacterMovement
-        m_CharacterMovement = asset.FindActionMap("CharacterMovement", throwIfNotFound: true);
-        m_CharacterMovement_Move = m_CharacterMovement.FindAction("Move", throwIfNotFound: true);
-        m_CharacterMovement_Jump = m_CharacterMovement.FindAction("Jump", throwIfNotFound: true);
-        m_CharacterMovement_Pause = m_CharacterMovement.FindAction("Pause", throwIfNotFound: true);
-        // UI
-        m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
-        m_UI_Resume = m_UI.FindAction("Resume", throwIfNotFound: true);
+        // CharacterActionMap
+        m_CharacterActionMap = asset.FindActionMap("CharacterActionMap", throwIfNotFound: true);
+        m_CharacterActionMap_Move = m_CharacterActionMap.FindAction("Move", throwIfNotFound: true);
+        m_CharacterActionMap_Jump = m_CharacterActionMap.FindAction("Jump", throwIfNotFound: true);
+        m_CharacterActionMap_Pause = m_CharacterActionMap.FindAction("Pause", throwIfNotFound: true);
+        m_CharacterActionMap_Interact = m_CharacterActionMap.FindAction("Interact", throwIfNotFound: true);
+        m_CharacterActionMap_Fire = m_CharacterActionMap.FindAction("Fire", throwIfNotFound: true);
+        // UIActionMap
+        m_UIActionMap = asset.FindActionMap("UIActionMap", throwIfNotFound: true);
+        m_UIActionMap_Resume = m_UIActionMap.FindAction("Resume", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -331,28 +373,32 @@ public partial class @InputHandler: IInputActionCollection2, IDisposable
         return asset.FindBinding(bindingMask, out action);
     }
 
-    // CharacterMovement
-    private readonly InputActionMap m_CharacterMovement;
-    private List<ICharacterMovementActions> m_CharacterMovementActionsCallbackInterfaces = new List<ICharacterMovementActions>();
-    private readonly InputAction m_CharacterMovement_Move;
-    private readonly InputAction m_CharacterMovement_Jump;
-    private readonly InputAction m_CharacterMovement_Pause;
-    public struct CharacterMovementActions
+    // CharacterActionMap
+    private readonly InputActionMap m_CharacterActionMap;
+    private List<ICharacterActionMapActions> m_CharacterActionMapActionsCallbackInterfaces = new List<ICharacterActionMapActions>();
+    private readonly InputAction m_CharacterActionMap_Move;
+    private readonly InputAction m_CharacterActionMap_Jump;
+    private readonly InputAction m_CharacterActionMap_Pause;
+    private readonly InputAction m_CharacterActionMap_Interact;
+    private readonly InputAction m_CharacterActionMap_Fire;
+    public struct CharacterActionMapActions
     {
         private @InputHandler m_Wrapper;
-        public CharacterMovementActions(@InputHandler wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Move => m_Wrapper.m_CharacterMovement_Move;
-        public InputAction @Jump => m_Wrapper.m_CharacterMovement_Jump;
-        public InputAction @Pause => m_Wrapper.m_CharacterMovement_Pause;
-        public InputActionMap Get() { return m_Wrapper.m_CharacterMovement; }
+        public CharacterActionMapActions(@InputHandler wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Move => m_Wrapper.m_CharacterActionMap_Move;
+        public InputAction @Jump => m_Wrapper.m_CharacterActionMap_Jump;
+        public InputAction @Pause => m_Wrapper.m_CharacterActionMap_Pause;
+        public InputAction @Interact => m_Wrapper.m_CharacterActionMap_Interact;
+        public InputAction @Fire => m_Wrapper.m_CharacterActionMap_Fire;
+        public InputActionMap Get() { return m_Wrapper.m_CharacterActionMap; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
         public bool enabled => Get().enabled;
-        public static implicit operator InputActionMap(CharacterMovementActions set) { return set.Get(); }
-        public void AddCallbacks(ICharacterMovementActions instance)
+        public static implicit operator InputActionMap(CharacterActionMapActions set) { return set.Get(); }
+        public void AddCallbacks(ICharacterActionMapActions instance)
         {
-            if (instance == null || m_Wrapper.m_CharacterMovementActionsCallbackInterfaces.Contains(instance)) return;
-            m_Wrapper.m_CharacterMovementActionsCallbackInterfaces.Add(instance);
+            if (instance == null || m_Wrapper.m_CharacterActionMapActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_CharacterActionMapActionsCallbackInterfaces.Add(instance);
             @Move.started += instance.OnMove;
             @Move.performed += instance.OnMove;
             @Move.canceled += instance.OnMove;
@@ -362,9 +408,15 @@ public partial class @InputHandler: IInputActionCollection2, IDisposable
             @Pause.started += instance.OnPause;
             @Pause.performed += instance.OnPause;
             @Pause.canceled += instance.OnPause;
+            @Interact.started += instance.OnInteract;
+            @Interact.performed += instance.OnInteract;
+            @Interact.canceled += instance.OnInteract;
+            @Fire.started += instance.OnFire;
+            @Fire.performed += instance.OnFire;
+            @Fire.canceled += instance.OnFire;
         }
 
-        private void UnregisterCallbacks(ICharacterMovementActions instance)
+        private void UnregisterCallbacks(ICharacterActionMapActions instance)
         {
             @Move.started -= instance.OnMove;
             @Move.performed -= instance.OnMove;
@@ -375,76 +427,84 @@ public partial class @InputHandler: IInputActionCollection2, IDisposable
             @Pause.started -= instance.OnPause;
             @Pause.performed -= instance.OnPause;
             @Pause.canceled -= instance.OnPause;
+            @Interact.started -= instance.OnInteract;
+            @Interact.performed -= instance.OnInteract;
+            @Interact.canceled -= instance.OnInteract;
+            @Fire.started -= instance.OnFire;
+            @Fire.performed -= instance.OnFire;
+            @Fire.canceled -= instance.OnFire;
         }
 
-        public void RemoveCallbacks(ICharacterMovementActions instance)
+        public void RemoveCallbacks(ICharacterActionMapActions instance)
         {
-            if (m_Wrapper.m_CharacterMovementActionsCallbackInterfaces.Remove(instance))
+            if (m_Wrapper.m_CharacterActionMapActionsCallbackInterfaces.Remove(instance))
                 UnregisterCallbacks(instance);
         }
 
-        public void SetCallbacks(ICharacterMovementActions instance)
+        public void SetCallbacks(ICharacterActionMapActions instance)
         {
-            foreach (var item in m_Wrapper.m_CharacterMovementActionsCallbackInterfaces)
+            foreach (var item in m_Wrapper.m_CharacterActionMapActionsCallbackInterfaces)
                 UnregisterCallbacks(item);
-            m_Wrapper.m_CharacterMovementActionsCallbackInterfaces.Clear();
+            m_Wrapper.m_CharacterActionMapActionsCallbackInterfaces.Clear();
             AddCallbacks(instance);
         }
     }
-    public CharacterMovementActions @CharacterMovement => new CharacterMovementActions(this);
+    public CharacterActionMapActions @CharacterActionMap => new CharacterActionMapActions(this);
 
-    // UI
-    private readonly InputActionMap m_UI;
-    private List<IUIActions> m_UIActionsCallbackInterfaces = new List<IUIActions>();
-    private readonly InputAction m_UI_Resume;
-    public struct UIActions
+    // UIActionMap
+    private readonly InputActionMap m_UIActionMap;
+    private List<IUIActionMapActions> m_UIActionMapActionsCallbackInterfaces = new List<IUIActionMapActions>();
+    private readonly InputAction m_UIActionMap_Resume;
+    public struct UIActionMapActions
     {
         private @InputHandler m_Wrapper;
-        public UIActions(@InputHandler wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Resume => m_Wrapper.m_UI_Resume;
-        public InputActionMap Get() { return m_Wrapper.m_UI; }
+        public UIActionMapActions(@InputHandler wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Resume => m_Wrapper.m_UIActionMap_Resume;
+        public InputActionMap Get() { return m_Wrapper.m_UIActionMap; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
         public bool enabled => Get().enabled;
-        public static implicit operator InputActionMap(UIActions set) { return set.Get(); }
-        public void AddCallbacks(IUIActions instance)
+        public static implicit operator InputActionMap(UIActionMapActions set) { return set.Get(); }
+        public void AddCallbacks(IUIActionMapActions instance)
         {
-            if (instance == null || m_Wrapper.m_UIActionsCallbackInterfaces.Contains(instance)) return;
-            m_Wrapper.m_UIActionsCallbackInterfaces.Add(instance);
+            if (instance == null || m_Wrapper.m_UIActionMapActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_UIActionMapActionsCallbackInterfaces.Add(instance);
             @Resume.started += instance.OnResume;
             @Resume.performed += instance.OnResume;
             @Resume.canceled += instance.OnResume;
         }
 
-        private void UnregisterCallbacks(IUIActions instance)
+        private void UnregisterCallbacks(IUIActionMapActions instance)
         {
             @Resume.started -= instance.OnResume;
             @Resume.performed -= instance.OnResume;
             @Resume.canceled -= instance.OnResume;
         }
 
-        public void RemoveCallbacks(IUIActions instance)
+        public void RemoveCallbacks(IUIActionMapActions instance)
         {
-            if (m_Wrapper.m_UIActionsCallbackInterfaces.Remove(instance))
+            if (m_Wrapper.m_UIActionMapActionsCallbackInterfaces.Remove(instance))
                 UnregisterCallbacks(instance);
         }
 
-        public void SetCallbacks(IUIActions instance)
+        public void SetCallbacks(IUIActionMapActions instance)
         {
-            foreach (var item in m_Wrapper.m_UIActionsCallbackInterfaces)
+            foreach (var item in m_Wrapper.m_UIActionMapActionsCallbackInterfaces)
                 UnregisterCallbacks(item);
-            m_Wrapper.m_UIActionsCallbackInterfaces.Clear();
+            m_Wrapper.m_UIActionMapActionsCallbackInterfaces.Clear();
             AddCallbacks(instance);
         }
     }
-    public UIActions @UI => new UIActions(this);
-    public interface ICharacterMovementActions
+    public UIActionMapActions @UIActionMap => new UIActionMapActions(this);
+    public interface ICharacterActionMapActions
     {
         void OnMove(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnPause(InputAction.CallbackContext context);
+        void OnInteract(InputAction.CallbackContext context);
+        void OnFire(InputAction.CallbackContext context);
     }
-    public interface IUIActions
+    public interface IUIActionMapActions
     {
         void OnResume(InputAction.CallbackContext context);
     }
