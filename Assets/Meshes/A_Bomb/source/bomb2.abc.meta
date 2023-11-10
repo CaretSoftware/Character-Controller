@@ -1,7 +1,43 @@
 fileFormatVersion: 2
 guid: ec5f7cf14df234e4690ca1fe22c4b5ff
-DefaultImporter:
-  externalObjects: {}
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: "\u5E73\u9762/\u5E73\u9762_001:000:"
+    second: {fileID: 2100000, guid: ad7c7a0095a98684ea5d7efb054ec652, type: 2}
+  serializedVersion: 2
   userData: 
   assetBundleName: 
   assetBundleVariant: 
+  script: {fileID: 11500000, guid: f53f5fc499d31e44b9deee84d28a9ee8, type: 3}
+  rootGameObjectId: 
+  rootGameObjectName: 
+  importerVersion: 1
+  streamSettings:
+    normals: 1
+    tangents: 1
+    cameraAspectRatio: 2
+    importVisibility: 1
+    scaleFactor: 5
+    swapHandedness: 1
+    flipFaces: 0
+    interpolateSamples: 1
+    importPointPolygon: 1
+    importLinePolygon: 1
+    importTrianglePolygon: 1
+    importXform: 1
+    importCameras: 1
+    importMeshes: 1
+    importPoints: 0
+    importCurves: 1
+    createCurveRenderers: 0
+  abcStartTime: 0.041666666666666664
+  abcEndTime: 2.4999999999999996
+  startTime: 0.041666666666666664
+  endTime: 2.4999999999999996
+  importWarning: 
+  firstImport: 0
+  isHDF5: 0
