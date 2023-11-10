@@ -13,15 +13,10 @@ MonoBehaviour:
   m_Name: Tank Movement
   m_EditorClassIdentifier: 
   stateMachine: {fileID: 0}
-  instanceCopies:
-  - {fileID: 0}
+  instanceCopies: []
   forwardVelocity: 11.15
   rotationVelocity: 110.11
   smoothAcceleration: 0.3
   smoothDeceleration: 0.05
   smoothRotationAcceleration: 0.5
-  rayCastPoints:
-  - {x: -2.207, y: 1.149, z: -2.453}
-  - {x: 2.207, y: 1.149, z: -2.453}
-  - {x: 2.207, y: 1.149, z: 1.883}
-  - {x: -2.207, y: 1.149, z: 1.883}
+  reloadTime: 2
