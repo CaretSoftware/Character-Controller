@@ -78,6 +78,41 @@ PrefabInstance:
       propertyPath: m_Name
       value: Atom_bomb-hight
       objectReference: {fileID: 0}
+    - target: {fileID: 1151388028547126963, guid: 6fa1412d33820d54a99dd9f0818e014c,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 1151388028547126963, guid: 6fa1412d33820d54a99dd9f0818e014c,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 1151388028547126963, guid: 6fa1412d33820d54a99dd9f0818e014c,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1151388028547126963, guid: 6fa1412d33820d54a99dd9f0818e014c,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1151388028547126963, guid: 6fa1412d33820d54a99dd9f0818e014c,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 1151388028547126963, guid: 6fa1412d33820d54a99dd9f0818e014c,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1151388028547126963, guid: 6fa1412d33820d54a99dd9f0818e014c,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -140,9 +175,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7a67c9a9cc94323b28f7885487056cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collider: {fileID: 1991653843199257205}
+  myCollider: {fileID: 1991653843199257205}
   mushroomCloud: {fileID: 7278768930090485646, guid: 32c55614ecf37c6428585dcad2ef2405,
     type: 3}
+  rigidBody: {fileID: 7595391815915979423}
+  rot: {x: 0, y: 1, z: 0}
+  spinVelocity: 300
+  rotatorTransform: {fileID: 516244580164120803}
 --- !u!135 &1991653843199257205
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -160,7 +199,13 @@ SphereCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 1
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Radius: 3.49
   m_Center: {x: 0, y: 3.14, z: 0}
+--- !u!4 &516244580164120803 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1151388028547126963, guid: 6fa1412d33820d54a99dd9f0818e014c,
+    type: 3}
+  m_PrefabInstance: {fileID: 635180145716979280}
+  m_PrefabAsset: {fileID: 0}
