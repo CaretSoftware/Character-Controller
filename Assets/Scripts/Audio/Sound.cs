@@ -10,4 +10,6 @@
     TankIdle,
     CarHornSmall,
     CannonShot,
+    BlastWave,
+    SonicTinnitus,
 }
