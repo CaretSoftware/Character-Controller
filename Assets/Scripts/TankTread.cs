@@ -12,7 +12,6 @@ public class TankTread : MonoBehaviour {
     [SerializeField] private Transform[] driverWheels;
     [SerializeField] private Transform[] guideWheels;
     [SerializeField] private int numberOfLinks = 27;
-    [SerializeField] private float velocity = .1f;
     [SerializeField] private float driverWheelsVelocity = .1f;
     [SerializeField] private float guideWheelsVelocity = .1f;
     [SerializeField] private int trackRevolutionsPerRotation = 2;
@@ -24,6 +23,7 @@ public class TankTread : MonoBehaviour {
     private float progress;
     private float rotationalProgress;
     public float chiralityFactor = 1f;
+    
     private void Awake() {
         characterController = GetComponentInParent<CharacterController>();
         chiralityFactor = -Mathf.Sign(tread.transform.localPosition.x);

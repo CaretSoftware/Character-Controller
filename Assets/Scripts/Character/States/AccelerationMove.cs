@@ -19,6 +19,9 @@ public class AccelerationMove : CharacterState {
         
         if (movementStateMachine.HorizontalVelocity.sqrMagnitude <= float.Epsilon)
             movementStateMachine.TransitionTo<Idle>();
+        
+        if (!movementStateMachine.CharacterActive)
+            movementStateMachine.TransitionTo<Inactive>();
     }
 
     private Vector3 HandleHorizontalMovement(Vector3 velocity) {

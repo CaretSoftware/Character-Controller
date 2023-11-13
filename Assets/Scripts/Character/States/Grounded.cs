@@ -40,6 +40,9 @@ public class Grounded : CharacterState {
 
         if (input.JumpPressed || Time.time <= input.JumpPressedLast + movementStateMachine.JumpBufferDuration)
             movementStateMachine.TransitionTo<Jump>();
+        
+        if (!movementStateMachine.CharacterActive)
+            movementStateMachine.TransitionTo<Inactive>();
     }
 
     private void LimitVerticalVelocity() {

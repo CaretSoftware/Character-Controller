@@ -71,6 +71,24 @@ public partial class @InputHandler: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Character Decrement"",
+                    ""type"": ""Button"",
+                    ""id"": ""52b20f6a-22c9-4449-9f89-320a451e14a6"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Character Increment"",
+                    ""type"": ""Button"",
+                    ""id"": ""a75b7fac-c677-4439-aaa1-914fe7e9b265"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -260,6 +278,50 @@ public partial class @InputHandler: IInputActionCollection2, IDisposable
                     ""action"": ""Fire"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""eb8d4f6b-a1d3-4675-9950-1b2cf848a571"",
+                    ""path"": ""<Gamepad>/leftShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Character Decrement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c9598e2c-30cc-40b2-b78f-34f7679febd1"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Character Decrement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""acf9623e-fd23-4617-b44c-f5d53ece1e93"",
+                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Character Increment"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f5f7c603-727c-4a49-9ec8-ac25e0188f81"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Character Increment"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -312,6 +374,8 @@ public partial class @InputHandler: IInputActionCollection2, IDisposable
         m_CharacterActionMap_Pause = m_CharacterActionMap.FindAction("Pause", throwIfNotFound: true);
         m_CharacterActionMap_Interact = m_CharacterActionMap.FindAction("Interact", throwIfNotFound: true);
         m_CharacterActionMap_Fire = m_CharacterActionMap.FindAction("Fire", throwIfNotFound: true);
+        m_CharacterActionMap_CharacterDecrement = m_CharacterActionMap.FindAction("Character Decrement", throwIfNotFound: true);
+        m_CharacterActionMap_CharacterIncrement = m_CharacterActionMap.FindAction("Character Increment", throwIfNotFound: true);
         // UIActionMap
         m_UIActionMap = asset.FindActionMap("UIActionMap", throwIfNotFound: true);
         m_UIActionMap_Resume = m_UIActionMap.FindAction("Resume", throwIfNotFound: true);
@@ -381,6 +445,8 @@ public partial class @InputHandler: IInputActionCollection2, IDisposable
     private readonly InputAction m_CharacterActionMap_Pause;
     private readonly InputAction m_CharacterActionMap_Interact;
     private readonly InputAction m_CharacterActionMap_Fire;
+    private readonly InputAction m_CharacterActionMap_CharacterDecrement;
+    private readonly InputAction m_CharacterActionMap_CharacterIncrement;
     public struct CharacterActionMapActions
     {
         private @InputHandler m_Wrapper;
@@ -390,6 +456,8 @@ public partial class @InputHandler: IInputActionCollection2, IDisposable
         public InputAction @Pause => m_Wrapper.m_CharacterActionMap_Pause;
         public InputAction @Interact => m_Wrapper.m_CharacterActionMap_Interact;
         public InputAction @Fire => m_Wrapper.m_CharacterActionMap_Fire;
+        public InputAction @CharacterDecrement => m_Wrapper.m_CharacterActionMap_CharacterDecrement;
+        public InputAction @CharacterIncrement => m_Wrapper.m_CharacterActionMap_CharacterIncrement;
         public InputActionMap Get() { return m_Wrapper.m_CharacterActionMap; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -414,6 +482,12 @@ public partial class @InputHandler: IInputActionCollection2, IDisposable
             @Fire.started += instance.OnFire;
             @Fire.performed += instance.OnFire;
             @Fire.canceled += instance.OnFire;
+            @CharacterDecrement.started += instance.OnCharacterDecrement;
+            @CharacterDecrement.performed += instance.OnCharacterDecrement;
+            @CharacterDecrement.canceled += instance.OnCharacterDecrement;
+            @CharacterIncrement.started += instance.OnCharacterIncrement;
+            @CharacterIncrement.performed += instance.OnCharacterIncrement;
+            @CharacterIncrement.canceled += instance.OnCharacterIncrement;
         }
 
         private void UnregisterCallbacks(ICharacterActionMapActions instance)
@@ -433,6 +507,12 @@ public partial class @InputHandler: IInputActionCollection2, IDisposable
             @Fire.started -= instance.OnFire;
             @Fire.performed -= instance.OnFire;
             @Fire.canceled -= instance.OnFire;
+            @CharacterDecrement.started -= instance.OnCharacterDecrement;
+            @CharacterDecrement.performed -= instance.OnCharacterDecrement;
+            @CharacterDecrement.canceled -= instance.OnCharacterDecrement;
+            @CharacterIncrement.started -= instance.OnCharacterIncrement;
+            @CharacterIncrement.performed -= instance.OnCharacterIncrement;
+            @CharacterIncrement.canceled -= instance.OnCharacterIncrement;
         }
 
         public void RemoveCallbacks(ICharacterActionMapActions instance)
@@ -503,6 +583,8 @@ public partial class @InputHandler: IInputActionCollection2, IDisposable
         void OnPause(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
         void OnFire(InputAction.CallbackContext context);
+        void OnCharacterDecrement(InputAction.CallbackContext context);
+        void OnCharacterIncrement(InputAction.CallbackContext context);
     }
     public interface IUIActionMapActions
     {

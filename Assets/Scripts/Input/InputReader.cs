@@ -47,6 +47,7 @@ public class InputReader : ScriptableObject, InputHandler.ICharacterActionMapAct
 
     public event Action FireEvent;
     public event Action FireCanceledEvent;
+    public event Action<int> CharacterSwapEvent;
 
     public event Action PauseEvent;
     public event Action ResumeEvent;
@@ -70,7 +71,17 @@ public class InputReader : ScriptableObject, InputHandler.ICharacterActionMapAct
         if (context.phase == InputActionPhase.Canceled)
             FireCanceledEvent?.Invoke();
     }
-    
+
+    public void OnCharacterDecrement(InputAction.CallbackContext context) {
+        if (context.phase == InputActionPhase.Performed)
+            CharacterSwapEvent?.Invoke(-1);
+    }
+
+    public void OnCharacterIncrement(InputAction.CallbackContext context) {
+        if (context.phase == InputActionPhase.Performed)
+            CharacterSwapEvent?.Invoke(+1);
+    }
+
     public void OnInteract(InputAction.CallbackContext context) {
         if (context.phase == InputActionPhase.Performed) 
             InteractEvent?.Invoke();

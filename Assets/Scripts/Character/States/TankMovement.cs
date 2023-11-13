@@ -2,8 +2,6 @@ using UnityEngine;
 
 [CreateAssetMenu(menuName = "States/Tank/Movement")]
 public class TankMovement : CharacterState {
-    public delegate void TankExit();
-    public static TankExit tankExit;
     private static readonly int TankEntered = Animator.StringToHash("TankEntered");
     private static readonly int Fire = Animator.StringToHash("Fire");
     
@@ -23,16 +21,20 @@ public class TankMovement : CharacterState {
 
     public override void Enter() {
         animator.SetBool(TankEntered, true);
-        tankExit += ExitTank;
     }
-
-    private void ExitTank() => movementStateMachine.TransitionTo<TankOff>();
 
     public override void Update() {
         FireCannon();
         
         SoundHorn();
         
+        Movement();
+        
+        if (!movementStateMachine.CharacterActive)
+            movementStateMachine.TransitionTo<Inactive>();
+    }
+
+    private void Movement() {
         Vector2 inputAxis = input.Axis;
         if (inputAxis == Vector2.zero) {
             characterController.Move(Time.deltaTime * 9.81f * Vector3.down);
@@ -95,6 +97,5 @@ public class TankMovement : CharacterState {
 
     public override void Exit() {
         animator.SetBool(TankEntered, false);
-        tankExit -= ExitTank;
     }
 }

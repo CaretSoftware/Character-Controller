@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using Character;
 
-namespace Character {
     public class AIInput : MonoBehaviour, IInput {
         public delegate void StuckDelegate(AIInput ai, Vector3 position);
         public static StuckDelegate stuck;
@@ -253,4 +253,3 @@ namespace Character {
             // Gizmos.DrawLine(jumpTooHighRayHeight, jumpTooHighRayHeight + Vector3.forward * tooHighJumpRayDistance);
         }
     }
-}

@@ -45,4 +45,6 @@ public class StateMachine : MonoBehaviour {
     private void FixedUpdate() => currentState.FixedUpdate();
 
     public void TransitionTo<T>() where T : State => queuedState = _states[typeof(T)];
+    
+    public void TransitionTo(Type type) => queuedState = _states[type];
 }
