@@ -47,6 +47,9 @@ public class Falling : CharacterState {
         
         if (characterController.isGrounded)
             movementStateMachine.TransitionTo<Grounded>();
+        
+        if (!movementStateMachine.CharacterActive)
+            movementStateMachine.TransitionTo<Inactive>();
     }
 
     public override void LateUpdate() {

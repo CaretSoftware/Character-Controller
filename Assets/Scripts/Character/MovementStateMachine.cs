@@ -1,5 +1,4 @@
 ﻿using System;
-using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 
 namespace Character {
@@ -9,6 +8,7 @@ namespace Character {
         private Transform _transform;
         private Animator _animator;
         private IInput input;
+        private int characterIndex = -1;
         
         private Action<Vector3> setHorizontalVelocity;
         private Action<Vector3> setVerticalVelocity;
@@ -22,6 +22,8 @@ namespace Character {
         public float MaxVelocity { get; private set; }
         public float TerminalVelocity { get; private set; }
         public float JumpBufferDuration { get; private set; }
+        public bool CharacterActive { get; private set; }
+        public State InitialState { get; private set; }
 
         protected override void Awake() {
             setJumpBufferDuration += SetJumpBufferDuration;
@@ -30,6 +32,7 @@ namespace Character {
             setTerminalVelocity += SetTerminalVelocity;
             setMaxVelocity += SetMaxVelocity;
             rotateForward += RotateForward;
+            CharacterSwapper.cycleCharacter += CharacterSwap;
             
             _characterController = GetComponent<CharacterController>();
             _characterController.Move(Vector3.down); // Moving sets IsGrounded variable
@@ -40,7 +43,7 @@ namespace Character {
             foreach (State state in states) {
                 var instance = ((CharacterState)state).Copy();
                 _states.Add(instance.GetType(), instance);
-                currentState ??= instance;
+                currentState ??= InitialState = instance;
                 
                 instance.stateMachine = this;
                 
@@ -55,7 +58,6 @@ namespace Character {
                 
                 if (instance.GetType() == typeof(Move))
                     SetMaxVelocity(((Move)instance).CharacterMaxSpeed);
-                
             }
             
             queuedState = currentState;
@@ -66,9 +68,7 @@ namespace Character {
             stateHistory.Add(currentState);
         }
 
-        protected override void Update() {
-            base.Update();
-        }
+        private void Start() => characterIndex = CharacterSwapper.GetCharacterIndex(this);
 
         private void OnDestroy() {
             setJumpBufferDuration -= SetJumpBufferDuration;
@@ -76,6 +76,7 @@ namespace Character {
             setVerticalVelocity -= SetVerticalVelocity;
             setMaxVelocity -= SetMaxVelocity;
             rotateForward -= RotateForward;
+            CharacterSwapper.cycleCharacter -= CharacterSwap;
         }
 
         private void SetJumpBufferDuration(float jumpBufferDuration) {
@@ -90,6 +91,8 @@ namespace Character {
         
         private void SetTerminalVelocity(float terminalVelocity) => TerminalVelocity = terminalVelocity;
 
+        private void CharacterSwap(int index) => CharacterActive = characterIndex == index;
+        
         private Vector3 smoothRotation;
         private Vector3 currentVelocity;
         private void RotateForward(float rotationSmoothTime) {

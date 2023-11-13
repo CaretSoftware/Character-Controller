@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
-
-namespace Character {
+using Character;
     public interface IInput {
         public bool JumpPressed { get; set; }
         public float JumpPressedLast { get; }
@@ -10,7 +9,5 @@ namespace Character {
         public bool FireReleased { get; set; }
         public bool InteractHeld { get; set; }
         public bool PausePressed { get; set; }
-
         public Vector2 Axis { get; set; }
     }
-}

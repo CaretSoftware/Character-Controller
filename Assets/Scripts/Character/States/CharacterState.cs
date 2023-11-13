@@ -53,7 +53,7 @@ public class CharacterState : State {
 
     private void OnDisable() => instanceCopies.Clear();
 
-    public virtual CharacterState Copy() {
+    public CharacterState Copy() {
         CharacterState instance = Instantiate(this);
         instanceCopies.Add(instance);
         return instance;

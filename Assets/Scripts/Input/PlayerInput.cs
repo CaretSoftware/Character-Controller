@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
+using Character;
 
-namespace Character {
     public class PlayerInput : MonoBehaviour, IInput {
         [SerializeField] private InputReader inputReader;
         
@@ -97,4 +97,3 @@ namespace Character {
             PausePressed = false;
         }
     }
-}

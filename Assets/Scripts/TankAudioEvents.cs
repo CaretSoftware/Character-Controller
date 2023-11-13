@@ -9,7 +9,7 @@ public class TankAudioEvents : MonoBehaviour {
     [SerializeField] private AudioClip tractorStart;
     [SerializeField] private float engineWindDownTime = .3f;
     [SerializeField] private float engineThrottlePitch = 1.2f;
-    private Character.IInput input;
+    private IInput input;
     private CharacterController characterController;
     private double tractorStartDuration;
     private double idleStartTime;
@@ -24,7 +24,7 @@ public class TankAudioEvents : MonoBehaviour {
 
     private void Awake() {
         tractorStartDuration = (double)tractorStart.samples / tractorStart.frequency;
-        input = GetComponentInParent<Character.IInput>();
+        input = GetComponentInParent<IInput>();
         characterController = GetComponentInParent<CharacterController>();
     }
 

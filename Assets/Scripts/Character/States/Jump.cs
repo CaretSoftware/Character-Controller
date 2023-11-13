@@ -92,6 +92,9 @@ public class Jump : CharacterState {
         
         if (verticalVelocity.y < 0f && characterController.isGrounded)
             movementStateMachine.TransitionTo<Grounded>();
+        
+        if (!movementStateMachine.CharacterActive)
+            movementStateMachine.TransitionTo<Inactive>();
     }
 
     private Vector3 GetVerticalVelocity(Vector3 verticalVelocity, float gravityMultiplier, float deltaTime) {
