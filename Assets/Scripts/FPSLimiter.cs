@@ -5,7 +5,7 @@ using UnityEngine.Rendering;
 public class FPSLimiter : MonoBehaviour {
     public readonly int[] frameRates = { 15, 30, 60, 144 };
     private const int MaxFrameRateCount = 300;
-    private const int WindowSize = 10;
+    private const int WindowSize = 30;
     private readonly float[] dataPoints = new float[WindowSize];
     private readonly string[] numberStrings = new string[MaxFrameRateCount + 1];
     private string currentFrameRate = String.Empty;
@@ -105,8 +105,7 @@ public class FPSLimiter : MonoBehaviour {
         contrastColor = new Color(avg, avg, avg, 1f);
     }
     
-    private Color GetColorAtPixel(Texture2D texture, int x, int y)
-    {
+    private Color GetColorAtPixel(Texture2D texture, int x, int y) {
         return texture.GetPixel(x, y);
     }
 #endif

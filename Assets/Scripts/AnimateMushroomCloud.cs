@@ -8,7 +8,7 @@ public class AnimateMushroomCloud : MonoBehaviour {
     
     [SerializeField] private Animator myAnimator;
     [SerializeField] private float setInactiveTime = 2.3f;
-    [SerializeField] private float dimmedIntensity = .5f;
+    [SerializeField] private float dimmedIntensity = 0f;
     [SerializeField] private float duration = 1f;
     private Light directionalLight;
     private float defaultIntensity;
@@ -22,7 +22,8 @@ public class AnimateMushroomCloud : MonoBehaviour {
         CancelInvoke();
         this.gameObject.SetActive(true);
         myAnimator.SetTrigger(Explosion);
-        SoundManager.PlaySound(Sound.SonicTinnitus, 2f);
+        SoundManager.DampenAudioTemporarily(.2f, 3f, Ease.InExpo);
+        SoundManager.PlaySound(Sound.SonicTinnitus, 1f, false, true);
         Invoke(nameof(SetInactive), setInactiveTime);
         if (dimLightsCoroutine != null)
             StopCoroutine(dimLightsCoroutine);
