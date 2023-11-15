@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(AudioObjectPool))]
 public class SoundManager : MonoBehaviour {
@@ -25,9 +26,9 @@ public class SoundManager : MonoBehaviour {
     private float maxdBMusic = 10f;
     
     // TODO options to change music tracks, queue up fade to the next
-    // 
     [SerializeField] private AudioSource musicSource;
     [SerializeField] private AudioSource sfxSource;
+    [SerializeField] private AudioSource undampenedSFXSource;
     [SerializeField] private AudioSource unscaledSFXSource;
     [SerializeField] private AudioObjectPool audioObjectPool;
     [SerializeField] private AudioMixer audioMixer;
@@ -36,6 +37,7 @@ public class SoundManager : MonoBehaviour {
     private string volumeSFXParameterString = "volumeSFX";
     private string volumeMusicParameterString = "volumeMusic";
     private string volumeUnscaledSFXParameterString = "volumeUnscaledSFX";
+    private string volumeUndampedSFXParameterString = "volumeUndampedSFX";
     private string lowPassCutoffFreqMusicParameterString = "musicLowPassCutoffFreq";
     private string lowPassCutoffFreqSFXParameterString = "sfxLowPassCutoffFreq";
 
@@ -57,7 +59,28 @@ public class SoundManager : MonoBehaviour {
         }
     }
 
-    private void Update() => sfxSource.pitch = Time.timeScale;
+    private Func<float, float> dampenVolumeFunc = (x) => x;
+    private float sfxDampenedVolume = 1f;
+    private float musicDampenedVolume = 1f;
+    private float dampenDuration = 1f;
+    private float sfxVolumeBeforeDampening = 1f;
+    private float musicVolumeBeforeDampening = 1f;
+    private float time;
+    private bool dampen;
+    private void Update() {
+        sfxSource.pitch = Time.timeScale;
+
+        if (Input.GetKeyDown(KeyCode.T))
+            DampenAudioTemporarily(0f, 2f, Ease.InExpo);
+
+        if (dampen) {
+            time = (time >= 1f) ? 1f : time + Time.deltaTime * (1f / dampenDuration);
+            dampen = time != 1f;
+
+            ChangeSfxVolume(Mathf.Lerp(sfxDampenedVolume, sfxVolumeBeforeDampening, dampenVolumeFunc(time)), true);
+            ChangeMusicVolume(Mathf.Lerp(musicDampenedVolume, musicVolumeBeforeDampening, dampenVolumeFunc(time)), true);
+        }
+    }
 
     private void InitializeSoundToAudioClipDictionary() {
         foreach (var soundAsClip in soundClips) {
@@ -71,20 +94,24 @@ public class SoundManager : MonoBehaviour {
         Instance.audioObjectPool.PlayClipAtPoint(clip, point, volume);
     }
 
-    public static void PlaySound(Sound sound, float volume = 1f, bool unscaledTime = false) {
+    public static void PlaySound(Sound sound, float volume = 1f, bool unscaledTime = false, bool undampened = false) {
         AudioClip clip = GetAudioClip(sound);
-        Instance.PlaySound(clip, volume, unscaledTime);
+        Instance.PlaySound(clip, volume, unscaledTime, undampened);
     }
 
-    private void PlaySound(AudioClip clip, float volume = 1f, bool unscaledTime = false) {
+    private void PlaySound(AudioClip clip, float volume = 1f, bool unscaledTime = false, bool undampened = false) {
         if (clip == null) {
             Debug.LogWarning($"<b>{nameof(SoundManager)} {nameof(PlaySound)} AudioClip <i>clip</i> <color=red>null</color> <i>Assign in inspector?</i></b>", this);
             return;
         }
         if (unscaledTime)
             unscaledSFXSource.PlayOneShot(clip, volume);
-        else
-            sfxSource.PlayOneShot(clip, volume);
+        else {
+            if (undampened)
+                undampenedSFXSource.PlayOneShot(clip, volume);
+            else
+                sfxSource.PlayOneShot(clip, volume);
+        }
     }
 
     private static AudioClip GetAudioClip(Sound sound) {
@@ -115,21 +142,39 @@ public class SoundManager : MonoBehaviour {
         
         return clip;
     }
+    
+    public static void DampenAudioTemporarily(float percentVolume, float duration, Func<float, float> func = null) {
+        percentVolume = percentVolume <= 1f ? percentVolume : 1f;   // don't increase volume
+        Instance.dampen = true;
+        Instance.time = 0f;
+        Instance.sfxDampenedVolume = percentVolume * Instance.sfxVolumeBeforeDampening;
+        Instance.musicDampenedVolume = percentVolume * Instance.musicVolumeBeforeDampening;
+        Instance.dampenDuration = duration;
+        Instance.dampenVolumeFunc = func ?? ((float x) => x);       // linear increase if no parameter given
+    }
 
     public void ChangeMasterVolume(float percentage) {
         float dB = Mathf.Lerp(mindB, maxdBMaster, Ease.OutExpo(percentage));
         audioMixer.SetFloat(volumeMasterParameterString, dB);
     }
-
-    public void ChangeMusicVolume(float percentage) {
+    
+    public void ChangeMusicVolume(float percentage, bool dampedAlteration = false) {
         float dB = Mathf.Lerp(mindB, maxdBMusic, Ease.OutExpo(percentage));
         audioMixer.SetFloat(volumeMusicParameterString, dB);
+
+        if (!dampedAlteration)
+            musicVolumeBeforeDampening = percentage;
     }
 
-    public void ChangeSfxVolume(float percentage) {
+    public void ChangeSfxVolume(float percentage, bool dampedAlteration = false) {
         float dB = Mathf.Lerp(mindB, maxdBSFX, Ease.OutExpo(percentage));
         audioMixer.SetFloat(volumeSFXParameterString, dB);
         audioMixer.SetFloat(volumeUnscaledSFXParameterString, dB);
+
+        if (!dampedAlteration) {
+            audioMixer.SetFloat(volumeUndampedSFXParameterString, dB);
+            sfxVolumeBeforeDampening = percentage;
+        }
     }
 
     public void ChangeLowPassCutoffFrequency(float value) {

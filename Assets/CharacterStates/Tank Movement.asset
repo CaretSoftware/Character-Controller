@@ -13,10 +13,11 @@ MonoBehaviour:
   m_Name: Tank Movement
   m_EditorClassIdentifier: 
   stateMachine: {fileID: 0}
-  instanceCopies: []
-  forwardVelocity: 11.15
+  instanceCopies:
+  - {fileID: 0}
+  forwardVelocity: 10
   rotationVelocity: 110.11
-  smoothAcceleration: 0.3
-  smoothDeceleration: 0.05
+  smoothAcceleration: 0.42
+  smoothDeceleration: 0.14
   smoothRotationAcceleration: 0.5
   reloadTime: 2

@@ -14,7 +14,7 @@ public class TankTread : MonoBehaviour {
     [SerializeField] private int numberOfLinks = 27;
     [SerializeField] private float driverWheelsVelocity = .1f;
     [SerializeField] private float guideWheelsVelocity = .1f;
-    [SerializeField] private int trackRevolutionsPerRotation = 2;
+    [SerializeField] private float trackRevolutionsPerRotation = .5f;
 
     private CharacterController characterController;
     private Vector3[] driverWheelsRotations;
@@ -22,7 +22,7 @@ public class TankTread : MonoBehaviour {
     private List<GameObject> trackLinks = new List<GameObject>();
     private float progress;
     private float rotationalProgress;
-    public float chiralityFactor = 1f;
+    private float chiralityFactor = 1f;
     
     private void Awake() {
         characterController = GetComponentInParent<CharacterController>();
@@ -63,7 +63,6 @@ public class TankTread : MonoBehaviour {
         progress = MathfMod(progress, 1f);
         if (progress < 0f)
             progress += 1f;
-        debug = progress;
     }
 
     public float debugRot;
@@ -86,7 +85,6 @@ public class TankTread : MonoBehaviour {
         }
     }
 
-    [Range(-2f, 2f)] public float debug;
     private void MoveAlongSpline() {
         int count = trackLinks.Count;
         float fraction = 1f / count;
@@ -95,8 +93,7 @@ public class TankTread : MonoBehaviour {
             if (localProgress < 0f)
                 localProgress += 1f;
             localProgress = MathfMod(localProgress, 1f);
-            if (i == 0)
-                debug = localProgress;
+            
             Transform t = trackLinks[i].transform;
             if (track.Evaluate(localProgress, out float3 position, out float3 forward, out float3 upwards)) {
                 t.position = position;

@@ -36,7 +36,8 @@ public class BlastWave : MonoBehaviour {
         }
         if (!played && currentScale >= distance - 10f) {
             played = true;
-            SoundManager.PlaySound(Sound.BlastWave, 2f);
+            SoundManager.DampenAudioTemporarily(.2f, 1f, Ease.InCirc);
+            SoundManager.PlaySound(Sound.BlastWave, .35f, false, true);
         }
     }
 }
