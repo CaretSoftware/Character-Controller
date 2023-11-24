@@ -11,7 +11,7 @@ public class CharacterSwapper : MonoBehaviour {
     public static CycleCharacter cycleCharacter;
     [SerializeField] private InputReader inputReader;
     [SerializeField] private List<MovementStateMachine> characterControllers;
-
+    [SerializeField] private CameraFollow cameraFollow;
     private int activeCharacter;
     
     private void Awake() { 
@@ -33,6 +33,7 @@ public class CharacterSwapper : MonoBehaviour {
         activeCharacter += increment;
         activeCharacter = (activeCharacter % mod + mod) % mod; // supports both negative and positive modulus
         cycleCharacter?.Invoke(activeCharacter);
+        cameraFollow.SetTarget(characterControllers[activeCharacter].transform);
     }
 
     public static int GetCharacterIndex(MovementStateMachine characterController) {

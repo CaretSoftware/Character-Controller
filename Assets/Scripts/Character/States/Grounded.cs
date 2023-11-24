@@ -6,12 +6,14 @@ using UnityEngine;
 
 [CreateAssetMenu(menuName = "States/Character/Grounded")]
 public class Grounded : CharacterState {
+    [SerializeField, Range(0f, -30f)] private float groundedGravity = -9.81f;
+    
     public override void Enter() {
+        
         Vector3 horizontalVelocity = movementStateMachine.HorizontalVelocity;
         AdjustVelocityToSlope(ref horizontalVelocity);
         setHorizontalVelocity?.Invoke(horizontalVelocity);
-        if (GroundSlope() >= characterController.slopeLimit)
-            setVerticalVelocity?.Invoke(Vector3.down * 9.81f);
+        setVerticalVelocity?.Invoke(Vector3.up * groundedGravity);
         characterController.Move(
                 (movementStateMachine.HorizontalVelocity + movementStateMachine.VerticalVelocity) 
                 * Time.deltaTime);
@@ -23,8 +25,8 @@ public class Grounded : CharacterState {
         velocity.y = 0f;
         animator.SetFloat(MoveZ, velocity.magnitude);
         
-        LimitVerticalVelocity();
-        
+        AddVerticalVelocity();
+
         if (characterController.velocity.sqrMagnitude <= float.Epsilon)
             movementStateMachine.TransitionTo<Idle>();
 
@@ -45,9 +47,9 @@ public class Grounded : CharacterState {
             movementStateMachine.TransitionTo<Inactive>();
     }
 
-    private void LimitVerticalVelocity() {
+    private void AddVerticalVelocity() {
         Vector3 verticalVelocity = movementStateMachine.VerticalVelocity;
-        verticalVelocity.y += Time.deltaTime * -9.81f;
+        verticalVelocity.y += Time.deltaTime * groundedGravity;
         verticalVelocity.y = Mathf.Max(-Mathf.Abs(movementStateMachine.TerminalVelocity), verticalVelocity.y);
         setVerticalVelocity?.Invoke(verticalVelocity);
     }
@@ -59,16 +61,13 @@ public class Grounded : CharacterState {
         ray.origin = myTransform.position + radius * Vector3.up;
         ray.direction = Vector3.down;
 
-        float maxDistance = (radius + characterController.skinWidth) / Mathf.Cos(characterController.slopeLimit * Mathf.Deg2Rad);
+        float maxDistance = (radius + characterController.skinWidth) / 
+                            Mathf.Cos(characterController.slopeLimit * Mathf.Deg2Rad);
         
         if (Physics.Raycast(ray, out slopeHitInfo, maxDistance)){
             Quaternion slopeRotation = Quaternion.FromToRotation(Vector3.up, slopeHitInfo.normal);
-            
-            Debug.DrawRay(myTransform.position, slopeRotation * Vector3.up * 5f);
-            
             velocity = slopeRotation * horizontal;
         }
-        Debug.DrawRay(myTransform.position + Vector3.up * characterController.radius, Vector3.down * maxDistance);
     }
 
     private Ray ray;
@@ -76,19 +75,25 @@ public class Grounded : CharacterState {
     protected float GroundSlope() {
         if (!characterController.isGrounded) 
             return 0f;
-            
-        float radius = characterController.radius;
+        
+        float radius = characterController.radius * myTransform.localScale.x;
         ray.origin = myTransform.position + radius * Vector3.up;
         ray.direction = Vector3.down;
 
         // TODO raycast doesn't reach if too short
-        float maxDistance = (radius + characterController.skinWidth + characterController.stepOffset) / Mathf.Cos(characterController.slopeLimit * Mathf.Deg2Rad);
-        float angle = 180f;
+        float maxDistance = Mathf.Infinity;// (radius + characterController.skinWidth + characterController.stepOffset) / Mathf.Cos(characterController.slopeLimit * Mathf.Deg2Rad);
+        float stairAngle = 180f;
+        float slopeAngle = 0f;
         
         if (Physics.Raycast(ray, out slopeHitInfo, maxDistance))
-            angle = Vector3.Angle(Vector3.up, slopeHitInfo.normal);
+            stairAngle = Vector3.Angle(Vector3.up, slopeHitInfo.normal);
 
-        return angle;
+        if (Physics.SphereCast(ray, radius, out RaycastHit sphereHitInfo, 1f))
+            slopeAngle = Vector3.Angle(Vector3.up, sphereHitInfo.normal);
+        
+        DebugRay.pos = ray.origin;
+        DebugRay.radius = radius * .95F;
+        return Mathf.Min(stairAngle, slopeAngle);
     }
 
     public override void LateUpdate() { }
@@ -96,6 +101,4 @@ public class Grounded : CharacterState {
     public override void FixedUpdate() { }
 
     public override void Exit() { }
-    
-    
 }

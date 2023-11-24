@@ -15,6 +15,15 @@
                     "initialStateCheck": true
                 },
                 {
+                    "name": "CameraMove",
+                    "type": "Value",
+                    "id": "aa5145d8-7127-4737-80ed-c0f23b709cad",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
                     "name": "Jump",
                     "type": "Button",
                     "id": "4aa74a18-b56d-4360-89a0-ea30cf8816cc",
@@ -42,15 +51,6 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Fire",
-                    "type": "Button",
-                    "id": "7b0d05c3-8fb4-438c-b30e-19950eca7abe",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "Character Decrement",
                     "type": "Button",
                     "id": "52b20f6a-22c9-4449-9f89-320a451e14a6",
@@ -67,6 +67,24 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Fire",
+                    "type": "Button",
+                    "id": "7b0d05c3-8fb4-438c-b30e-19950eca7abe",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Trigger",
+                    "type": "Value",
+                    "id": "aa88bea7-aa04-4770-8f0f-578203a9121a",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -248,17 +266,6 @@
                 },
                 {
                     "name": "",
-                    "id": "3a7b73bc-16d5-4eba-8dad-9b4dc81644b6",
-                    "path": "<Gamepad>/rightTrigger",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Fire",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "eb8d4f6b-a1d3-4675-9950-1b2cf848a571",
                     "path": "<Gamepad>/leftShoulder",
                     "interactions": "",
@@ -298,6 +305,39 @@
                     "processors": "",
                     "groups": "",
                     "action": "Character Increment",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "53028920-3e4a-4c5a-8570-7e762d0a8f44",
+                    "path": "<Gamepad>/rightTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Trigger",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3a7b73bc-16d5-4eba-8dad-9b4dc81644b6",
+                    "path": "<Gamepad>/rightTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Fire",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b2b7f41f-9dd1-4997-aa8a-f082cea1b699",
+                    "path": "<Gamepad>/rightStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CameraMove",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

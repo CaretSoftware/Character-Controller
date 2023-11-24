@@ -24,12 +24,12 @@ public class FPSClampEditor : Editor {
         _maxVal = 180 - clampLookupMax.floatValue;
     }
     public override void OnInspectorGUI() {
-        base.OnInspectorGUI();
-		
         serializedObject.Update();
         LookUpClampMinMaxSlider();
         SmoothDampSmoothTimeMinMaxSlider();
         serializedObject.ApplyModifiedProperties();
+		
+        base.OnInspectorGUI();
     }
 
     private void LookUpClampMinMaxSlider() {

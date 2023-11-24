@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 [CreateAssetMenu(menuName = "InputReader")]
@@ -7,14 +8,12 @@ public class InputReader : ScriptableObject, InputHandler.ICharacterActionMapAct
     private InputHandler gameInput;
 
     private void OnEnable() {
-        if (gameInput == null) {
-            gameInput = new InputHandler();
-            
-            gameInput.CharacterActionMap.SetCallbacks(this);
-            gameInput.UIActionMap.SetCallbacks(this);
-            
-            SetCharacterMovement();
-        }
+        if (gameInput != null) return; 
+        
+        gameInput = new InputHandler();
+        gameInput.CharacterActionMap.SetCallbacks(this);
+        gameInput.UIActionMap.SetCallbacks(this);
+        SetCharacterMovement();
     }
 
     public void SetUI() {
@@ -27,17 +26,9 @@ public class InputReader : ScriptableObject, InputHandler.ICharacterActionMapAct
         gameInput.UIActionMap.Disable();
     }
 
-    //private InputActionMap[] actionMaps;
-    //public void SetActionMap(InputActionMap actionMap) {
-    //    foreach (var actMap in actionMaps) {
-    //        if (actMap == actionMap)
-    //            actionMap.Enable();
-    //        else
-    //            actMap.Disable();
-    //    }
-    //}
-    
     public event Action<Vector2> MoveEvent;
+
+    public event Action<Vector2> CameraMoveEvent;
 
     public event Action JumpEvent;
     public event Action JumpCancelledEvent;
@@ -51,10 +42,13 @@ public class InputReader : ScriptableObject, InputHandler.ICharacterActionMapAct
 
     public event Action PauseEvent;
     public event Action ResumeEvent;
+
+    public event Action<float> TriggerEvent;
     
-    public void OnMove(InputAction.CallbackContext context) {
-        MoveEvent?.Invoke(context.ReadValue<Vector2>());
-    }
+    public void OnMove(InputAction.CallbackContext context) => MoveEvent?.Invoke(context.ReadValue<Vector2>());
+
+    public void OnCameraMove(InputAction.CallbackContext context) => 
+            CameraMoveEvent?.Invoke(context.ReadValue<Vector2>());
 
     public void OnJump(InputAction.CallbackContext context) {
         if (context.phase == InputActionPhase.Performed) 
@@ -81,6 +75,8 @@ public class InputReader : ScriptableObject, InputHandler.ICharacterActionMapAct
         if (context.phase == InputActionPhase.Performed)
             CharacterSwapEvent?.Invoke(+1);
     }
+    
+    public void OnTrigger(InputAction.CallbackContext context) => TriggerEvent?.Invoke(context.ReadValue<float>());
 
     public void OnInteract(InputAction.CallbackContext context) {
         if (context.phase == InputActionPhase.Performed) 

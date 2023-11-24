@@ -37,6 +37,15 @@ public partial class @InputHandler: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
+                    ""name"": ""CameraMove"",
+                    ""type"": ""Value"",
+                    ""id"": ""aa5145d8-7127-4737-80ed-c0f23b709cad"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
                     ""name"": ""Jump"",
                     ""type"": ""Button"",
                     ""id"": ""4aa74a18-b56d-4360-89a0-ea30cf8816cc"",
@@ -64,15 +73,6 @@ public partial class @InputHandler: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Fire"",
-                    ""type"": ""Button"",
-                    ""id"": ""7b0d05c3-8fb4-438c-b30e-19950eca7abe"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
                     ""name"": ""Character Decrement"",
                     ""type"": ""Button"",
                     ""id"": ""52b20f6a-22c9-4449-9f89-320a451e14a6"",
@@ -89,6 +89,24 @@ public partial class @InputHandler: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Fire"",
+                    ""type"": ""Button"",
+                    ""id"": ""7b0d05c3-8fb4-438c-b30e-19950eca7abe"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Trigger"",
+                    ""type"": ""Value"",
+                    ""id"": ""aa88bea7-aa04-4770-8f0f-578203a9121a"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -270,17 +288,6 @@ public partial class @InputHandler: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""3a7b73bc-16d5-4eba-8dad-9b4dc81644b6"",
-                    ""path"": ""<Gamepad>/rightTrigger"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Fire"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""eb8d4f6b-a1d3-4675-9950-1b2cf848a571"",
                     ""path"": ""<Gamepad>/leftShoulder"",
                     ""interactions"": """",
@@ -320,6 +327,39 @@ public partial class @InputHandler: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Character Increment"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""53028920-3e4a-4c5a-8570-7e762d0a8f44"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Trigger"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3a7b73bc-16d5-4eba-8dad-9b4dc81644b6"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Fire"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b2b7f41f-9dd1-4997-aa8a-f082cea1b699"",
+                    ""path"": ""<Gamepad>/rightStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CameraMove"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -370,12 +410,14 @@ public partial class @InputHandler: IInputActionCollection2, IDisposable
         // CharacterActionMap
         m_CharacterActionMap = asset.FindActionMap("CharacterActionMap", throwIfNotFound: true);
         m_CharacterActionMap_Move = m_CharacterActionMap.FindAction("Move", throwIfNotFound: true);
+        m_CharacterActionMap_CameraMove = m_CharacterActionMap.FindAction("CameraMove", throwIfNotFound: true);
         m_CharacterActionMap_Jump = m_CharacterActionMap.FindAction("Jump", throwIfNotFound: true);
         m_CharacterActionMap_Pause = m_CharacterActionMap.FindAction("Pause", throwIfNotFound: true);
         m_CharacterActionMap_Interact = m_CharacterActionMap.FindAction("Interact", throwIfNotFound: true);
-        m_CharacterActionMap_Fire = m_CharacterActionMap.FindAction("Fire", throwIfNotFound: true);
         m_CharacterActionMap_CharacterDecrement = m_CharacterActionMap.FindAction("Character Decrement", throwIfNotFound: true);
         m_CharacterActionMap_CharacterIncrement = m_CharacterActionMap.FindAction("Character Increment", throwIfNotFound: true);
+        m_CharacterActionMap_Fire = m_CharacterActionMap.FindAction("Fire", throwIfNotFound: true);
+        m_CharacterActionMap_Trigger = m_CharacterActionMap.FindAction("Trigger", throwIfNotFound: true);
         // UIActionMap
         m_UIActionMap = asset.FindActionMap("UIActionMap", throwIfNotFound: true);
         m_UIActionMap_Resume = m_UIActionMap.FindAction("Resume", throwIfNotFound: true);
@@ -441,23 +483,27 @@ public partial class @InputHandler: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_CharacterActionMap;
     private List<ICharacterActionMapActions> m_CharacterActionMapActionsCallbackInterfaces = new List<ICharacterActionMapActions>();
     private readonly InputAction m_CharacterActionMap_Move;
+    private readonly InputAction m_CharacterActionMap_CameraMove;
     private readonly InputAction m_CharacterActionMap_Jump;
     private readonly InputAction m_CharacterActionMap_Pause;
     private readonly InputAction m_CharacterActionMap_Interact;
-    private readonly InputAction m_CharacterActionMap_Fire;
     private readonly InputAction m_CharacterActionMap_CharacterDecrement;
     private readonly InputAction m_CharacterActionMap_CharacterIncrement;
+    private readonly InputAction m_CharacterActionMap_Fire;
+    private readonly InputAction m_CharacterActionMap_Trigger;
     public struct CharacterActionMapActions
     {
         private @InputHandler m_Wrapper;
         public CharacterActionMapActions(@InputHandler wrapper) { m_Wrapper = wrapper; }
         public InputAction @Move => m_Wrapper.m_CharacterActionMap_Move;
+        public InputAction @CameraMove => m_Wrapper.m_CharacterActionMap_CameraMove;
         public InputAction @Jump => m_Wrapper.m_CharacterActionMap_Jump;
         public InputAction @Pause => m_Wrapper.m_CharacterActionMap_Pause;
         public InputAction @Interact => m_Wrapper.m_CharacterActionMap_Interact;
-        public InputAction @Fire => m_Wrapper.m_CharacterActionMap_Fire;
         public InputAction @CharacterDecrement => m_Wrapper.m_CharacterActionMap_CharacterDecrement;
         public InputAction @CharacterIncrement => m_Wrapper.m_CharacterActionMap_CharacterIncrement;
+        public InputAction @Fire => m_Wrapper.m_CharacterActionMap_Fire;
+        public InputAction @Trigger => m_Wrapper.m_CharacterActionMap_Trigger;
         public InputActionMap Get() { return m_Wrapper.m_CharacterActionMap; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -470,6 +516,9 @@ public partial class @InputHandler: IInputActionCollection2, IDisposable
             @Move.started += instance.OnMove;
             @Move.performed += instance.OnMove;
             @Move.canceled += instance.OnMove;
+            @CameraMove.started += instance.OnCameraMove;
+            @CameraMove.performed += instance.OnCameraMove;
+            @CameraMove.canceled += instance.OnCameraMove;
             @Jump.started += instance.OnJump;
             @Jump.performed += instance.OnJump;
             @Jump.canceled += instance.OnJump;
@@ -479,15 +528,18 @@ public partial class @InputHandler: IInputActionCollection2, IDisposable
             @Interact.started += instance.OnInteract;
             @Interact.performed += instance.OnInteract;
             @Interact.canceled += instance.OnInteract;
-            @Fire.started += instance.OnFire;
-            @Fire.performed += instance.OnFire;
-            @Fire.canceled += instance.OnFire;
             @CharacterDecrement.started += instance.OnCharacterDecrement;
             @CharacterDecrement.performed += instance.OnCharacterDecrement;
             @CharacterDecrement.canceled += instance.OnCharacterDecrement;
             @CharacterIncrement.started += instance.OnCharacterIncrement;
             @CharacterIncrement.performed += instance.OnCharacterIncrement;
             @CharacterIncrement.canceled += instance.OnCharacterIncrement;
+            @Fire.started += instance.OnFire;
+            @Fire.performed += instance.OnFire;
+            @Fire.canceled += instance.OnFire;
+            @Trigger.started += instance.OnTrigger;
+            @Trigger.performed += instance.OnTrigger;
+            @Trigger.canceled += instance.OnTrigger;
         }
 
         private void UnregisterCallbacks(ICharacterActionMapActions instance)
@@ -495,6 +547,9 @@ public partial class @InputHandler: IInputActionCollection2, IDisposable
             @Move.started -= instance.OnMove;
             @Move.performed -= instance.OnMove;
             @Move.canceled -= instance.OnMove;
+            @CameraMove.started -= instance.OnCameraMove;
+            @CameraMove.performed -= instance.OnCameraMove;
+            @CameraMove.canceled -= instance.OnCameraMove;
             @Jump.started -= instance.OnJump;
             @Jump.performed -= instance.OnJump;
             @Jump.canceled -= instance.OnJump;
@@ -504,15 +559,18 @@ public partial class @InputHandler: IInputActionCollection2, IDisposable
             @Interact.started -= instance.OnInteract;
             @Interact.performed -= instance.OnInteract;
             @Interact.canceled -= instance.OnInteract;
-            @Fire.started -= instance.OnFire;
-            @Fire.performed -= instance.OnFire;
-            @Fire.canceled -= instance.OnFire;
             @CharacterDecrement.started -= instance.OnCharacterDecrement;
             @CharacterDecrement.performed -= instance.OnCharacterDecrement;
             @CharacterDecrement.canceled -= instance.OnCharacterDecrement;
             @CharacterIncrement.started -= instance.OnCharacterIncrement;
             @CharacterIncrement.performed -= instance.OnCharacterIncrement;
             @CharacterIncrement.canceled -= instance.OnCharacterIncrement;
+            @Fire.started -= instance.OnFire;
+            @Fire.performed -= instance.OnFire;
+            @Fire.canceled -= instance.OnFire;
+            @Trigger.started -= instance.OnTrigger;
+            @Trigger.performed -= instance.OnTrigger;
+            @Trigger.canceled -= instance.OnTrigger;
         }
 
         public void RemoveCallbacks(ICharacterActionMapActions instance)
@@ -579,12 +637,14 @@ public partial class @InputHandler: IInputActionCollection2, IDisposable
     public interface ICharacterActionMapActions
     {
         void OnMove(InputAction.CallbackContext context);
+        void OnCameraMove(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnPause(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
-        void OnFire(InputAction.CallbackContext context);
         void OnCharacterDecrement(InputAction.CallbackContext context);
         void OnCharacterIncrement(InputAction.CallbackContext context);
+        void OnFire(InputAction.CallbackContext context);
+        void OnTrigger(InputAction.CallbackContext context);
     }
     public interface IUIActionMapActions
     {

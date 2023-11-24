@@ -39,58 +39,18 @@ public class CameraFollow : MonoBehaviour {
     
     private Vector3 cameraPosition;
     private Vector3 wallPush;
-    
-    //private Vector3 targetBoundsMin;
-    //private Vector3 targetBoundsMax;
-    //private Vector3 lastBoundsMin;
-    //private Vector3 lastBoundsMax;
-    //
-    //[SerializeField] private Vector3 boundsMin;
-    //[SerializeField] private Vector3 boundsMax;
-    //private float t;
+    private Vector3 lastPos;
     private bool locked;
     
     private void Awake() {
         target = characterController.transform;
         yTargetPos = target.position.y;
-        //lastBoundsMin = targetBoundsMin = boundsMin = new Vector3(Mathf.NegativeInfinity, Mathf.NegativeInfinity, Mathf.NegativeInfinity);
-        //lastBoundsMax = targetBoundsMax = boundsMax = new Vector3(Mathf.Infinity, Mathf.Infinity, Mathf.Infinity);
-        //CameraBounds.setCameraBounds += SetCameraBounds;
     }
-
-    //private void LockCamera() => locked = true;
-
-    //private void OnDestroy() {
-        //CameraBounds.setCameraBounds -= SetCameraBounds;
-    //}
-
-    private void SetCameraBounds(Vector3 min, Vector3 max) {
-        //Vector3 pos = transform.position;
-        //
-        //t = 0f;
-        //
-        //if (Time.timeSinceLevelLoad > 1f) {
-        //    lastBoundsMin = pos;
-        //    lastBoundsMax = pos;
-        //    
-        //    targetBoundsMin = min;
-        //    targetBoundsMax = max;
-        //    return;
-        //}
-        //
-        //lastBoundsMin = min;
-        //lastBoundsMax = max;
-    //
-        //targetBoundsMin = min;
-        //targetBoundsMax = max;
-//
-        //boundsMin = min;
-        //boundsMax = max;
-    }
-
+    
+    public void SetTarget(Transform target) => this.target = target;
+    
     private void Start() => transform.position = target.position - cameraOffset;
 
-    private Vector3 lastPos;
     private void LateUpdate() {
         centerPoint = transform.position - cameraOffset;
         SetYTargetPos();
@@ -98,40 +58,14 @@ public class CameraFollow : MonoBehaviour {
         if (locked) return;
         ClampPlayerWithinBoundingBox();
         Move();
-        //ClampCameraWithinBounds();
     }
 
     private void Move() => transform.position = 
-        new Vector3(
-                cameraPosition.x, 
-                Mathf.Clamp(cameraPosition.y, minYClampPosition, float.MaxValue), 
-                cameraPosition.z) + cameraOffset;
+        new Vector3(cameraPosition.x, 
+                    Mathf.Clamp(cameraPosition.y, minYClampPosition, float.MaxValue), 
+                    cameraPosition.z) 
+            + cameraOffset;
 
-    //private void ClampCameraWithinBounds() {
-    //    if (t < 1f) {
-    //        boundsMin = Vector3.Lerp(lastBoundsMin, targetBoundsMin, Ease.InOutSine(t));
-    //        boundsMax = Vector3.Lerp(lastBoundsMax, targetBoundsMax, Ease.InOutSine(t));
-    //        t += Time.deltaTime;
-    //    }
-    //    
-    //    if (pos.x < boundsMin.x)
-    //        wallPush.x = boundsMin.x - pos.x;
-    //    if (pos.x > boundsMax.x)
-    //        wallPush.x = boundsMax.x - pos.x;
-    //    if (pos.y < boundsMin.y)
-    //        wallPush.y = boundsMin.y - pos.y;
-    //    if (pos.y > boundsMax.y)
-    //        wallPush.y = boundsMax.y - pos.y;
-    //    if (pos.z < boundsMin.z)
-    //        wallPush.z = boundsMin.z - pos.z;
-    //    if (pos.z > boundsMax.z)
-    //        wallPush.z = boundsMax.z - pos.z;
-    //    //pos.x = Mathf.Clamp(pos.x, boundsMin.x, boundsMax.x);
-    //    //pos.y = Mathf.Clamp(pos.y, boundsMin.y, boundsMax.y);
-    //    //pos.z = Mathf.Clamp(pos.z, boundsMin.z, boundsMax.z);
-    //    //transform.position = pos;
-    //}
-    
     private void SetYTargetPos() {
         float playerFeet = target.position.y;
         if (characterController.isGrounded)
@@ -199,11 +133,7 @@ public class CameraFollow : MonoBehaviour {
     private void DrawLookahead() {
         if (!Application.isPlaying)
             centerPoint = transform.position - cameraOffset;
-        // Set Handles properties
-        Color lastColor = Handles.color;
         Handles.color = Color.black;
-        CompareFunction lastComp = Handles.zTest;
-
         Handles.zTest = CompareFunction.LessEqual;
 
         Handles.DrawWireCube(centerPoint + Vector3.up * lookAheadHeightOffset, lookAheadBound);
@@ -223,10 +153,6 @@ public class CameraFollow : MonoBehaviour {
         };
         
         Handles.DrawDottedLines(dottedLines, 7f);   // Ground height
-        
-        // Reset Handles
-        Handles.zTest = lastComp;
-        Handles.color = lastColor;
     }
 #endif    
 }

@@ -16,4 +16,5 @@ MonoBehaviour:
   instanceCopies: []
   coyoteTime: 0.15
   terminalVelocity: -50
+  fallingAcceleration: -25.7
   <TerminalVelocity>k__BackingField: -50

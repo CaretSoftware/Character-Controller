@@ -19,50 +19,29 @@ public class CameraFollowClose : MonoBehaviour {
 	private float _rotationY;
 	private Camera _cam;
 	
-	[HideInInspector]
-	public float clampLookupMax = 179;
-	[HideInInspector]
-	public float clampLookupMin = 12;
-	[HideInInspector]
-	public float smoothDampMinVal;
-	[HideInInspector]
-	public float smoothDampMaxVal;
-	
-	[SerializeField]
-	private bool _firstPerson;
-
+	[SerializeField, HideInInspector] private float clampLookupMax = 179;
+	[SerializeField, HideInInspector] private float clampLookupMin = 12;
+	[SerializeField, HideInInspector] private float smoothDampMinVal;
+	[SerializeField, HideInInspector] private float smoothDampMaxVal;
+	[SerializeField] private InputReader inputReader;
+	[SerializeField] private bool _firstPerson;
 	[SerializeField] private Transform followTransform; 
-	
-	[SerializeField] 
-	private LayerMask _collisionMask;
-	
-	[SerializeField]
-	private Transform _camera;
-	
-	[SerializeField] [Range(1f, 10f)]
-	private float mouseSensitivityX = 10f;
-	
-	[SerializeField] [Range(1f, 10f)]
-	private float mouseSensitivityY = 5f;
-		
-	[SerializeField] [Range(0.0f, 2f)]
-	private float _cameraCollisionRadius = .5f;
-
-	[SerializeField] [Range(0.0f, 2f)]
-	private float _headHeight = 1.6f;
-
-	[SerializeField] 
-	private Vector3 _camera3rdPersonOffset = new Vector3(.8f, 1f, -5f);
-
-	[SerializeField] [Range(0f, 1f)] 
-	private float _smoothCameraPosTime = 0.105f;
+	[SerializeField] private Transform _camera;
+	[SerializeField] private LayerMask _collisionMask;
+	[SerializeField, Range(1f, 10f)] private float mouseSensitivityX = 10f;
+	[SerializeField, Range(1f, 10f)] private float mouseSensitivityY = 5f;
+	[SerializeField, Range(0.0f, 2f)] private float _cameraCollisionRadius = .5f;
+	[SerializeField, Range(0f, 1f)] private float _smoothCameraPosTime = 0.105f;
+	[SerializeField, Range(0.0f, 2f)] private float _headHeight = 1.6f;
+	[SerializeField] private Vector3 _camera3rdPersonOffset = new Vector3(.8f, 1f, -5f);
 	
 	private void Awake() {
 		_cameraPos = transform.position;
 		_cam = Camera.main;
 	}
-
-	private void Update() => Input();
+	private void Update() {
+		Input();
+	}
 
 	private void LateUpdate() => MoveCamera();
 

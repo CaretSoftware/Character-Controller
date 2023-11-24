@@ -5,7 +5,7 @@ using UnityEngine.Serialization;
 
 [CreateAssetMenu(menuName = "States/Character/Slide")]
 public class Slide : Grounded {
-    [SerializeField, Range(0f, 10f)] private float slipSpeed = 5f;
+    [SerializeField, Range(0f, 20f)] private float slipSpeed = 5f;
     [SerializeField, Range(0f, 10f)] private float minSlideVelocity = 3f;
     [SerializeField, Range(0f, 1f)] private float inputSmoothTime = .1f;
     [SerializeField, Range(0f, 1f)] private float rotationSmoothTime = .1f;
@@ -45,12 +45,14 @@ public class Slide : Grounded {
             Slide copy = Cast<Slide>(characterState);
             if (copy == null) continue;
             
+            if (copy.slipSpeed != slipSpeed)
+                copy.slipSpeed = slipSpeed;
+            if (copy.minSlideVelocity != minSlideVelocity)
+                copy.minSlideVelocity = minSlideVelocity;
             if (copy.inputSmoothTime != inputSmoothTime)
                 copy.inputSmoothTime = inputSmoothTime;
             if (copy.rotationSmoothTime != rotationSmoothTime)
                 copy.rotationSmoothTime = rotationSmoothTime;
-            if (copy.slipSpeed != slipSpeed)
-                copy.slipSpeed = slipSpeed;
         }
     }
     
@@ -65,7 +67,7 @@ public class Slide : Grounded {
         
         characterController.Move((movementStateMachine.HorizontalVelocity + movementStateMachine.VerticalVelocity + slopeSlideVelocity) * Time.deltaTime);
 
-        if (GroundSlope() < characterController.slopeLimit && slopeSlideVelocity.magnitude < 3f)  // TODO Variable
+        if (GroundSlope() < characterController.slopeLimit && slopeSlideVelocity.magnitude < minSlideVelocity)  // TODO Variable
             movementStateMachine.TransitionTo<Grounded>();
             
         if (!characterController.isGrounded)
@@ -73,14 +75,10 @@ public class Slide : Grounded {
         
         if (input.JumpPressed || Time.time <= input.JumpPressedLast + movementStateMachine.JumpBufferDuration)
             movementStateMachine.TransitionTo<Jump>();
-        
-        // if Axis and not on slope
-            // transition to Move
     }
 
     private void SetSlopeSlideVelocity() {
-
-        this.slopeSlideVelocity -= this.slopeSlideVelocity * (Time.deltaTime * 3f);   // TODO Smooth damp
+        this.slopeSlideVelocity -= this.slopeSlideVelocity * (Time.deltaTime * 3f);
         Vector3 slopeSlideVelocity = this.slopeSlideVelocity;
         slopeSlideVelocity.y = Mathf.Min(0f, this.slopeSlideVelocity.y);
         this.slopeSlideVelocity = slopeSlideVelocity;
@@ -92,7 +90,7 @@ public class Slide : Grounded {
         ray.direction = Vector3.down;
 
         // Spherecast Slope angle
-        if (Physics.SphereCast(ray, radius, out sphereHitInfo, 2.1f * radius) ) {
+        if (characterController.isGrounded && Physics.SphereCast(ray, radius, out sphereHitInfo, 2.1f * radius) ) {
             // Raycast Stair angle
             stairAngle = float.MaxValue;
             if (Physics.Raycast(ray, out rayHitInfo, 10f)) { //1.75f))
@@ -116,7 +114,7 @@ public class Slide : Grounded {
         if (slopeSlideMagnitude == 0f)
             return;
 
-        if (slopeSlideMagnitude > minSlideVelocity)                                       // TODO parameter
+        if (slopeSlideMagnitude > minSlideVelocity)
             return;
          
         this.slopeSlideVelocity = Vector3.zero;
@@ -127,12 +125,14 @@ public class Slide : Grounded {
         
         float currSmoothX = input.Axis.x != 0 ? 0f : inputSmoothTime;
         float currSmoothY = input.Axis.y != 0 ? 0f : inputSmoothTime;
-        smoothInput.x = Mathf.SmoothDamp(smoothInput.x, input.Axis.x * .5f, ref xCurrentVelocity, currSmoothX);
-        smoothInput.y = Mathf.SmoothDamp(smoothInput.y, input.Axis.y * .5f, ref yCurrentVelocity, currSmoothY);
+        float angleFraction = Mathf.InverseLerp(90f, 0f, angle);
+        angleFraction *= angleFraction;
+        smoothInput.x = Mathf.SmoothDamp(smoothInput.x, input.Axis.x * angleFraction, ref xCurrentVelocity, currSmoothX);
+        smoothInput.y = Mathf.SmoothDamp(smoothInput.y, input.Axis.y * angleFraction, ref yCurrentVelocity, currSmoothY);
         horizontalVelocity.x = Mathf.Abs(smoothInput.x) > .1f ? smoothInput.x * movementStateMachine.MaxVelocity : 0f;
         horizontalVelocity.y = 0f;
         horizontalVelocity.z = Mathf.Abs(smoothInput.y) > .1f ? smoothInput.y * movementStateMachine.MaxVelocity : 0f;
-        return horizontalVelocity;
+        return Vector3.zero;// horizontalVelocity;
     }
     
     public override void LateUpdate() { }
@@ -141,8 +141,5 @@ public class Slide : Grounded {
 
     public override void Exit() {
         animator.SetBool(Sliding, false);
-        //Vector3 endVelocity = slopeSlideVelocity;
-        //endVelocity.y = 0f;
-        //setHorizontalVelocity?.Invoke(endVelocity);
     }
 }
