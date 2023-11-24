@@ -61,7 +61,5 @@ public class Move : Grounded {
 
     public override void FixedUpdate() { }
 
-    public override void Exit() {
-        animator.SetBool(Sliding, false);
-    }
+    public override void Exit() => animator.SetBool(Sliding, false);
 }

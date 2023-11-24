@@ -1,14 +1,11 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using System;
 using UnityEngine;
-
-[SuppressMessage("ReSharper", "RedundantCheckBeforeAssignment")]
-[SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
 
 [CreateAssetMenu(menuName = "States/Character/Falling")]
 public class Falling : CharacterState {
     [SerializeField] private float coyoteTime = .2f;
     [SerializeField] private float terminalVelocity = -50f;
+    [SerializeField] private float fallingAcceleration = 19.62f;
     [field: SerializeField] public float TerminalVelocity { get; private set; }
 
     private float timeFalling;
@@ -31,12 +28,13 @@ public class Falling : CharacterState {
     public override void Enter() {
         animator.SetBool(IsGrounded, false);
         timeFalling = 0f;
+        setVerticalVelocity?.Invoke(Vector3.zero);
     }
 
     public override void Update() {
         timeFalling += Time.deltaTime;
         Vector3 verticalVelocity = movementStateMachine.VerticalVelocity;
-        verticalVelocity.y += Time.deltaTime * -9.81f;
+        verticalVelocity.y += Time.deltaTime * fallingAcceleration;
         verticalVelocity.y = Mathf.Max(-Mathf.Abs(terminalVelocity), verticalVelocity.y);
         setVerticalVelocity?.Invoke(verticalVelocity);
         
@@ -52,12 +50,8 @@ public class Falling : CharacterState {
             movementStateMachine.TransitionTo<Inactive>();
     }
 
-    public override void LateUpdate() {
-    }
+    public override void LateUpdate() { }
+    public override void FixedUpdate() { }
 
-    public override void FixedUpdate() {
-    }
-
-    public override void Exit() {
-    }
+    public override void Exit() { }
 }

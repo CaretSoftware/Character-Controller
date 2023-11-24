@@ -1,12 +1,13 @@
-using System.Collections;
 using System.Collections.Generic;
 
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.Rendering;
+#pragma warning disable CS0618
 
+// @author Robin Seibold
+// https://github.com/Robinseibold/Unity-URP-Outlines
 public class ScreenSpaceOutlines : ScriptableRendererFeature {
-
     [System.Serializable]
     private class ScreenSpaceOutlineSettings {
 
@@ -30,7 +31,6 @@ public class ScreenSpaceOutlines : ScriptableRendererFeature {
         public float steepAngleThreshold = 0.2f;
         [Range(0.0f, 500.0f)]
         public float steepAngleMultiplier = 25.0f;
-
     }
 
     [System.Serializable]
@@ -46,7 +46,6 @@ public class ScreenSpaceOutlines : ScriptableRendererFeature {
         public PerObjectData perObjectData;
         public bool enableDynamicBatching;
         public bool enableInstancing;
-
     }
 
     private class ViewSpaceNormalsTexturePass : ScriptableRenderPass {
@@ -60,7 +59,7 @@ public class ScreenSpaceOutlines : ScriptableRendererFeature {
         private readonly Material occludersMaterial;
 
         private readonly RenderTargetHandle normals;
-
+        
         public ViewSpaceNormalsTexturePass(RenderPassEvent renderPassEvent, LayerMask layerMask, LayerMask occluderLayerMask, ViewSpaceNormalsTextureSettings settings) {
             this.renderPassEvent = renderPassEvent;
             this.normalsTextureSettings = settings;
@@ -126,11 +125,11 @@ public class ScreenSpaceOutlines : ScriptableRendererFeature {
     private class ScreenSpaceOutlinePass : ScriptableRenderPass {
 
         private readonly Material screenSpaceOutlineMaterial;
+        private readonly int temporaryBufferID = Shader.PropertyToID("_TemporaryBuffer");
 
         RenderTargetIdentifier cameraColorTarget;
 
         RenderTargetIdentifier temporaryBuffer;
-        int temporaryBufferID = Shader.PropertyToID("_TemporaryBuffer");
 
         public ScreenSpaceOutlinePass(RenderPassEvent renderPassEvent, ScreenSpaceOutlineSettings settings) {
             this.renderPassEvent = renderPassEvent;
@@ -200,5 +199,4 @@ public class ScreenSpaceOutlines : ScriptableRendererFeature {
         renderer.EnqueuePass(viewSpaceNormalsTexturePass);
         renderer.EnqueuePass(screenSpaceOutlinePass);
     }
-
 }

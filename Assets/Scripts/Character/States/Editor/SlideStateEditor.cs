@@ -31,7 +31,7 @@ public class SlideStateEditor : CharacterStateEditor {
     protected override void DisplayFields(bool selected) {
         base.DisplayFields(selected);
         
-        EditorGUILayout.Slider(slipSpeed, 0f, 10f, guiContentSlipSpeed);
+        EditorGUILayout.Slider(slipSpeed, 0f, 20f, guiContentSlipSpeed);
         EditorGUILayout.Slider(minSlideVelocity, 0f, 10f, guiContentMinSlideVelocity);
         EditorGUILayout.Slider(inputSmoothTime, 0f, 1f, guiContentInputSmoothTime);
         EditorGUILayout.Slider(rotationSmoothTime, 0f, 1f, guiContentRotationSmoothTime);

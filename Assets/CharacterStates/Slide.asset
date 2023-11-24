@@ -15,7 +15,7 @@ MonoBehaviour:
   stateMachine: {fileID: 0}
   instanceCopies:
   - {fileID: 0}
-  slipSpeed: 10
-  minSlideVelocity: 5.8
+  slipSpeed: 10.64
+  minSlideVelocity: 2.13
   inputSmoothTime: 0.1
   rotationSmoothTime: 0.2
