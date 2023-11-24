@@ -1,6 +1,11 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
+using UnityEngine.Serialization;
 
 public class CameraFollowClose : MonoBehaviour {
+	public delegate void CameraRotation(Quaternion cameraVector);
+	public static CameraRotation cameraRotation;
+	
 	private const string MouseX = "Mouse X";
 	private const string MouseY = "Mouse Y";
 	private const float LookOffset = 90;
@@ -14,64 +19,100 @@ public class CameraFollowClose : MonoBehaviour {
 	private Vector3 cameraDirection;
 	private Vector3 _smoothOffset;
 	private Vector3 _cameraPos;
-	private Vector2 _mouseMovement;
+	private Vector2 _mouseDeltaMovement;
+	private Vector2 stickInput;
 	private float _rotationX;
 	private float _rotationY;
 	private Camera _cam;
-	
+	private Quaternion currentCameraRotation;
+	private bool _debugHit;
+
 	[SerializeField, HideInInspector] private float clampLookupMax = 179;
 	[SerializeField, HideInInspector] private float clampLookupMin = 12;
 	[SerializeField, HideInInspector] private float smoothDampMinVal;
 	[SerializeField, HideInInspector] private float smoothDampMaxVal;
 	[SerializeField] private InputReader inputReader;
 	[SerializeField] private bool _firstPerson;
-	[SerializeField] private Transform followTransform; 
-	[SerializeField] private Transform _camera;
+	[SerializeField] private LayerMask playerLayer;
 	[SerializeField] private LayerMask _collisionMask;
-	[SerializeField, Range(1f, 10f)] private float mouseSensitivityX = 10f;
-	[SerializeField, Range(1f, 10f)] private float mouseSensitivityY = 5f;
+	[SerializeField] private Transform target; 
+	[SerializeField] private Transform _camera;
+	[SerializeField, Range(0f, 3f)] private float mouseSensitivityX = .1f;
+	[SerializeField, Range(0f, 3f)] private float mouseSensitivityY = .05f;
+	[SerializeField, Range(0f, 3f)] private float stickSensitivity = 1f;
 	[SerializeField, Range(0.0f, 2f)] private float _cameraCollisionRadius = .5f;
 	[SerializeField, Range(0f, 1f)] private float _smoothCameraPosTime = 0.105f;
 	[SerializeField, Range(0.0f, 2f)] private float _headHeight = 1.6f;
 	[SerializeField] private Vector3 _camera3rdPersonOffset = new Vector3(.8f, 1f, -5f);
 	
+	private void SetTarget(Transform target) => this.target = target;
+
 	private void Awake() {
 		_cameraPos = transform.position;
 		_cam = Camera.main;
+		inputReader.CameraMoveEvent += InputGamePad;
+		inputReader.MouseMoveCameraEvent += InputMouse;
+		CharacterSwapper.swapCameraTarget += SetTarget;
+		HideCursor();
 	}
+
+	private void HideCursor() {
+		Cursor.lockState = CursorLockMode.Locked;
+		Cursor.visible = false;
+	}
+
+	private void OnDestroy() {
+		inputReader.CameraMoveEvent -= InputGamePad;
+		inputReader.MouseMoveCameraEvent -= InputMouse;
+		CharacterSwapper.swapCameraTarget -= SetTarget;
+	}
+
 	private void Update() {
-		Input();
+		InputGamePad();
 	}
 
-	private void LateUpdate() => MoveCamera();
-
-	private void Input() {
-		_mouseMovement.x += UnityEngine.Input.GetAxisRaw(MouseX) * mouseSensitivityX;
-		_mouseMovement.y -= UnityEngine.Input.GetAxisRaw(MouseY) * mouseSensitivityY;
-		_mouseMovement.y = Mathf.Clamp(_mouseMovement.y, clampLookupMax - LookOffset, clampLookupMin - LookOffset);
+	private void LateUpdate() {
+		MoveCamera();
+		currentCameraRotation = Quaternion.Inverse(Quaternion.Euler(0f, _mouseDeltaMovement.x, 0f));
+		cameraRotation?.Invoke(currentCameraRotation);
 	}
 
-	private bool _debugHit;
+	private void InputGamePad() {
+		_mouseDeltaMovement.x += stickInput.x * stickSensitivity;
+		_mouseDeltaMovement.y -= stickInput.y * stickSensitivity;
+		ClampCameraAngle();
+	}
+
+	private void InputGamePad(Vector2 input) {
+		HideCursor();
+		stickInput = input;
+	}
+	
+	private void InputMouse(Vector2 input) {
+		const float inputConstant = 0.01f;
+		_mouseDeltaMovement.x += inputConstant * mouseSensitivityX * input.x;
+		_mouseDeltaMovement.y -= inputConstant * mouseSensitivityY * input.y;
+		ClampCameraAngle();
+	}
+	
+	private void ClampCameraAngle() => 
+		_mouseDeltaMovement.y = Mathf.Clamp(_mouseDeltaMovement.y, clampLookupMax - LookOffset, clampLookupMin - LookOffset);
+
 	private void MoveCamera() {
-		// Rotate Camera
-		_camera.rotation = Quaternion.Euler(_mouseMovement.y, _mouseMovement.x, 0.0f);
-
-		_cam.cullingMask = _firstPerson ? ~(1 << 1) : -1;	// Don't render the player if First Person
+		_camera.rotation = Quaternion.Euler(_mouseDeltaMovement.y, _mouseDeltaMovement.x, 0.0f);
+		_cam.cullingMask = _firstPerson ? ~playerLayer : -1;	// Don't render the player if First Person
 		
-		// Lock camera to first person position
-		if (_firstPerson) {
-			_camera.position = followTransform.position;
+		if (_firstPerson) {	// Lock camera to first person position
+			_camera.position = target.position + _headHeight * Vector3.up;
 			return;
 		}
 
-		// Smooth 
-		_cameraPos = Vector3.SmoothDamp(_cameraPos, followTransform.position, ref _smoothDampCurrentVelocityLateral, _smoothCameraPosTime);
+		// Lateral Smoothing
+		_cameraPos = Vector3.SmoothDamp(_cameraPos, target.position, ref _smoothDampCurrentVelocityLateral, _smoothCameraPosTime);
 		
 		origin = _cameraPos + _headHeight * Vector3.up;
 		cameraDirection = _camera.rotation * _camera3rdPersonOffset;
-
-		// Collision between intended camera position and player
-		Physics.SphereCast(origin, 
+		Physics.SphereCast(origin, // Collision between intended camera position and player
 			_cameraCollisionRadius, 
 			cameraDirection.normalized, 
 			out _hit, 

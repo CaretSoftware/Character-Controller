@@ -24,6 +24,9 @@ namespace OldController {
 
 			if (WallRunState.Requirement(Character))
 				stateMachine.TransitionTo<WallRunState>();
+			
+			if (!owner.CharacterActive)
+				stateMachine.TransitionTo<InactiveState>();
 		}
 
 		private void AddGravityForce() {

@@ -29,6 +29,7 @@ public class InputReader : ScriptableObject, InputHandler.ICharacterActionMapAct
     public event Action<Vector2> MoveEvent;
 
     public event Action<Vector2> CameraMoveEvent;
+    public event Action<Vector2> MouseMoveCameraEvent;
 
     public event Action JumpEvent;
     public event Action JumpCancelledEvent;
@@ -38,6 +39,7 @@ public class InputReader : ScriptableObject, InputHandler.ICharacterActionMapAct
 
     public event Action FireEvent;
     public event Action FireCanceledEvent;
+    
     public event Action<int> CharacterSwapEvent;
 
     public event Action PauseEvent;
@@ -49,6 +51,9 @@ public class InputReader : ScriptableObject, InputHandler.ICharacterActionMapAct
 
     public void OnCameraMove(InputAction.CallbackContext context) => 
             CameraMoveEvent?.Invoke(context.ReadValue<Vector2>());
+
+    public void OnCameraMoveMouse(InputAction.CallbackContext context) =>
+            MouseMoveCameraEvent?.Invoke(context.ReadValue<Vector2>());
 
     public void OnJump(InputAction.CallbackContext context) {
         if (context.phase == InputActionPhase.Performed) 

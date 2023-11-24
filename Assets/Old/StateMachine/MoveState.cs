@@ -2,23 +2,11 @@
 
 namespace OldController {
     public class MoveState : BaseState {
-
-        //private float inAirTime;
-        //private float transitionToAirStateTime = .1f;
         
         private const string State = "MoveState";
-        public override void Enter() {
-            Character._jumpedOnce = false;
-            //inAirTime = 0.0f;
-        }
+        public override void Enter() => Character._jumpedOnce = false;
 
         public override void Update() {
-
-            // if (Char._inputMovement.magnitude > float.Epsilon)
-            //     Char.Accelerate(Char._inputMovement);
-            // else
-            //     Char.Decelerate();
-            
             StepUp();
             
             Character.HandleVelocity();
@@ -34,8 +22,9 @@ namespace OldController {
 
             if (!Character.Grounded)
                 stateMachine.TransitionTo<AirState>();
-            //     inAirTime += Time.deltaTime;
-            // if (inAirTime >= transitionToAirstateTime)
+
+            if (!owner.CharacterActive)
+                stateMachine.TransitionTo<InactiveState>();
         }
 
         private void StepUp() {
@@ -54,7 +43,7 @@ namespace OldController {
                     maxDistance,
                     Character._collisionMask) &&
                 Character._velocity.y < float.Epsilon &&
-                // Vector3.Dot(lowHit.normal, Vector3.up) < .6f &&
+                
                 !Physics.CapsuleCast(
                     Character._point1Transform.position + stepHeight,
                     Character._point2Transform.position + stepHeight, 
@@ -66,7 +55,7 @@ namespace OldController {
                 Vector3 maxMagnitude = Vector3.ClampMagnitude(direction * Character._colliderRadius, Character._velocity.magnitude);
                 Physics.CapsuleCast(
                     Character._point1Transform.position + stepHeight + maxMagnitude,
-                    Character._point2Transform.position + stepHeight + maxMagnitude,//direction * Char._colliderRadius,
+                    Character._point2Transform.position + stepHeight + maxMagnitude,
                     Character._colliderRadius,
                     Vector3.down,
                     out RaycastHit hit, 
@@ -78,26 +67,14 @@ namespace OldController {
         }
 
         private void ApplyStaticFriction() {
-
-            // if (Char._velocity.magnitude < 
-            //     Char.normalForce.magnitude * Char._staticFrictionCoefficient) {
-            //     Char._velocity = Vector3.zero;
-            // } else {
-            //     Char._velocity -= Char._velocity.normalized * Char.normalForce.magnitude *
-            //                 Char._kineticFrictionCoefficient;
-            // }
-            
             if (Vector3.ProjectOnPlane(Character._velocity, Vector3.up).magnitude <
                 Character.normalForce.magnitude * Character._staticFrictionCoefficient) {
                 
-                // float verticalVelocity = Char._velocity.y;
                 Character._velocity = Vector3.zero;
-                // Char._velocity.y = verticalVelocity;
             }
         }
 
         private void AddGravityForce() {
-
             float gravityMovement = -Character._defaultGravity * Time.deltaTime;
             Character._velocity.y += gravityMovement;
         }

@@ -33,6 +33,9 @@ namespace OldController {
 
             if (Character.Grounded && Character._velocity.y < float.Epsilon)
                 stateMachine.TransitionTo<MoveState>();
+            
+            if (!owner.CharacterActive)
+                stateMachine.TransitionTo<InactiveState>();
         }
 
         public override void Exit() { }

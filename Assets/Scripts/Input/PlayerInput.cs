@@ -3,9 +3,13 @@ using UnityEngine;
 using Character;
 
     public class PlayerInput : MonoBehaviour, IInput {
+        private readonly Quaternion twoDimensionalRotation = Quaternion.Euler(-90f, 0f, 0f);
+        private Quaternion cameraRotation;
+        private Vector2 axisUnRotated;
+        private bool jumpPressed;
+
         [SerializeField] private InputReader inputReader;
         
-        private bool jumpPressed;
         public bool JumpPressed {
             get => jumpPressed;
             set {
@@ -14,7 +18,6 @@ using Character;
                     JumpPressedLast = Time.time;
             }
         }
-
         public float JumpPressedLast { get; private set; } = Mathf.NegativeInfinity;
         public bool JumpReleased { get; set; } = true;
         public bool JumpHold { get; set; }
@@ -34,6 +37,7 @@ using Character;
             inputReader.FireCanceledEvent += HandleCancelledFire;
             inputReader.PauseEvent += HandlePause;
             inputReader.ResumeEvent += HandleResume;
+            CameraFollowClose.cameraRotation += SetCameraRotation;
         }
 
         private void OnDestroy() {
@@ -46,6 +50,12 @@ using Character;
             inputReader.FireCanceledEvent -= HandleCancelledFire;
             inputReader.PauseEvent -= HandlePause;
             inputReader.ResumeEvent -= HandleResume;
+            CameraFollowClose.cameraRotation -= SetCameraRotation;
+        }
+
+        private void SetCameraRotation(Quaternion rotation) {
+            Axis = Quaternion.Inverse(twoDimensionalRotation) * cameraRotation * twoDimensionalRotation * axisUnRotated;
+            cameraRotation = rotation;
         }
 
         private void LateUpdate() {
@@ -54,7 +64,7 @@ using Character;
         }
 
         private void HandleMove(Vector2 dir) {
-            Axis = dir;
+            Axis = axisUnRotated = dir;
             if (Axis.magnitude > 1f)
                 Axis.Normalize();
         }
