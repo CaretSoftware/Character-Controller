@@ -54,11 +54,11 @@ namespace OldController {
 			if (_falling)
 				stateMachine.TransitionTo<AirState>();
 
-			// if (WallRunState.Requirement(Player))
-			// 	stateMachine.TransitionTo<WallRunState>();
-
 			if (Character.Grounded && Character._velocity.y < float.Epsilon)
 				stateMachine.TransitionTo<MoveState>();
+			
+			if (!owner.CharacterActive)
+				stateMachine.TransitionTo<InactiveState>();
 		}
 
 		private static RaycastHit RayCast(OldCharacterController character, Vector3 direction) {

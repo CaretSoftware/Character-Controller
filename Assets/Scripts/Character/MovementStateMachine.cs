@@ -9,6 +9,8 @@ namespace Character {
         private Animator _animator;
         private IInput input;
         private int characterIndex = -1;
+        private Vector3 smoothRotation;
+        private Vector3 currentVelocity;
         
         private Action<Vector3> setHorizontalVelocity;
         private Action<Vector3> setVerticalVelocity;
@@ -79,9 +81,7 @@ namespace Character {
             CharacterSwapper.cycleCharacter -= CharacterSwap;
         }
 
-        private void SetJumpBufferDuration(float jumpBufferDuration) {
-            JumpBufferDuration = jumpBufferDuration;
-        }
+        private void SetJumpBufferDuration(float jumpBufferDuration) => JumpBufferDuration = jumpBufferDuration;
 
         private void SetVerticalVelocity(Vector3 verticalVelocity) => VerticalVelocity = verticalVelocity;
 
@@ -93,8 +93,6 @@ namespace Character {
 
         private void CharacterSwap(int index) => CharacterActive = characterIndex == index;
         
-        private Vector3 smoothRotation;
-        private Vector3 currentVelocity;
         private void RotateForward(float rotationSmoothTime) {
             Vector3 horizontalVelocity = _characterController.velocity;
             horizontalVelocity.y = 0f;
@@ -112,7 +110,7 @@ namespace Character {
         }
 
 #if UNITY_EDITOR
-        private static MovementStateMachine _movementStateMachine;
+        //private static MovementStateMachine _movementStateMachine;
         private readonly int textWidth = 200;
         private readonly int padding = 24;
 
@@ -127,8 +125,10 @@ namespace Character {
             };
 
         private void OnGUI() {
-            _movementStateMachine ??= this;
-            if (_movementStateMachine != this) return;
+            //_movementStateMachine ??= this;
+            //if (_movementStateMachine != this) return;
+            if (!CharacterActive) return;
+            
             Rect rect = new Rect {
                 xMin = Screen.width - textWidth - padding, 
                 yMin = padding, 

@@ -24,6 +24,15 @@
                     "initialStateCheck": true
                 },
                 {
+                    "name": "CameraMoveMouse",
+                    "type": "Value",
+                    "id": "67e9b7f9-425e-41b1-b9f2-8778a5ee26f0",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
                     "name": "Jump",
                     "type": "Button",
                     "id": "4aa74a18-b56d-4360-89a0-ea30cf8816cc",
@@ -338,6 +347,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "CameraMove",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "14c8de42-55e1-445e-949e-12568fac6df9",
+                    "path": "<Mouse>/delta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CameraMoveMouse",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

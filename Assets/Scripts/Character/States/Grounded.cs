@@ -91,8 +91,6 @@ public class Grounded : CharacterState {
         if (Physics.SphereCast(ray, radius, out RaycastHit sphereHitInfo, 1f))
             slopeAngle = Vector3.Angle(Vector3.up, sphereHitInfo.normal);
         
-        DebugRay.pos = ray.origin;
-        DebugRay.radius = radius * .95F;
         return Mathf.Min(stairAngle, slopeAngle);
     }
 

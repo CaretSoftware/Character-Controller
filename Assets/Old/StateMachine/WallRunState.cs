@@ -40,19 +40,7 @@ namespace OldController {
 		}
 
 		public override void Update() {
-			// Move character along vector of wall surface normal
-			// project characters _velocity on wall normal, multiply with initial wall running speed
-			// redirect characters _velocity into run? add upwards velocity?
-			// decrease speed with time
-
-			// Player.AirControl();
-
 			AddGravityForce();
-
-			// Player.ApplyAirFriction();
-
-			// if (Player.pressedJump && Player._velocity.y > threshold) 
-			// 	stateMachine.TransitionTo<JumpState>();
 
 			if (Character.PressedJump)
 				stateMachine.TransitionTo<WallJumpState>();
@@ -62,6 +50,9 @@ namespace OldController {
 
 			if (Character.Grounded)
 				stateMachine.TransitionTo<MoveState>();
+			
+			if (!owner.CharacterActive)
+				stateMachine.TransitionTo<InactiveState>();
 		}
 
 		private void AddGravityForce() {
@@ -73,7 +64,6 @@ namespace OldController {
 				Character._velocity += Character._velocity.y * -_wallNormal * Time.deltaTime;
 			}
 
-			//CounteractFloat();
 			Character._velocity += gravityMovement;
 		}
 

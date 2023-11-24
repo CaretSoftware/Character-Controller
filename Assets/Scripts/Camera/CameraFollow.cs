@@ -1,3 +1,4 @@
+using System;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -45,9 +46,12 @@ public class CameraFollow : MonoBehaviour {
     private void Awake() {
         target = characterController.transform;
         yTargetPos = target.position.y;
+        CharacterSwapper.swapCameraTarget += SetTarget;
     }
+
+    private void OnDestroy() => CharacterSwapper.swapCameraTarget -= SetTarget;
     
-    public void SetTarget(Transform target) => this.target = target;
+    private void SetTarget(Transform target) => this.target = target;
     
     private void Start() => transform.position = target.position - cameraOffset;
 

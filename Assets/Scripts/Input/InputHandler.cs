@@ -46,6 +46,15 @@ public partial class @InputHandler: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
+                    ""name"": ""CameraMoveMouse"",
+                    ""type"": ""Value"",
+                    ""id"": ""67e9b7f9-425e-41b1-b9f2-8778a5ee26f0"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
                     ""name"": ""Jump"",
                     ""type"": ""Button"",
                     ""id"": ""4aa74a18-b56d-4360-89a0-ea30cf8816cc"",
@@ -362,6 +371,17 @@ public partial class @InputHandler: IInputActionCollection2, IDisposable
                     ""action"": ""CameraMove"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""14c8de42-55e1-445e-949e-12568fac6df9"",
+                    ""path"": ""<Mouse>/delta"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CameraMoveMouse"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -411,6 +431,7 @@ public partial class @InputHandler: IInputActionCollection2, IDisposable
         m_CharacterActionMap = asset.FindActionMap("CharacterActionMap", throwIfNotFound: true);
         m_CharacterActionMap_Move = m_CharacterActionMap.FindAction("Move", throwIfNotFound: true);
         m_CharacterActionMap_CameraMove = m_CharacterActionMap.FindAction("CameraMove", throwIfNotFound: true);
+        m_CharacterActionMap_CameraMoveMouse = m_CharacterActionMap.FindAction("CameraMoveMouse", throwIfNotFound: true);
         m_CharacterActionMap_Jump = m_CharacterActionMap.FindAction("Jump", throwIfNotFound: true);
         m_CharacterActionMap_Pause = m_CharacterActionMap.FindAction("Pause", throwIfNotFound: true);
         m_CharacterActionMap_Interact = m_CharacterActionMap.FindAction("Interact", throwIfNotFound: true);
@@ -484,6 +505,7 @@ public partial class @InputHandler: IInputActionCollection2, IDisposable
     private List<ICharacterActionMapActions> m_CharacterActionMapActionsCallbackInterfaces = new List<ICharacterActionMapActions>();
     private readonly InputAction m_CharacterActionMap_Move;
     private readonly InputAction m_CharacterActionMap_CameraMove;
+    private readonly InputAction m_CharacterActionMap_CameraMoveMouse;
     private readonly InputAction m_CharacterActionMap_Jump;
     private readonly InputAction m_CharacterActionMap_Pause;
     private readonly InputAction m_CharacterActionMap_Interact;
@@ -497,6 +519,7 @@ public partial class @InputHandler: IInputActionCollection2, IDisposable
         public CharacterActionMapActions(@InputHandler wrapper) { m_Wrapper = wrapper; }
         public InputAction @Move => m_Wrapper.m_CharacterActionMap_Move;
         public InputAction @CameraMove => m_Wrapper.m_CharacterActionMap_CameraMove;
+        public InputAction @CameraMoveMouse => m_Wrapper.m_CharacterActionMap_CameraMoveMouse;
         public InputAction @Jump => m_Wrapper.m_CharacterActionMap_Jump;
         public InputAction @Pause => m_Wrapper.m_CharacterActionMap_Pause;
         public InputAction @Interact => m_Wrapper.m_CharacterActionMap_Interact;
@@ -519,6 +542,9 @@ public partial class @InputHandler: IInputActionCollection2, IDisposable
             @CameraMove.started += instance.OnCameraMove;
             @CameraMove.performed += instance.OnCameraMove;
             @CameraMove.canceled += instance.OnCameraMove;
+            @CameraMoveMouse.started += instance.OnCameraMoveMouse;
+            @CameraMoveMouse.performed += instance.OnCameraMoveMouse;
+            @CameraMoveMouse.canceled += instance.OnCameraMoveMouse;
             @Jump.started += instance.OnJump;
             @Jump.performed += instance.OnJump;
             @Jump.canceled += instance.OnJump;
@@ -550,6 +576,9 @@ public partial class @InputHandler: IInputActionCollection2, IDisposable
             @CameraMove.started -= instance.OnCameraMove;
             @CameraMove.performed -= instance.OnCameraMove;
             @CameraMove.canceled -= instance.OnCameraMove;
+            @CameraMoveMouse.started -= instance.OnCameraMoveMouse;
+            @CameraMoveMouse.performed -= instance.OnCameraMoveMouse;
+            @CameraMoveMouse.canceled -= instance.OnCameraMoveMouse;
             @Jump.started -= instance.OnJump;
             @Jump.performed -= instance.OnJump;
             @Jump.canceled -= instance.OnJump;
@@ -638,6 +667,7 @@ public partial class @InputHandler: IInputActionCollection2, IDisposable
     {
         void OnMove(InputAction.CallbackContext context);
         void OnCameraMove(InputAction.CallbackContext context);
+        void OnCameraMoveMouse(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnPause(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);

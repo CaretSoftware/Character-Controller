@@ -7,10 +7,11 @@ namespace OldController {
 	public class OldCharacterController : MonoBehaviour {
 
 		private StateMachine _stateMachine;
-		private List<BaseState> _states = new List<BaseState> { new MoveState(), new JumpState(), new AirState(), new WallRunState(), new WallJumpState() };
+		private List<BaseState> _states = new List<BaseState> { new MoveState(), new JumpState(), new AirState(), new WallRunState(), new WallJumpState(), new InactiveState() };
 		private Collider[] _OverlapCollidersNonAlloc = new Collider[10];
 		private Transform _camera;
 		private Transform _transform;
+		private int characterIndex = -1;
 
 		// Animation
 		private static readonly int DuckAnimationSpeedStringHash = Animator.StringToHash("Speed");
@@ -31,6 +32,8 @@ namespace OldController {
 		public bool HoldingJump { get; private set; }
 		public bool Jumped { get; private set; }
 		public Vector3 GroundNormal { get; private set; }
+		public bool CharacterActive { get; private set; }
+
 		[HideInInspector] public Vector3 _velocity;
 
 		[Space(10), Header("Character Controller Implementation Details")]
@@ -108,12 +111,16 @@ namespace OldController {
 			_transform = transform;
 			_stateMachine = new StateMachine(this, _states);
 			_collider = GetComponent<CapsuleCollider>();
-			_camera = GetComponentInChildren<Camera>().transform;
+			_camera = Camera.main.transform;
+			CharacterSwapper.cycleCharacter += CharacterSwap;
 		}
+
+		private void OnDestroy() => CharacterSwapper.cycleCharacter += CharacterSwap;
 
 		private void Start() {
 			_colliderRadius = _collider.radius;
 			ducking.Play("Ducking");
+			characterIndex = CharacterSwapper.GetCharacterIndex(null);
 		}
 		
 		private void Update() {
@@ -129,7 +136,8 @@ namespace OldController {
 			RotateTransform();
 		}
 
-		
+		private void CharacterSwap(int index) => CharacterActive = characterIndex == index;
+
 		public void Ducking() {
 			float animationProgress = ducking.GetCurrentAnimatorStateInfo(0).normalizedTime;
 			if (_holdingDuck && animationProgress >= 1.0f ||
@@ -153,7 +161,6 @@ namespace OldController {
 			_holdingDuck = UnityEngine.Input.GetKey(KeyCode.LeftShift);
 			HoldingJump = UnityEngine.Input.GetButton(Jump);
 			PressedJump = UnityEngine.Input.GetButtonDown(Jump);
-			
 			_pressedJumpMoment = PressedJump ? Time.time : _pressedJumpMoment;
 
 			Jumped = !_jumpedOnce && 
@@ -313,10 +320,6 @@ namespace OldController {
 				ApplyFriction(normalForce);
 				
 			} while (hit.collider && iterations++ < 10);
-			
-
-			if (iterations > 9)
-				Debug.Log("UpdateVelocity " + iterations);
 		}
 		
 		public void ResolveOverlap() {

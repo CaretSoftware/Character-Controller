@@ -1,7 +1,4 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Character;
 using UnityEngine;
 
@@ -9,11 +6,15 @@ public class CharacterSwapper : MonoBehaviour {
     public static CharacterSwapper Instance { get; private set; }
     public delegate void CycleCharacter(int increment);
     public static CycleCharacter cycleCharacter;
+    public delegate void SwapCameraTarget(Transform transform);
+    public static SwapCameraTarget swapCameraTarget;
+    
     [SerializeField] private InputReader inputReader;
     [SerializeField] private List<MovementStateMachine> characterControllers;
-    [SerializeField] private CameraFollow cameraFollow;
-    private int activeCharacter;
+    [SerializeField] private Transform oldCharacterController;
     
+    private int activeCharacter;
+
     private void Awake() { 
         if (Instance != null && Instance != this)
             Destroy(this);
@@ -31,13 +32,15 @@ public class CharacterSwapper : MonoBehaviour {
     private void SwapCharacter(int increment) {
         int mod = characterControllers.Count;
         activeCharacter += increment;
-        activeCharacter = (activeCharacter % mod + mod) % mod; // supports both negative and positive modulus
+        activeCharacter = (activeCharacter % mod + mod) % mod; // negative modulus
         cycleCharacter?.Invoke(activeCharacter);
-        cameraFollow.SetTarget(characterControllers[activeCharacter].transform);
+        swapCameraTarget?.Invoke(characterControllers[activeCharacter] != null 
+                ? characterControllers[activeCharacter].transform : oldCharacterController);
     }
 
     public static int GetCharacterIndex(MovementStateMachine characterController) {
-        if (!Instance.characterControllers.Contains(characterController)) return -1;
+        if (!Instance.characterControllers.Contains(characterController)) 
+            return Instance.characterControllers.Count ^1;
 
         return Instance.characterControllers.IndexOf(characterController);
     }

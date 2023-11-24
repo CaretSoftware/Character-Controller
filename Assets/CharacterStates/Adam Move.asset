@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: Adam Move
   m_EditorClassIdentifier: 
   stateMachine: {fileID: 0}
-  instanceCopies: []
+  instanceCopies:
+  - {fileID: 0}
+  groundedGravity: -9.81
   characterMaxSpeed: 4
-  groundSmoothTime: 0.1
+  groundSmoothTime: 0.205
   rotationSmoothTime: 0.1
