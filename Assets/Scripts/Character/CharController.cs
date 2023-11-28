@@ -15,6 +15,8 @@ namespace Character {
         [SerializeField, Range(0f, 10f)] private float playerSpeed = 7.0f;
         [SerializeField, Range(0f, 10f)] private float jumpHeight = 5f;
         [SerializeField, Range(-100f, 0f)] private float gravity = -19.62f;
+        [SerializeField, Range(0f, 10f)] private float slopeSlideLimit = 5f;
+
         [Header("Apex Modifiers")] 
         [SerializeField, Range(-2f, 0f)] private float minApexVelocityThreshold = -.62f;
         [SerializeField, Range(0f, 2f)] private float maxApexVelocityThreshold = .2f;
@@ -79,7 +81,7 @@ namespace Character {
             //    characterController.Move(slopeSlideVelocity * Time.deltaTime);
             //}
             
-            platformMovement = Vector3.zero;    // TODO smoothDamp the platformVelocity to fake inertia
+            platformMovement = Vector3.zero;
             SetAnimationsParameters();
 
             //bool Sliding() { return slopeSlideVelocity.magnitude > .2f; }
@@ -201,7 +203,7 @@ namespace Character {
         private float rayAngle;
         private float angle;
         private void SetSlopeSlideVelocity() {
-            slopeSlideVelocity -= slopeSlideVelocity * (Time.deltaTime * 3f);   // TODO Smooth damp
+            slopeSlideVelocity -= slopeSlideVelocity * (Time.deltaTime * 3f);
             
             position = _transform.position;
             ray.origin = position + 1.01f * radius * Vector3.up;
@@ -224,14 +226,12 @@ namespace Character {
             }
 
             slopeSlideMagnitude = Vector3.ProjectOnPlane(slopeSlideVelocity, Vector3.up).magnitude;
-            if (slopeSlideMagnitude == 0f)
+            
+            if (slopeSlideMagnitude == 0f || slopeSlideMagnitude > slopeSlideLimit)
                 return;
 
-            if (slopeSlideMagnitude > 5f)                                       // TODO parameter
-                return;
             slopeSlideVelocity = Vector3.zero;
         }
-
         
         private void PlatformCheck(ControllerColliderHit hit) {
             ray.origin = _transform.position + Vector3.up * radius;

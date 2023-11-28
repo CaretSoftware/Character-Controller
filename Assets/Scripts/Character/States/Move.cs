@@ -10,8 +10,12 @@ public class Move : Grounded {
     [SerializeField] private float characterMaxSpeed = 5f;
     [SerializeField, Range(0f, 1f)] private float groundSmoothTime = .1f;
     [SerializeField, Range(0f, 1f)] private float rotationSmoothTime = .1f;
+    
     public float CharacterMaxSpeed => characterMaxSpeed;
     private Ray ray;
+    private Vector2 smoothInput;
+    private float xCurrentVelocity;
+    private float yCurrentVelocity;
 
     public override void Enter() {
         xCurrentVelocity = 0f;
@@ -40,13 +44,11 @@ public class Move : Grounded {
         Vector3 horizontalVelocity = SetHorizontalVelocity(movementStateMachine.HorizontalVelocity);
         AdjustVelocityToSlope(ref horizontalVelocity);
         setHorizontalVelocity?.Invoke(horizontalVelocity);
-        characterController.Move((horizontalVelocity + movementStateMachine.VerticalVelocity) * Time.deltaTime);
+        characterController.Move((horizontalVelocity + movementStateMachine.VerticalVelocity) * Time.deltaTime);// + movementStateMachine.PlatformVelocity);
+
         base.Update();
     }
 
-    private float xCurrentVelocity;
-    private float yCurrentVelocity;
-    private Vector2 smoothInput;
     private Vector3 SetHorizontalVelocity(Vector3 horizontalVelocity) {
         float currSmoothX = input.Axis.x != 0 ? 0f : groundSmoothTime;
         float currSmoothY = input.Axis.y != 0 ? 0f : groundSmoothTime;

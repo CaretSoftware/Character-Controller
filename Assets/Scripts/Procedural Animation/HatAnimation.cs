@@ -22,7 +22,7 @@ public class HatAnimation : MonoBehaviour {
 
     [Range(-10f, 10f)] public float speed = .05f;
     private void LateUpdate() {
-        target.y = Mathf.InverseLerp(0f, -1f, characterController.velocity.y * speed); // TODO Lerp range with velocity as t
+        target.y = Mathf.InverseLerp(0f, -1f, characterController.velocity.y * speed);
         proceduralAnimation.Input =  target;
         pos = proceduralAnimation.Output;
         pos.y = Mathf.Clamp(pos.y * magnitude, 0f, float.PositiveInfinity);

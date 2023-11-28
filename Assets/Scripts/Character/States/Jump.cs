@@ -15,7 +15,8 @@ public class Jump : CharacterState {
     [SerializeField, Range(-2f, 0f)] private float minApexVelocityThreshold = -.62f;
     [SerializeField, Range(0f, 2f)] private float maxApexVelocityThreshold = .2f;
     [SerializeField, Range(0f, 1f)] private float rotationSmoothTime = .25f;
-    
+    [SerializeField, Range(0f, 1f)] private float apexGravityMultiplier = .25f;
+
     private Vector3 verticalVelocity;
     private float gravityMultiplier = 1f;
     
@@ -45,6 +46,8 @@ public class Jump : CharacterState {
                 copy.minApexVelocityThreshold = minApexVelocityThreshold;
             if (copy.maxApexVelocityThreshold != maxApexVelocityThreshold)
                 copy.maxApexVelocityThreshold = maxApexVelocityThreshold;
+            if (copy.apexGravityMultiplier != apexGravityMultiplier)
+                copy.apexGravityMultiplier = apexGravityMultiplier;
         }
     }
 
@@ -67,6 +70,21 @@ public class Jump : CharacterState {
         yCurrentVelocity = smoothInput.y;
     }
 
+    public override void Update() {
+        gravityMultiplier = SetJumpApexGravityMultiplier(input.JumpReleased, input.JumpHold, verticalVelocity);
+        verticalVelocity = GetVerticalVelocity(verticalVelocity, gravityMultiplier, Time.deltaTime);
+        setVerticalVelocity?.Invoke(verticalVelocity);
+        setHorizontalVelocity?.Invoke(GetHorizontalVelocity(ref smoothInput, input.Axis, ref xCurrentVelocity, ref yCurrentVelocity, Time.deltaTime));
+        rotateForward?.Invoke(rotationSmoothTime);
+        characterController.Move(Time.deltaTime * (movementStateMachine.VerticalVelocity + movementStateMachine.HorizontalVelocity));
+        
+        if (verticalVelocity.y <= 0f && characterController.isGrounded)
+            movementStateMachine.TransitionTo<Grounded>();
+        
+        if (!movementStateMachine.CharacterActive)
+            movementStateMachine.TransitionTo<Inactive>();
+    }
+
     private Ray ray;
     private RaycastHit sphereHitInfo;
     private Vector3 SlopeNormal() {
@@ -81,22 +99,7 @@ public class Jump : CharacterState {
             return sphereHitInfo.normal;
         return Vector3.up;
     }
-
-    public override void Update() {
-        gravityMultiplier = SetJumpApexGravityMultiplier(input.JumpReleased, input.JumpHold, verticalVelocity);
-        verticalVelocity = GetVerticalVelocity(verticalVelocity, gravityMultiplier, Time.deltaTime);
-        setVerticalVelocity?.Invoke(verticalVelocity);
-        setHorizontalVelocity?.Invoke(GetHorizontalVelocity(ref smoothInput, input.Axis, ref xCurrentVelocity, ref yCurrentVelocity, Time.deltaTime));
-        rotateForward?.Invoke(rotationSmoothTime);
-        characterController.Move(Time.deltaTime * (movementStateMachine.VerticalVelocity + movementStateMachine.HorizontalVelocity));
-        
-        if (verticalVelocity.y < 0f && characterController.isGrounded)
-            movementStateMachine.TransitionTo<Grounded>();
-        
-        if (!movementStateMachine.CharacterActive)
-            movementStateMachine.TransitionTo<Inactive>();
-    }
-
+    
     private Vector3 GetVerticalVelocity(Vector3 verticalVelocity, float gravityMultiplier, float deltaTime) {
         verticalVelocity.y += gravity * gravityMultiplier * deltaTime;
         float terminalVelocity = movementStateMachine != null ? movementStateMachine.TerminalVelocity : -20f;
@@ -107,9 +110,10 @@ public class Jump : CharacterState {
     private float SetJumpApexGravityMultiplier(bool jumpReleased, bool jumpHold, Vector3 verticalVelocity) {
         float gravityMultiplier = !jumpReleased && (jumpHold && verticalVelocity.y > minApexVelocityThreshold) 
             ? 1f : fallGravityMultiplier;
-        gravityMultiplier = !jumpReleased && jumpHold && 
-                       (verticalVelocity.y > minApexVelocityThreshold && verticalVelocity.y < maxApexVelocityThreshold) 
-            ? .25f : gravityMultiplier; // TODO .25f Don't hardcode!
+        bool withinApexVelocityRange = verticalVelocity.y > minApexVelocityThreshold &&
+                                    verticalVelocity.y < maxApexVelocityThreshold;
+        gravityMultiplier = !jumpReleased && jumpHold && withinApexVelocityRange
+            ? apexGravityMultiplier : gravityMultiplier;
         return gravityMultiplier;
     }
 

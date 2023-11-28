@@ -11,7 +11,7 @@ namespace OldController {
 		private Collider[] _OverlapCollidersNonAlloc = new Collider[10];
 		private Transform _camera;
 		private Transform _transform;
-		private int characterIndex = -1;
+		private int characterIndex = -2;
 
 		// Animation
 		private static readonly int DuckAnimationSpeedStringHash = Animator.StringToHash("Speed");
@@ -335,7 +335,7 @@ namespace OldController {
 
 				for (int i = 0; i < _count; i++) {
 					if (Physics.ComputePenetration(
-						    _collider, // TODO optimize this? _collider.transform.position should be _transform.position and .rotation??
+						    _collider,
 						    _collider.transform.position,
 						    _collider.transform.rotation, 
 						    _OverlapCollidersNonAlloc[i], 

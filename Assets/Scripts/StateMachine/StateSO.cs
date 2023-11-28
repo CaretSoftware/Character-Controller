@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public abstract class State : ScriptableObject {    // TODO remove ScriptableObject inheritance later
+public abstract class State {
     
     public StateMachine stateMachine;
 
@@ -15,7 +15,7 @@ public abstract class State : ScriptableObject {    // TODO remove ScriptableObj
     public virtual void Exit() { }
 }
 
-public abstract class StateScriptableObject : ScriptableObject {
+public abstract class StateSO : ScriptableObject {
     
     public StateMachine stateMachine;
 

@@ -25,7 +25,6 @@ public class SoundManager : MonoBehaviour {
     private float maxdBSFX = -10f;
     private float maxdBMusic = 10f;
     
-    // TODO options to change music tracks, queue up fade to the next
     [SerializeField] private AudioSource musicSource;
     [SerializeField] private AudioSource sfxSource;
     [SerializeField] private AudioSource undampenedSFXSource;

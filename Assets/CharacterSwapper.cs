@@ -20,12 +20,10 @@ public class CharacterSwapper : MonoBehaviour {
             Destroy(this);
         else
             Instance = this;
+        inputReader.CharacterSwapEvent += SwapCharacter;
     }
 
-    private void Start() {
-        inputReader.CharacterSwapEvent += SwapCharacter;
-        cycleCharacter?.Invoke(activeCharacter);
-    }
+    private void Start() => SwapCharacter(0);
 
     private void OnDestroy() => inputReader.CharacterSwapEvent -= SwapCharacter;
 

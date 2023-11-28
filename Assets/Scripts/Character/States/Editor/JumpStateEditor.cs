@@ -5,17 +5,16 @@ using UnityEngine;
 [CustomEditor(typeof(Jump))]
 public class JumpStateEditor : CharacterStateEditor {
     private SerializedProperty jumpBufferTime;
+    private SerializedProperty jumpHeight;
+    private SerializedProperty airSmoothTime;
+    private SerializedProperty airControlSmoothTime;
+    private SerializedProperty gravity;
+    private SerializedProperty fallGravityMultiplier;
+    private SerializedProperty minApexVelocityThreshold;
+    private SerializedProperty maxApexVelocityThreshold;
+    private SerializedProperty rotationSmoothTime;
+    private SerializedProperty apexGravityMultiplier;
     
-    
-    SerializedProperty jumpHeight;
-    SerializedProperty airSmoothTime;
-    SerializedProperty airControlSmoothTime;
-    SerializedProperty gravity;
-    SerializedProperty fallGravityMultiplier;
-    SerializedProperty minApexVelocityThreshold;
-    SerializedProperty maxApexVelocityThreshold;
-    SerializedProperty rotationSmoothTime;
-
     private GUIContent guiContentJumpHeight;
     private GUIContent guiContentJumpBufferTime;
     private GUIContent guiContentAirSmoothTime;
@@ -23,6 +22,7 @@ public class JumpStateEditor : CharacterStateEditor {
     private GUIContent guiContentGravity;
     private GUIContent guiContentFallGravityMultiplier;
     private GUIContent guiContentRotationSmoothTime;
+    private GUIContent guiContentApexGravityMultiplier;
 
     protected override void OnEnable() {
         base.OnEnable();
@@ -36,6 +36,7 @@ public class JumpStateEditor : CharacterStateEditor {
         minApexVelocityThreshold = serializedObject.FindProperty("minApexVelocityThreshold");
         maxApexVelocityThreshold = serializedObject.FindProperty("maxApexVelocityThreshold");
         rotationSmoothTime = serializedObject.FindProperty("rotationSmoothTime");
+        apexGravityMultiplier = serializedObject.FindProperty("apexGravityMultiplier");
         
         guiContentJumpHeight = new GUIContent(jumpHeight.name);
         guiContentJumpBufferTime = new GUIContent(jumpBufferTime.name);
@@ -44,6 +45,7 @@ public class JumpStateEditor : CharacterStateEditor {
         guiContentGravity = new GUIContent(gravity.name);
         guiContentFallGravityMultiplier = new GUIContent(fallGravityMultiplier.name);
         guiContentRotationSmoothTime = new GUIContent(rotationSmoothTime.name);
+        guiContentApexGravityMultiplier = new GUIContent(apexGravityMultiplier.name);
     }
 
     protected override void DisplayFields(bool selected) {

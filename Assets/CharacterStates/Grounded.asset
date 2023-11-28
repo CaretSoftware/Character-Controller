@@ -15,4 +15,6 @@ MonoBehaviour:
   stateMachine: {fileID: 0}
   instanceCopies:
   - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   groundedGravity: -19.62
