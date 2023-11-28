@@ -5,15 +5,15 @@ using Unity.VisualScripting;
 
 public class StateMachine : MonoBehaviour {
 
-    protected State currentState;
-    protected State queuedState;
-    protected List<State> stateHistory = new List<State>();
+    protected StateSO currentState;
+    protected StateSO queuedState;
+    protected List<StateSO> stateHistory = new List<StateSO>();
 
-    protected Dictionary<Type, State> _states = new Dictionary<Type, State>();
-    [SerializeField] protected List<State> states;
+    protected Dictionary<Type, StateSO> _states = new Dictionary<Type, StateSO>();
+    [SerializeField] protected List<StateSO> states;
     
     protected virtual void Awake() {
-        foreach (State state in states) {
+        foreach (StateSO state in states) {
             state.stateMachine = this;
             _states.Add(state.GetType(), state);
             currentState ??= state;
@@ -44,7 +44,7 @@ public class StateMachine : MonoBehaviour {
 
     private void FixedUpdate() => currentState.FixedUpdate();
 
-    public void TransitionTo<T>() where T : State => queuedState = _states[typeof(T)];
+    public void TransitionTo<T>() where T : StateSO => queuedState = _states[typeof(T)];
     
     public void TransitionTo(Type type) => queuedState = _states[type];
 }

@@ -71,7 +71,6 @@ public static class Ease {
     /// <param name="x">usually a over time linearly increasing value between 0.0f and 1.0f</param>
     /// <returns>a value that goes from 0.0f to 1.0f, increasing non-linearly</returns>    
     public static float InExpo(float x) {
-        // TODO test if handles negative numbers TODO
         return x == 0 ? 0 : Mathf.Pow(2f, 10f * x - 10f);
     }
 

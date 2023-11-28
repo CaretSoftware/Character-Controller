@@ -6,6 +6,8 @@ using UnityEngine;
 
 [CreateAssetMenu(menuName = "States/Character/Idle")]
 public class Idle : Grounded {
+    private static readonly int ForwardVelocity = Animator.StringToHash("ForwardVelocity");
+    
     [SerializeField] private float timeToBored = 10f;
     private float timeIdling;
 
@@ -19,18 +21,23 @@ public class Idle : Grounded {
     }
 
     public override void Enter() {
-        // TODO Set Animation to idle
-        //animator.SetBool(IsMoving, false);
+        animator.SetFloat(ForwardVelocity, 0f);
         setHorizontalVelocity?.Invoke(Vector3.zero);
         timeIdling = 0f;
     }
-
+    
     public override void Update() {
         timeIdling += Time.deltaTime;
         if (timeIdling >= timeToBored) {
             animator.SetBool(Bored, true);
             timeIdling = 0f;
         }
+
+        //float verticalVelocity = movementStateMachine.PlatformVelocity.y >= 0f
+        //        ? movementStateMachine.PlatformVelocity.y
+        //        : -.1f;
+        //characterController.Move(movementStateMachine.PlatformVelocity);
+
         base.Update();
     }
 

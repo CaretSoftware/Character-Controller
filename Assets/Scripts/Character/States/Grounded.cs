@@ -7,16 +7,15 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "States/Character/Grounded")]
 public class Grounded : CharacterState {
     [SerializeField, Range(0f, -30f)] private float groundedGravity = -9.81f;
-    
+
     public override void Enter() {
-        
         Vector3 horizontalVelocity = movementStateMachine.HorizontalVelocity;
         AdjustVelocityToSlope(ref horizontalVelocity);
         setHorizontalVelocity?.Invoke(horizontalVelocity);
         setVerticalVelocity?.Invoke(Vector3.up * groundedGravity);
         characterController.Move(
-                (movementStateMachine.HorizontalVelocity + movementStateMachine.VerticalVelocity) 
-                * Time.deltaTime);
+            (movementStateMachine.HorizontalVelocity + movementStateMachine.VerticalVelocity)
+            * Time.deltaTime);// + Vector3.down);
         animator.SetBool(IsGrounded, true);
     }
 
@@ -31,7 +30,7 @@ public class Grounded : CharacterState {
             movementStateMachine.TransitionTo<Idle>();
 
         if (input.Axis.sqrMagnitude > 0f 
-                || Vector3.ProjectOnPlane(characterController.velocity, Vector3.up).sqrMagnitude > .1f)
+               || Vector3.ProjectOnPlane(characterController.velocity, Vector3.up).sqrMagnitude > .1f)
             movementStateMachine.TransitionTo<Move>();
 
         if (GroundSlope() >= characterController.slopeLimit)
@@ -80,7 +79,6 @@ public class Grounded : CharacterState {
         ray.origin = myTransform.position + radius * Vector3.up;
         ray.direction = Vector3.down;
 
-        // TODO raycast doesn't reach if too short
         float maxDistance = Mathf.Infinity;// (radius + characterController.skinWidth + characterController.stepOffset) / Mathf.Cos(characterController.slopeLimit * Mathf.Deg2Rad);
         float stairAngle = 180f;
         float slopeAngle = 0f;
@@ -93,10 +91,6 @@ public class Grounded : CharacterState {
         
         return Mathf.Min(stairAngle, slopeAngle);
     }
-
-    public override void LateUpdate() { }
-
-    public override void FixedUpdate() { }
 
     public override void Exit() { }
 }

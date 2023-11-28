@@ -2,28 +2,30 @@ using UnityEngine;
 
 namespace Character {
     public class FootDust : MonoBehaviour {
-        [SerializeField] private UnityEngine.CharacterController characterController;
+        [SerializeField] private CharacterController characterController;
         [SerializeField] private ParticleSystem dustParticleSystem;
         [SerializeField] private ParticleSystem landParticleSystem;
         [SerializeField, Range(0f, 1f)] private float footStepVolume = .75f; 
         [SerializeField, Range(0f, 1f)] private float footHorizontalOffset = .25f; 
+        [SerializeField, Range(0f, 1f)] private float landingMaxInterval = .25f; 
         private bool groundedLastFrame = true;
-
+        private float timeLastLanding;
+        
         private void Awake() {
             if (characterController == null)
-                characterController = GetComponentInParent<UnityEngine.CharacterController>();
+                characterController = GetComponentInParent<CharacterController>();
         }
 
         private void FixedUpdate() {
             bool grounded = characterController.isGrounded;
 
-            bool landed = grounded && !groundedLastFrame; 
+            bool landed = grounded && !groundedLastFrame && Time.time > timeLastLanding + landingMaxInterval;//  characterController.velocity.y < -.05f * Time.deltaTime; 
         
             if (Time.timeScale > .95f || (!groundedLastFrame && Time.timeScale < .95f))
                 groundedLastFrame = grounded;
         
             if (landed) {
-                //AchievementManager.stepCountDelegate?.Invoke(1);
+                timeLastLanding = Time.time;
                 Vector3 pos = transform.position;
                 SoundManager.PlaySoundAtPoint(Sound.FootSteps, pos);
                 SoundManager.PlaySoundAtPoint(Sound.FootSteps, pos);

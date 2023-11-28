@@ -1704,13 +1704,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 248186567}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Moving Platforms
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &248186567
 Transform:
   m_ObjectHideFlags: 0
@@ -9709,6 +9709,7 @@ MonoBehaviour:
   landParticleSystem: {fileID: 1992862978}
   footStepVolume: 0.75
   footHorizontalOffset: 0.25
+  landingMaxInterval: 0.25
 --- !u!114 &1080511267
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11440,8 +11441,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1208066212}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 1.38, y: 0.08, z: 65.14}
+  m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
+  m_LocalPosition: {x: 1.38, y: 0.299, z: -0.79}
   m_LocalScale: {x: 0.75, y: 0.75, z: 0.75}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -11507,7 +11508,7 @@ CharacterController:
   m_Radius: 0.5
   m_SlopeLimit: 45
   m_StepOffset: 0.4
-  m_SkinWidth: 0.08
+  m_SkinWidth: 0.05
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 1, z: 0}
 --- !u!95 &1208066218
@@ -11582,6 +11583,7 @@ MonoBehaviour:
   landParticleSystem: {fileID: 184864432}
   footStepVolume: 0.75
   footHorizontalOffset: 0.25
+  landingMaxInterval: 0.5
 --- !u!114 &1208066222
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17083,7 +17085,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1788078623}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 5b4bb30edffbae0468a2f981698d1540, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -17095,8 +17097,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 1, y: 21.041224, z: 1}
+  m_Center: {x: 0, y: -10.020608, z: 0}
 --- !u!23 &1788078625
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -17157,7 +17159,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 1, z: 5}
-  m_LocalScale: {x: 3, y: 0.32, z: 3}
+  m_LocalScale: {x: 3, y: 1, z: 3}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 248186567}
@@ -17177,7 +17179,7 @@ MonoBehaviour:
   positions:
   - {x: 0, y: 1, z: 5}
   - {x: 0, y: 5, z: 5}
-  speed: 1
+  speed: 2
 --- !u!54 &1788078629
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -17201,10 +17203,10 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
+  m_IsKinematic: 1
+  m_Interpolate: 2
   m_Constraints: 112
-  m_CollisionDetection: 0
+  m_CollisionDetection: 3
 --- !u!1 &1793640125
 GameObject:
   m_ObjectHideFlags: 0
@@ -19252,7 +19254,7 @@ MonoBehaviour:
   positions:
   - {x: 4, y: 1, z: 10}
   - {x: 4, y: 1, z: 5}
-  speed: 1
+  speed: 2
 --- !u!54 &2031878098
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -19276,10 +19278,10 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
+  m_IsKinematic: 1
+  m_Interpolate: 2
   m_Constraints: 112
-  m_CollisionDetection: 0
+  m_CollisionDetection: 3
 --- !u!65 &2031878099
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -19287,7 +19289,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2031878096}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 5b4bb30edffbae0468a2f981698d1540, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -19299,8 +19301,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 1, y: 21.041224, z: 1}
+  m_Center: {x: 0, y: -10.020608, z: 0}
 --- !u!23 &2031878100
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -19361,7 +19363,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 4, y: 1, z: 5}
-  m_LocalScale: {x: 3, y: 0.32, z: 3}
+  m_LocalScale: {x: 3, y: 1, z: 3}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 248186567}
@@ -19885,12 +19887,27 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: -3779699752121413432, guid: 3d792085cdf1b254bb954769a7b8660a,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2995871053336481440, guid: 3d792085cdf1b254bb954769a7b8660a,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: -2995871053336481440, guid: 3d792085cdf1b254bb954769a7b8660a,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: -876546973899608171, guid: 23a3ed048ed1db84d81ce6d8e64a39b5,
         type: 3}
+    - target: {fileID: -2809916978276417292, guid: 3d792085cdf1b254bb954769a7b8660a,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: -2809916978276417292, guid: 3d792085cdf1b254bb954769a7b8660a,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -19900,6 +19917,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Layer
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: -2570602884373135666, guid: 3d792085cdf1b254bb954769a7b8660a,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -2570602884373135666, guid: 3d792085cdf1b254bb954769a7b8660a,
         type: 3}
@@ -19913,6 +19935,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -1819905865102085514, guid: 3d792085cdf1b254bb954769a7b8660a,
         type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -1819905865102085514, guid: 3d792085cdf1b254bb954769a7b8660a,
+        type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: b32734e0a9ad2f149bdf5059ade67cd8, type: 2}
@@ -19920,6 +19947,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Layer
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: -286877657977015716, guid: 3d792085cdf1b254bb954769a7b8660a,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 492402582245932604, guid: 3d792085cdf1b254bb954769a7b8660a,
         type: 3}
@@ -19946,6 +19978,11 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 2357009626636998867, guid: 3d792085cdf1b254bb954769a7b8660a,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3529691200434117944, guid: 3d792085cdf1b254bb954769a7b8660a,
         type: 3}
       propertyPath: m_Layer
@@ -19953,10 +19990,25 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4123089875683273862, guid: 3d792085cdf1b254bb954769a7b8660a,
         type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4123089875683273862, guid: 3d792085cdf1b254bb954769a7b8660a,
+        type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: -876546973899608171, guid: 23a3ed048ed1db84d81ce6d8e64a39b5,
         type: 3}
+    - target: {fileID: 4245644494406756602, guid: 3d792085cdf1b254bb954769a7b8660a,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5088947949512233568, guid: 3d792085cdf1b254bb954769a7b8660a,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5470163215388492629, guid: 3d792085cdf1b254bb954769a7b8660a,
         type: 3}
       propertyPath: m_Layer
@@ -19974,9 +20026,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8705699399457608120, guid: 3d792085cdf1b254bb954769a7b8660a,
         type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8705699399457608120, guid: 3d792085cdf1b254bb954769a7b8660a,
+        type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: b32734e0a9ad2f149bdf5059ade67cd8, type: 2}
+    - target: {fileID: 8724414515776557777, guid: 3d792085cdf1b254bb954769a7b8660a,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8724414515776557777, guid: 3d792085cdf1b254bb954769a7b8660a,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -83878,6 +83940,7 @@ MonoBehaviour:
   landParticleSystem: {fileID: 3525429265904300878}
   footStepVolume: 0.75
   footHorizontalOffset: 0.25
+  landingMaxInterval: 0.25
 --- !u!4 &8607216795035564961
 Transform:
   m_ObjectHideFlags: 0

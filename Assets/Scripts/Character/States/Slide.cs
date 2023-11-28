@@ -63,11 +63,9 @@ public class Slide : Grounded {
         AdjustVelocityToSlope(ref horizontalVelocity);
         setHorizontalVelocity?.Invoke(horizontalVelocity);
         
-        // TODO limit velocity to terminal velocity
-        
         characterController.Move((movementStateMachine.HorizontalVelocity + movementStateMachine.VerticalVelocity + slopeSlideVelocity) * Time.deltaTime);
 
-        if (GroundSlope() < characterController.slopeLimit && slopeSlideVelocity.magnitude < minSlideVelocity)  // TODO Variable
+        if (GroundSlope() < characterController.slopeLimit && slopeSlideVelocity.magnitude < minSlideVelocity)
             movementStateMachine.TransitionTo<Grounded>();
             
         if (!characterController.isGrounded)

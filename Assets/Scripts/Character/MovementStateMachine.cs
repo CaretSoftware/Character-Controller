@@ -8,10 +8,12 @@ namespace Character {
         private Transform _transform;
         private Animator _animator;
         private IInput input;
-        private int characterIndex = -1;
         private Vector3 smoothRotation;
         private Vector3 currentVelocity;
-        
+        private LayerMask platformLayer = 1 << 7;
+        private Ray ray;
+        private int characterIndex = -1;
+
         private Action<Vector3> setHorizontalVelocity;
         private Action<Vector3> setVerticalVelocity;
         private Action<float> setMaxVelocity;
@@ -25,8 +27,14 @@ namespace Character {
         public float TerminalVelocity { get; private set; }
         public float JumpBufferDuration { get; private set; }
         public bool CharacterActive { get; private set; }
-        public State InitialState { get; private set; }
+        public StateSO InitialState { get; private set; }
 
+        [ContextMenu("RESET Character")]
+        private void ResetCharacter() {
+            transform.position = Vector3.zero;
+            _characterController.Move(Vector3.zero);
+        }
+        
         protected override void Awake() {
             setJumpBufferDuration += SetJumpBufferDuration;
             setHorizontalVelocity += SetHorizontalVelocity;
@@ -35,14 +43,15 @@ namespace Character {
             setMaxVelocity += SetMaxVelocity;
             rotateForward += RotateForward;
             CharacterSwapper.cycleCharacter += CharacterSwap;
+            characterIndex = CharacterSwapper.GetCharacterIndex(this);
             
             _characterController = GetComponent<CharacterController>();
-            _characterController.Move(Vector3.down); // Moving sets IsGrounded variable
+            _characterController.Move(Vector3.down); // Move() sets IsGrounded variable in CharacterController
             _transform = transform;
             _animator = GetComponentInChildren<Animator>();
             input = GetComponent<IInput>();
             
-            foreach (State state in states) {
+            foreach (StateSO state in states) {
                 var instance = ((CharacterState)state).Copy();
                 _states.Add(instance.GetType(), instance);
                 currentState ??= InitialState = instance;
@@ -70,7 +79,15 @@ namespace Character {
             stateHistory.Add(currentState);
         }
 
-        private void Start() => characterIndex = CharacterSwapper.GetCharacterIndex(this);
+        protected override void Update() {
+            base.Update();
+            ray.origin = _transform.position + Vector3.up * _characterController.radius;
+            ray.direction = Vector3.down;
+            if (!_characterController.isGrounded) {
+                platform = null;
+                _transform.parent = null;
+            }
+        }
 
         private void OnDestroy() {
             setJumpBufferDuration -= SetJumpBufferDuration;
@@ -109,8 +126,48 @@ namespace Character {
             }
         }
 
+        private void OnControllerColliderHit(ControllerColliderHit hit) => PlatformCheck(hit);
+
+        private Transform platform;
+        private void PlatformCheck(ControllerColliderHit hit) {
+            bool hitPlatform = ((1 << hit.gameObject.layer) & platformLayer.value) != 0;
+            bool hitIsLastPlatform = hit.transform == platform;
+            bool platformBelow = _transform.position.y > hit.transform.position.y;
+            bool hitIsFromBelow = (_characterController.collisionFlags & CollisionFlags.CollidedBelow) != 0;
+
+            if (!hitPlatform && hitIsFromBelow) {
+                platform = null;
+                _transform.parent = null;
+                return;
+            }
+
+            if (!hitPlatform || hitIsLastPlatform || !hitIsFromBelow || !platformBelow)
+                return;
+            
+            platform = hit.transform;
+
+            _transform.parent = platform;
+            PlaceCharacterOnPlatform();
+            
+            void PlaceCharacterOnPlatform() {
+                const float platformHeight = 1.25f;
+                Vector3 position = _transform.position;
+                Vector3 platformPosition = platform.position;
+                position.y = platformPosition.y + platformHeight;
+                _transform.position = position;
+            }
+        }
+
+        //private Vector3 lastPlatformPosition;
+        //private void SetPlatformVelocity() {
+        //    if (platform == null) return;
+        //    
+        //    Vector3 currPosition = platform.position;
+        //    PlatformVelocity = currPosition - lastPlatformPosition;
+        //    lastPlatformPosition = currPosition;
+        //}
+        
 #if UNITY_EDITOR
-        //private static MovementStateMachine _movementStateMachine;
         private readonly int textWidth = 200;
         private readonly int padding = 24;
 
@@ -125,8 +182,6 @@ namespace Character {
             };
 
         private void OnGUI() {
-            //_movementStateMachine ??= this;
-            //if (_movementStateMachine != this) return;
             if (!CharacterActive) return;
             
             Rect rect = new Rect {

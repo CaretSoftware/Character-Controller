@@ -5,7 +5,6 @@ using UnityEngine;
 public class GroundedStateEditor : CharacterStateEditor {
     SerializedProperty groundedGravity;
     private GUIContent guiContentGroundedGravity;
-
     
     protected override void OnEnable() {
         base.OnEnable();

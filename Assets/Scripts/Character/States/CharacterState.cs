@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Character;
 using UnityEngine;
 
-public class CharacterState : State {
+public class CharacterState : StateSO {
     public List<CharacterState> instanceCopies = new List<CharacterState>();
     
     protected static readonly int MoveZ = Animator.StringToHash("ForwardVelocity");
