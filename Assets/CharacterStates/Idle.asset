@@ -16,4 +16,5 @@ MonoBehaviour:
   instanceCopies:
   - {fileID: 0}
   - {fileID: 0}
+  groundedGravity: -9.81
   timeToBored: 8

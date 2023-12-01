@@ -13,8 +13,5 @@ MonoBehaviour:
   m_Name: Grounded
   m_EditorClassIdentifier: 
   stateMachine: {fileID: 0}
-  instanceCopies:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  instanceCopies: []
   groundedGravity: -19.62

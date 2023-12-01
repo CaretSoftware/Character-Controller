@@ -23,5 +23,6 @@ MonoBehaviour:
   minApexVelocityThreshold: 0.23503327
   maxApexVelocityThreshold: 1.0421287
   rotationSmoothTime: 1
+  apexGravityMultiplier: 0.25
   graphArray: []
   one: 0

@@ -53,6 +53,9 @@ public class JumpStateEditor : CharacterStateEditor {
         base.DisplayFields(selected);
         
         DrawJumpDiagram();
+        DestroyImmediate(_previousTexture2D);    // Memory Leak Cleanup TODO
+        _previousTexture2D = null;
+        Resources.UnloadUnusedAssets();
         
         EditorGUILayout.Slider(jumpHeight, 0f, 10f, new GUIContent (guiContentJumpHeight));
         EditorGUILayout.Slider(airSmoothTime, 0f, 2f, new GUIContent (guiContentAirSmoothTime));
@@ -81,46 +84,54 @@ public class JumpStateEditor : CharacterStateEditor {
         
         int inspectorWidth = (int)EditorGUIUtility.currentViewWidth;
 
-        DestroyImmediate(_previousTexture2D);
-        Texture2D graphTexture = new Texture2D(inspectorWidth <= 0 ? 100 : inspectorWidth, 100);
-        _previousTexture2D = graphTexture;
+        //DestroyImmediate(_previousTexture2D);
+        //Texture2D graphTexture = 
+            _previousTexture2D = new Texture2D(inspectorWidth <= 0 ? 100 : inspectorWidth, 100);
+            _previousTexture2D.name = "Texture2DJumpStateEditor";
+            //_previousTexture2D = graphTexture;
+        
         Color backgroundColor = _inspectorGray;
         Color graphColor = Color.white;
 
         // Clear the texture with the background color
-        Color[] pixels = new Color[graphTexture.width * graphTexture.height];
+        Color[] pixels = new Color[_previousTexture2D.width * _previousTexture2D.height];
         for (int i = 0; i < pixels.Length; i++) {
             pixels[i] = backgroundColor;
         }
 
-        graphTexture.SetPixels(pixels);
+        _previousTexture2D.SetPixels(pixels);
 
         // Draw the scalar lines
-        float height = graphTexture.height;
-        for (int i = 0; i < graphTexture.width; i++) {
-            graphTexture.SetPixel(i, (int)(height*zero), lineColorZero);
-            graphTexture.SetPixel(i, (int)(height*one), lineColorOne);
+        float height = _previousTexture2D.height;
+        for (int i = 0; i < _previousTexture2D.width; i++) {
+            _previousTexture2D.SetPixel(i, (int)(height*zero), lineColorZero);
+            _previousTexture2D.SetPixel(i, (int)(height*one), lineColorOne);
         }
         
         // Draw the graph line
         for (int i = 0; i < dataPoints.Length - 1; i++) {
             Vector2 startPoint = new Vector2(
-                Mathf.Lerp(0, graphTexture.width, dataPoints[i].x),
-                Mathf.Lerp(0, graphTexture.height, dataPoints[i].y)
+                Mathf.Lerp(0, _previousTexture2D.width, dataPoints[i].x),
+                Mathf.Lerp(0, _previousTexture2D.height, dataPoints[i].y)
             );
             Vector2 endPoint = new Vector2(
-                Mathf.Lerp(0, graphTexture.width, dataPoints[i + 1].x),
-                Mathf.Lerp(0, graphTexture.height, dataPoints[i + 1].y)
+                Mathf.Lerp(0, _previousTexture2D.width, dataPoints[i + 1].x),
+                Mathf.Lerp(0, _previousTexture2D.height, dataPoints[i + 1].y)
             );
-            DrawLine(graphTexture, startPoint, endPoint, graphColor);
+            DrawLine(_previousTexture2D, startPoint, endPoint, graphColor);
         }
 
-        DrawCapsule(graphTexture, one);
+        DrawCapsule(_previousTexture2D, one);
         
-        graphTexture.Apply();
+        _previousTexture2D.Apply();
 
         // Display the graph in the inspector
-        GUILayout.Label(graphTexture);
+        GUILayout.Label(_previousTexture2D);
+    }
+
+    private void OnDestroy() {
+        Destroy(_previousTexture2D);
+        _previousTexture2D = null;
     }
 
     private static Color _capsuleColor = new Color(177f/255f, 252f/255f, 89f/255f);

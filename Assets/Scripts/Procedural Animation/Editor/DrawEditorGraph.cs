@@ -3,17 +3,22 @@ using UnityEditor;
 using UnityEngine;
 
 public class DrawEditorGraph : Editor {
-    private static Texture2D _previousTexture2D;
+    private const string textureName = "Texture2DDrawEditorGraph";
     public static readonly Color _inspectorGray = new Color(0.22352941176f, 0.22352941176f, 0.22352941176f);
     public static readonly Color lineColor0 = new Color(.15f, .15f, .15f);
     public static readonly Color lineColor1 = new Color(.3f, .3f, .3f);
-
+    private static Texture2D _previousTexture2D;
+    
     public static void DrawGraph(Vector2[] dataPoints, float zero, float one, Color backgroundColor, Color graphColor, Color lineColorZero, Color lineColorOne) {
         int inspectorWidth = (int)EditorGUIUtility.currentViewWidth;
         
+        // Clean up memory
         DestroyImmediate(_previousTexture2D);
+        _previousTexture2D = null;
+        
         Texture2D graphTexture = new Texture2D(inspectorWidth <= 0 ? 100 : inspectorWidth, 100);
         _previousTexture2D = graphTexture;
+        _previousTexture2D.name = textureName;
 
         // Clear the texture with the background color
         Color[] pixels = new Color[graphTexture.width * graphTexture.height];

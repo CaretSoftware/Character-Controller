@@ -1,13 +1,14 @@
-﻿using System;
-using UnityEngine;
-using UnityEngine.Serialization;
+﻿using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class CameraFollowClose : MonoBehaviour {
+	
 	public delegate void CameraRotation(Quaternion cameraVector);
 	public static CameraRotation cameraRotation;
 	
-	private const string MouseX = "Mouse X";
-	private const string MouseY = "Mouse Y";
+	public delegate void CameraShakeEvent(float magnitude);
+	public static CameraShakeEvent cameraShake;
+	
 	private const float LookOffset = 90;
 	
 	private RaycastHit _hit;
@@ -52,26 +53,27 @@ public class CameraFollowClose : MonoBehaviour {
 		_cam = Camera.main;
 		inputReader.CameraMoveEvent += InputGamePad;
 		inputReader.MouseMoveCameraEvent += InputMouse;
+		cameraShake += ShakeCamera;
 		CharacterSwapper.swapCameraTarget += SetTarget;
-		HideCursor();
+		//HideCursor();
 	}
 
-	private void HideCursor() {
-		Cursor.lockState = CursorLockMode.Locked;
-		Cursor.visible = false;
-	}
+	//private void HideCursor() {
+	//	Cursor.lockState = CursorLockMode.Locked;
+	//	Cursor.visible = false;
+	//}
 
 	private void OnDestroy() {
 		inputReader.CameraMoveEvent -= InputGamePad;
 		inputReader.MouseMoveCameraEvent -= InputMouse;
+		cameraShake -= ShakeCamera;
 		CharacterSwapper.swapCameraTarget -= SetTarget;
 	}
 
-	private void Update() {
-		InputGamePad();
-	}
+	private void Update() => InputGamePad();
 
 	private void LateUpdate() {
+		CameraShake();
 		MoveCamera();
 		currentCameraRotation = Quaternion.Inverse(Quaternion.Euler(0f, _mouseDeltaMovement.x, 0f));
 		cameraRotation?.Invoke(currentCameraRotation);
@@ -84,7 +86,7 @@ public class CameraFollowClose : MonoBehaviour {
 	}
 
 	private void InputGamePad(Vector2 input) {
-		HideCursor();
+		//HideCursor();
 		stickInput = input;
 	}
 	
@@ -99,7 +101,7 @@ public class CameraFollowClose : MonoBehaviour {
 		_mouseDeltaMovement.y = Mathf.Clamp(_mouseDeltaMovement.y, clampLookupMax - LookOffset, clampLookupMin - LookOffset);
 
 	private void MoveCamera() {
-		_camera.rotation = Quaternion.Euler(_mouseDeltaMovement.y, _mouseDeltaMovement.x, 0.0f);
+		Quaternion rot = _camera.rotation = Quaternion.Euler(_mouseDeltaMovement.y, _mouseDeltaMovement.x, 0.0f);
 		_cam.cullingMask = _firstPerson ? ~playerLayer : -1;	// Don't render the player if First Person
 		
 		if (_firstPerson) {	// Lock camera to first person position
@@ -111,7 +113,7 @@ public class CameraFollowClose : MonoBehaviour {
 		_cameraPos = Vector3.SmoothDamp(_cameraPos, target.position, ref _smoothDampCurrentVelocityLateral, _smoothCameraPosTime);
 		
 		origin = _cameraPos + _headHeight * Vector3.up;
-		cameraDirection = _camera.rotation * _camera3rdPersonOffset;
+		cameraDirection = rot * _camera3rdPersonOffset;
 		Physics.SphereCast(origin, // Collision between intended camera position and player
 			_cameraCollisionRadius, 
 			cameraDirection.normalized, 
@@ -128,9 +130,49 @@ public class CameraFollowClose : MonoBehaviour {
 		// interpolate towards end position
 		_smoothOffset = Vector3.SmoothDamp(_smoothOffset, _offsetLength, ref _smoothDampCurrentVelocity, _smoothDollyTime);
 
-		_camera.position = origin + _camera.rotation * _smoothOffset;
-
+		_camera.SetPositionAndRotation(
+				origin + _camera.rotation * _smoothOffset + cameraShakeOffset,
+			
+				cameraShakeRotation * rot);
+		
 		_debugHit = _hit.collider;
+	}
+	
+	private void ShakeCamera(float magnitude) => trauma += magnitude;
+
+	[Header("Camera Shake")]
+	private float trauma;
+	[SerializeField, Range(0f, 10f)] private float shakeSpeed = 1f;
+	[SerializeField, Range(0f, 10f)] private float vibrationSpeed = 1f;
+	[SerializeField, Range(0f, 10f)] private float cameraShakeFalloffSpeed = 1f;
+	[SerializeField] private float rotationFactor = 1f;
+	private Quaternion cameraShakeRotation;
+	private Vector3 cameraShakeOffset;
+	
+	private void CameraShake() {
+		// perlin within Range(-1, 1)
+		float perlinNoiseX = (Mathf.PerlinNoise(0, Time.time * shakeSpeed) - .5f) * 2;
+		float perlinNoiseY = (Mathf.PerlinNoise(.5f, Time.time * shakeSpeed) - .5f) * 2;
+		// add perlin within Range(-.25, .25)
+		perlinNoiseX += (Mathf.PerlinNoise(.25f, Time.time * vibrationSpeed) - .5f) * .5f;
+		perlinNoiseY += (Mathf.PerlinNoise(.75f, Time.time * vibrationSpeed) - .5f) * .5f;
+
+		// decrease trauma over time
+		trauma = Mathf.Clamp(trauma -= Time.deltaTime * cameraShakeFalloffSpeed, 0.0f, 1.0f);
+		
+		float easedTrauma = Ease.InQuad(trauma);
+		
+		Gamepad.current?.SetMotorSpeeds(trauma, easedTrauma);
+
+		cameraShakeOffset = 
+			transform.rotation * 
+			new Vector3(perlinNoiseX * easedTrauma, perlinNoiseY * easedTrauma, 0.0f);
+		
+		cameraShakeRotation = 
+			Quaternion.Euler(
+				perlinNoiseX * easedTrauma * rotationFactor, 
+				perlinNoiseY * easedTrauma * rotationFactor, 
+				Mathf.Lerp(perlinNoiseX, perlinNoiseY, .5f) * easedTrauma * rotationFactor);
 	}
 
 	private Camera mainCamera; 
