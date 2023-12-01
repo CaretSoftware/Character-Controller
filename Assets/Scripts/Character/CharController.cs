@@ -192,9 +192,7 @@ namespace Character {
             animator.SetFloat(MoveZ, horizontalVelocity.magnitude);
         }
         
-        private void OnControllerColliderHit(ControllerColliderHit hit) {
-            PlatformCheck(hit);
-        }
+        private void OnControllerColliderHit(ControllerColliderHit hit) => PlatformCheck(hit);
 
         private RaycastHit sphereHitInfo;
         private RaycastHit rayHitInfo;

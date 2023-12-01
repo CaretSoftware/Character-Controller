@@ -176,7 +176,7 @@ public class CameraFollowClose : MonoBehaviour {
 	}
 
 	private Camera mainCamera; 
-	private void OnDrawGizmos() {
+	private void OnDrawGizmosSelected() {
 		mainCamera ??= Camera.main;
 		Gizmos.color = _debugHit ? Color.red : Color.white;
 		Gizmos.DrawWireSphere(_camera.position, _cameraCollisionRadius);
