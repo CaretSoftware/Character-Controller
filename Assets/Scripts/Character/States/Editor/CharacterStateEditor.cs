@@ -40,9 +40,11 @@ public class CharacterStateEditor : Editor {
     protected void StateSelected(CharacterState characterState) => 
             SelectedCharacterState.characterState = characterState;
 
-    protected static GUIContent guiContentLabelContent;
-    
-    public override void OnInspectorGUI() {
+    protected GUIContent guiContentLabelContent;
+
+    public 
+        //override 
+        void OnInspectorGUIXXXXXXXXXX() {
         serializedObject.Update();
         
         // Selection
@@ -65,10 +67,11 @@ public class CharacterStateEditor : Editor {
         EditorGUI.DrawRect(new Rect(20, lineRect.y - selectedOffset, labelSize.x, 1), shadedGray);
         EditorGUI.DrawRect(new Rect(20, lineRect.y - selectedOffset, 1, EditorGUIUtility.singleLineHeight), shadedGray);
         EditorGUI.DrawRect(new Rect(20 + labelSize.x, lineRect.y - selectedOffset, 1, EditorGUIUtility.singleLineHeight), shadedGray);
-        
+
         // Draw Tab Shading
         for (int i = 0; i < EditorGUIUtility.singleLineHeight; i++) {
             Color c = Color.Lerp(inspectorGray, shadedGray, (i / EditorGUIUtility.singleLineHeight));
+
             EditorGUI.DrawRect(new Rect(lineRect.x, lineRect.y + i - selectedOffset, lineRect.width, 1), c);
             EditorGUI.DrawRect(new Rect(0, lineRect.y + i - selectedOffset, 20, 1), c);
         }
@@ -80,6 +83,55 @@ public class CharacterStateEditor : Editor {
         
         serializedObject.ApplyModifiedProperties();
     }
+    
+    public override void OnInspectorGUI() {
+        serializedObject.Update();
+
+        // Selection
+        bool selected = SelectedCharacterState.characterState != null && SelectedCharacterState.characterState.GetType() == target.GetType();
+        int previousSelectedOffset = previousSelected ? -5 : 0;
+        int selectedOffset = selected ? 5 : previousSelectedOffset;
+        LabelStyle.contentOffset = new Vector2(0, -selectedOffset);
+
+        EditorGUILayout.BeginHorizontal();
+
+        // State Label
+        GUIContent labelContent = GUIContentLabelContent();
+        Vector2 labelSize = LabelStyle.CalcSize(labelContent);
+        EditorGUILayout.LabelField(labelContent, LabelStyle, GUILayout.Width(labelSize.x));
+
+        Rect lineRect = EditorGUILayout.GetControlRect(false, EditorGUIUtility.singleLineHeight);
+
+        // Draw Tab Outlines
+        DrawOutline(new Rect(20, lineRect.y - selectedOffset, labelSize.x, 1), shadedGray);
+        DrawOutline(new Rect(20, lineRect.y - selectedOffset, 1, EditorGUIUtility.singleLineHeight), shadedGray);
+        DrawOutline(new Rect(20 + labelSize.x, lineRect.y - selectedOffset, 1, EditorGUIUtility.singleLineHeight), shadedGray);
+
+        // Draw Tab Shading
+        for (int i = 0; i < EditorGUIUtility.singleLineHeight; i++) {
+            Color c = Color.Lerp(inspectorGray, shadedGray, (i / EditorGUIUtility.singleLineHeight));
+
+            DrawOutline(new Rect(lineRect.x, lineRect.y + i - selectedOffset, lineRect.width, 1), c);
+            DrawOutline(new Rect(0, lineRect.y + i - selectedOffset, 20, 1), c);
+        }
+
+        EditorGUILayout.EndHorizontal();
+
+        // Show Variables
+        DisplayFields(selected);
+
+        serializedObject.ApplyModifiedProperties();
+    }
+
+    private GUIContent GUIContentLabelContent() {
+        guiContentLabelContent.text = targetName;
+        return guiContentLabelContent;
+    }
+
+    private void DrawOutline(Rect rect, Color color) {
+        EditorGUI.DrawRect(rect, color);
+    }
+
 
     private static bool previousSelected;
     protected virtual void DisplayFields(bool selected) {

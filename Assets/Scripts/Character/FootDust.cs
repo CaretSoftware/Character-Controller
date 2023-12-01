@@ -19,7 +19,7 @@ namespace Character {
         private void FixedUpdate() {
             bool grounded = characterController.isGrounded;
 
-            bool landed = grounded && !groundedLastFrame && Time.time > timeLastLanding + landingMaxInterval;//  characterController.velocity.y < -.05f * Time.deltaTime; 
+            bool landed = grounded && !groundedLastFrame && Time.time > timeLastLanding + landingMaxInterval;
         
             if (Time.timeScale > .95f || (!groundedLastFrame && Time.timeScale < .95f))
                 groundedLastFrame = grounded;

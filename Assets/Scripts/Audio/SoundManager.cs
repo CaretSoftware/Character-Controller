@@ -69,8 +69,8 @@ public class SoundManager : MonoBehaviour {
     private void Update() {
         sfxSource.pitch = Time.timeScale;
 
-        if (Input.GetKeyDown(KeyCode.T))
-            DampenAudioTemporarily(0f, 2f, Ease.InExpo);
+        //if (Input.GetKeyDown(KeyCode.T))
+        //    DampenAudioTemporarily(0f, 2f, Ease.InExpo);
 
         if (dampen) {
             time = (time >= 1f) ? 1f : time + Time.deltaTime * (1f / dampenDuration);

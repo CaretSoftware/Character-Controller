@@ -65,13 +65,11 @@ public class TankTread : MonoBehaviour {
             progress += 1f;
     }
 
-    public float debugRot;
     private void RotationProgress() {
         float yRotation = transform.rotation.eulerAngles.y;
         float t = Mathf.InverseLerp(0f, 360f, yRotation);
         rotationalProgress = Mathf.Lerp(0f, trackRevolutionsPerRotation, t) * chiralityFactor;
         rotationalProgress = MathfMod(rotationalProgress, 1f);
-        debugRot = rotationalProgress;
     }
 
     private void RotateWheels(Transform[] wheels, Vector3 rotationVector, Vector3 rotationOffset, float rotationSpeed) {

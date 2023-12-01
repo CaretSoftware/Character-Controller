@@ -18,6 +18,8 @@ public class TankMovement : CharacterState {
     private float currentRotationVelocity;
     private bool reloaded = true;
     private float lastShotTime;
+    private float nextBoredTime;
+    private float boredDuration = 10f;
 
     public override void Enter() {
         animator.SetBool(TankEntered, true);
@@ -49,6 +51,11 @@ public class TankMovement : CharacterState {
         SoundHorn();
         
         Movement();
+
+        if (nextBoredTime < Time.time) {
+            nextBoredTime = Time.time + boredDuration;
+            animator.SetTrigger(Bored);
+        }
         
         if (!movementStateMachine.CharacterActive)
             movementStateMachine.TransitionTo<Inactive>();

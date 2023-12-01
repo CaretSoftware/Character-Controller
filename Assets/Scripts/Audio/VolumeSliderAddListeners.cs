@@ -40,9 +40,12 @@ public class VolumeSliderAddListeners : MonoBehaviour {
     }
 
     private void OnDestroy() {
-        masterVolumeSlider.onValueChanged?.RemoveAllListeners();
-        musicVolumeSlider.onValueChanged?.RemoveAllListeners();
-        sfxVolumeSlider.onValueChanged?.RemoveAllListeners();
+        if (masterVolumeSlider != null && masterVolumeSlider.onValueChanged != null)
+            masterVolumeSlider.onValueChanged?.RemoveAllListeners();
+        if (musicVolumeSlider != null && musicVolumeSlider.onValueChanged != null)
+            musicVolumeSlider.onValueChanged?.RemoveAllListeners();
+        if (sfxVolumeSlider != null && sfxVolumeSlider.onValueChanged != null)
+            sfxVolumeSlider.onValueChanged?.RemoveAllListeners();
     }
 
     private void SetPref(string pref, float percent) => PlayerPrefs.SetFloat(pref, percent);

@@ -44,7 +44,7 @@ public class Move : Grounded {
         Vector3 horizontalVelocity = SetHorizontalVelocity(movementStateMachine.HorizontalVelocity);
         AdjustVelocityToSlope(ref horizontalVelocity);
         setHorizontalVelocity?.Invoke(horizontalVelocity);
-        characterController.Move((horizontalVelocity + movementStateMachine.VerticalVelocity) * Time.deltaTime);// + movementStateMachine.PlatformVelocity);
+        characterController.Move((horizontalVelocity + movementStateMachine.VerticalVelocity) * Time.deltaTime);
 
         base.Update();
     }

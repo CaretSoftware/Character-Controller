@@ -7,6 +7,8 @@ using UnityEngine;
 public class BlastWave : MonoBehaviour {
     [SerializeField] private LayerMask layerMask;
     [SerializeField] private float blastForce = 20f;
+    [SerializeField] private float cameraShakeTrauma = 3f;
+    
     private Rigidbody[] rigidbodies;
     private Transform mainCamera;
     private bool played;
@@ -38,6 +40,7 @@ public class BlastWave : MonoBehaviour {
             played = true;
             SoundManager.DampenAudioTemporarily(.2f, 1f, Ease.InCirc);
             SoundManager.PlaySound(Sound.BlastWave, .35f, false, true);
+            CameraFollowClose.cameraShake?.Invoke(cameraShakeTrauma);
         }
     }
 }

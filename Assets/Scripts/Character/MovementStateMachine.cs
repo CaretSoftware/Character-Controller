@@ -130,8 +130,9 @@ namespace Character {
 
         private Transform platform;
         private void PlatformCheck(ControllerColliderHit hit) {
+            if (_transform == null) return;
             bool hitPlatform = ((1 << hit.gameObject.layer) & platformLayer.value) != 0;
-            bool hitIsLastPlatform = hit.transform == platform;
+            bool hitIsLastPlatform = platform != null && hit.transform == platform;
             bool platformBelow = _transform.position.y > hit.transform.position.y;
             bool hitIsFromBelow = (_characterController.collisionFlags & CollisionFlags.CollidedBelow) != 0;
 
