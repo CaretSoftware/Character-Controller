@@ -12,9 +12,9 @@ public class CharacterSwapper : MonoBehaviour {
     [SerializeField] private InputReader inputReader;
     [SerializeField] private List<MovementStateMachine> characterControllers;
     [SerializeField] private Transform oldCharacterController;
-    
+    [SerializeField] private Transform arrowTransform;
     private int activeCharacter;
-
+    
     private void Awake() { 
         if (Instance != null && Instance != this)
             Destroy(this);
@@ -23,7 +23,15 @@ public class CharacterSwapper : MonoBehaviour {
         inputReader.CharacterSwapEvent += SwapCharacter;
     }
 
-    private void Start() => SwapCharacter(0);
+    private void Start() {
+        ShowCursor(false);
+        SwapCharacter(0);
+    }
+
+    private void ShowCursor(bool show) {
+        Cursor.visible = show;
+        Cursor.lockState = show ? CursorLockMode.None : CursorLockMode.Locked;
+    }
 
     private void OnDestroy() => inputReader.CharacterSwapEvent -= SwapCharacter;
 
@@ -32,8 +40,16 @@ public class CharacterSwapper : MonoBehaviour {
         activeCharacter += increment;
         activeCharacter = (activeCharacter % mod + mod) % mod; // negative modulus
         cycleCharacter?.Invoke(activeCharacter);
-        swapCameraTarget?.Invoke(characterControllers[activeCharacter] != null 
-                ? characterControllers[activeCharacter].transform : oldCharacterController);
+        Transform character = characterControllers[activeCharacter] != null
+            ? characterControllers[activeCharacter].transform
+            : oldCharacterController;
+        swapCameraTarget?.Invoke(character);
+
+        ShowCursor(activeCharacter == 1);
+        DisplayText(character.name);
+        ShowArrow(character);
+        CancelInvoke();
+        Invoke(nameof(HideArrow), 2f);
     }
 
     public static int GetCharacterIndex(MovementStateMachine characterController) {
@@ -42,4 +58,16 @@ public class CharacterSwapper : MonoBehaviour {
 
         return Instance.characterControllers.IndexOf(characterController);
     }
+
+    private void ShowArrow(Transform characterTransform) {
+        arrowTransform.parent = characterTransform; 
+        arrowTransform.localPosition = Vector3.zero;
+    }
+    
+    private void HideArrow() {
+        arrowTransform.parent = null;
+        arrowTransform.position = Vector3.down * 100;
+    }
+
+    private void DisplayText(string text) => UIText.updateText?.Invoke(text);
 }

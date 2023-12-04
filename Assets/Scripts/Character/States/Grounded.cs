@@ -15,7 +15,7 @@ public class Grounded : CharacterState {
         setVerticalVelocity?.Invoke(Vector3.up * groundedGravity);
         characterController.Move(
             (movementStateMachine.HorizontalVelocity + movementStateMachine.VerticalVelocity)
-            * Time.deltaTime);// + Vector3.down);
+            * Time.deltaTime);
         animator.SetBool(IsGrounded, true);
     }
 
@@ -25,7 +25,7 @@ public class Grounded : CharacterState {
         animator.SetFloat(MoveZ, velocity.magnitude);
         
         AddVerticalVelocity();
-
+        
         if (characterController.velocity.sqrMagnitude <= float.Epsilon)
             movementStateMachine.TransitionTo<Idle>();
 

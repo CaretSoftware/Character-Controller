@@ -55,13 +55,7 @@ public class CameraFollowClose : MonoBehaviour {
 		inputReader.MouseMoveCameraEvent += InputMouse;
 		cameraShake += ShakeCamera;
 		CharacterSwapper.swapCameraTarget += SetTarget;
-		//HideCursor();
 	}
-
-	//private void HideCursor() {
-	//	Cursor.lockState = CursorLockMode.Locked;
-	//	Cursor.visible = false;
-	//}
 
 	private void OnDestroy() {
 		inputReader.CameraMoveEvent -= InputGamePad;
@@ -86,7 +80,6 @@ public class CameraFollowClose : MonoBehaviour {
 	}
 
 	private void InputGamePad(Vector2 input) {
-		//HideCursor();
 		stickInput = input;
 	}
 	
@@ -175,7 +168,7 @@ public class CameraFollowClose : MonoBehaviour {
 				Mathf.Lerp(perlinNoiseX, perlinNoiseY, .5f) * easedTrauma * rotationFactor);
 	}
 
-	private Camera mainCamera; 
+	private Camera mainCamera;
 	private void OnDrawGizmosSelected() {
 		mainCamera ??= Camera.main;
 		Gizmos.color = _debugHit ? Color.red : Color.white;
