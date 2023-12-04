@@ -65,7 +65,7 @@ public class TankMovement : CharacterState {
         if (input.FireReleased) {
             reloaded = true;
         }
-        if (input.FirePressed && reloaded && Time.time >= lastShotTime) {
+        if ((input.FirePressed || Input.GetMouseButtonDown(0)) && reloaded && Time.time >= lastShotTime) {
             lastShotTime = Time.time + reloadTime;
             reloaded = false;
             SoundManager.PlaySound(Sound.CannonShot);
@@ -83,7 +83,7 @@ public class TankMovement : CharacterState {
         if (inputAxis == Vector2.zero) {
             characterController.Move(Time.deltaTime * 9.81f * Vector3.down);
             return;
-        }
+        } 
         
         float inputMagnitude = inputAxis.magnitude;
         
