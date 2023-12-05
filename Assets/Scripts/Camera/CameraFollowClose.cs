@@ -2,12 +2,12 @@
 using UnityEditor;
 using UnityEngine.Rendering;
 #endif
+
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class CameraFollowClose : MonoBehaviour {
-	
 	public delegate void CameraRotation(Quaternion cameraVector);
 	public static CameraRotation cameraRotation;
 	
@@ -118,25 +118,25 @@ public class CameraFollowClose : MonoBehaviour {
 		}
 		
 		// Lateral Smoothing
-		_cameraPos = Vector3.SmoothDamp(_camera.position, centerPoint, ref _smoothDampCurrentVelocityLateral, _smoothCameraPosTime);
-
+		_cameraPos = Vector3.SmoothDamp(_camera.position, centerPoint, 
+				ref _smoothDampCurrentVelocityLateral, _smoothCameraPosTime);
 		origin = _cameraPos + _headHeight * Vector3.up;
 		cameraDirection = rot * _camera3rdPersonOffset;
 		Physics.SphereCast(origin, // Dolly camera towards player to avoid obstruction
-			_cameraCollisionRadius, 
-			cameraDirection.normalized, 
-			out _hit, 
-			cameraDirection.magnitude, 
-			_collisionMask);
+				_cameraCollisionRadius, 
+				cameraDirection.normalized, 
+				out _hit, 
+				cameraDirection.magnitude, 
+				_collisionMask);
 
 		Vector3 collisionOrigin = targetPosition + _headHeight * Vector3.up;
 		Vector3 collisionDirection = _camera.position - collisionOrigin;
-		Physics.SphereCast(collisionOrigin, // Center camera on player
-			_cameraCollisionRadius, 
-			collisionDirection.normalized, 
-			out lineOfSightHit, 
-			collisionDirection.magnitude, 
-			_collisionMask);
+		Physics.SphereCast(collisionOrigin, // Center camera on player if about to loose line of sight
+				_cameraCollisionRadius, 
+				collisionDirection.normalized, 
+				out lineOfSightHit, 
+				collisionDirection.magnitude, 
+				_collisionMask);
 
 		collision = lineOfSightHit.collider;
 		
