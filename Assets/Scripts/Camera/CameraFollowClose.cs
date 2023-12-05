@@ -103,12 +103,11 @@ public class CameraFollowClose : MonoBehaviour {
 		_mouseDeltaMovement.y = Mathf.Clamp(_mouseDeltaMovement.y, 
 			clampLookupMax - LookOffset, clampLookupMin - LookOffset);
 
-	private Vector3 debug;
-	private Quaternion lookUpRotation;  
 	[SerializeField] private float lookUpRotationOffset = -20f;  
 	[SerializeField] private float minLimitLookUp = -1f;  
-	[SerializeField] private float maxLimitLookUp = 1f;  
-
+	[SerializeField] private float maxLimitLookUp = 1f;
+	private Quaternion lookUpRotation;  
+	private RaycastHit lineOfSightHit;
 	private void MoveCamera() {
 		Quaternion rot = _camera.rotation = Quaternion.Euler(_mouseDeltaMovement.y, _mouseDeltaMovement.x, 0.0f);
 		_cam.cullingMask = _firstPerson ? ~playerLayer : -1;	// Don't render the player if First Person
@@ -121,22 +120,29 @@ public class CameraFollowClose : MonoBehaviour {
 		// Lateral Smoothing
 		_cameraPos = Vector3.SmoothDamp(_camera.position, centerPoint, ref _smoothDampCurrentVelocityLateral, _smoothCameraPosTime);
 
-		float distance = Vector3.Distance(_cameraPos, targetPosition);
-		float t = Mathf.InverseLerp(1f,-_camera3rdPersonOffset.z, distance);
-		// _cameraPos = Vector3.Lerp(targetPosition, _cameraPos, t);
-		
-		debug = origin = _cameraPos + _headHeight * Vector3.up;
+		origin = _cameraPos + _headHeight * Vector3.up;
 		cameraDirection = rot * _camera3rdPersonOffset;
-		Physics.SphereCast(origin, // Collision between intended camera position and player
+		Physics.SphereCast(origin, // Dolly camera towards player to avoid obstruction
 			_cameraCollisionRadius, 
 			cameraDirection.normalized, 
 			out _hit, 
 			cameraDirection.magnitude, 
 			_collisionMask);
+
+		Vector3 collisionOrigin = targetPosition + _headHeight * Vector3.up;
+		Vector3 collisionDirection = _camera.position - collisionOrigin;
+		Physics.SphereCast(collisionOrigin, // Center camera on player
+			_cameraCollisionRadius, 
+			collisionDirection.normalized, 
+			out lineOfSightHit, 
+			collisionDirection.magnitude, 
+			_collisionMask);
+
+		collision = lineOfSightHit.collider;
 		
 		// set target offset depending if hit
 		_offsetLength = _hit.collider ? _camera3rdPersonOffset.normalized * _hit.distance : _camera3rdPersonOffset;
-
+		
 		// speed up smoothing if collision
 		float _smoothDollyTime = _hit.collider ? smoothDampMinVal : smoothDampMaxVal;
 		
@@ -149,7 +155,6 @@ public class CameraFollowClose : MonoBehaviour {
 
 		_camera.SetPositionAndRotation(
 				origin + _camera.rotation * _smoothOffset + cameraShakeOffset,
-			
 				cameraShakeRotation * rot * lookUpRotation);
 		
 		_debugHit = _hit.collider;
@@ -170,6 +175,7 @@ public class CameraFollowClose : MonoBehaviour {
 		// perlin within Range(-1, 1)
 		float perlinNoiseX = (Mathf.PerlinNoise(0, Time.time * shakeSpeed) - .5f) * 2;
 		float perlinNoiseY = (Mathf.PerlinNoise(.5f, Time.time * shakeSpeed) - .5f) * 2;
+		
 		// add perlin within Range(-.25, .25)
 		perlinNoiseX += (Mathf.PerlinNoise(.25f, Time.time * vibrationSpeed) - .5f) * .5f;
 		perlinNoiseY += (Mathf.PerlinNoise(.75f, Time.time * vibrationSpeed) - .5f) * .5f;
@@ -203,6 +209,7 @@ public class CameraFollowClose : MonoBehaviour {
 
 	[SerializeField] private CharacterController characterController;
 	private bool lookahead;
+	private bool collision;
 	private float yTargetHeight;
 	private float currentYHeight;
 	// Smoothing
@@ -237,7 +244,7 @@ public class CameraFollowClose : MonoBehaviour {
 		         Mathf.Abs(inverseTransformPoint.z) > lookAheadBound.z * .5f)
 			lookahead = true;
 
-		if (lookahead) {
+		if (lookahead || collision) {
 			Vector3 lookaheadDirection = Vector3.ProjectOnPlane(charVel, Vector3.up);
 			lookaheadDirection = Vector3.ClampMagnitude(lookaheadDirection, maxLookaheadLength);
 			newPos = targetPos + lookaheadDirection;
@@ -263,7 +270,6 @@ public class CameraFollowClose : MonoBehaviour {
 		
 		Gizmos.color = _debugHit ? Color.red : Color.white;
 		Gizmos.DrawWireSphere(_camera.position, _cameraCollisionRadius);
-		Gizmos.DrawWireSphere(debug, _cameraCollisionRadius);
 		
 		DrawLookahead();
 		
@@ -276,9 +282,6 @@ public class CameraFollowClose : MonoBehaviour {
 		if (!Application.isPlaying)
 			centerPoint = transform.position - _camera3rdPersonOffset;
 
-		Gizmos.color = Color.green;
-		Gizmos.DrawSphere(centerPoint, .2f);
-		
 		Handles.color = Color.black;
 		Handles.zTest = CompareFunction.LessEqual;
 		
