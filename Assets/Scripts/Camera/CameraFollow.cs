@@ -1,4 +1,3 @@
-using System;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -135,6 +134,7 @@ public class CameraFollow : MonoBehaviour {
     }
 
     private void DrawLookahead() {
+        return;
         if (!Application.isPlaying)
             centerPoint = transform.position - cameraOffset;
         Handles.color = Color.black;
