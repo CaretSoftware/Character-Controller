@@ -53,6 +53,7 @@ public class PlayerInput : MonoBehaviour, IInput {
 
     private void SetCameraRotation(Quaternion rotation) {
         cameraRotation = rotation;
+        Axis = Quaternion.Inverse(twoDimensionalRotation) * cameraRotation * twoDimensionalRotation * axisUnRotated;
     }
 
     private void LateUpdate() {
