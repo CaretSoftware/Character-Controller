@@ -322,18 +322,20 @@ namespace OldController {
 			} while (hit.collider && iterations++ < 10);
 		}
 		
-		public void ResolveOverlap() {
-			int _exit = 0;
-			int _count = Physics.OverlapCapsuleNonAlloc(
-				_point1Transform.position,// transform.position + _point1,
-				_point2Transform.position,//transform.position + _point2,
-				_collider.radius,
-				_OverlapCollidersNonAlloc,
-				_collisionMask);
+		private void ResolveOverlap() {
+			const int maxIterations = 10;
+			int iterations = 0;
+			int count;
 
-			while (_count > 0 && ++_exit < 10) {
+			do {
+				count = Physics.OverlapCapsuleNonAlloc(
+					_point1Transform.position,//transform.position + _point1,
+					_point2Transform.position,//transform.position + _point2,
+					_collider.radius,
+					_OverlapCollidersNonAlloc,
+					_collisionMask);
 
-				for (int i = 0; i < _count; i++) {
+				for (int i = 0; i < count; i++) {
 					if (Physics.ComputePenetration(
 						    _collider,
 						    _collider.transform.position,
@@ -343,20 +345,12 @@ namespace OldController {
 						    _OverlapCollidersNonAlloc[i].gameObject.transform.rotation,
 						    out var direction,
 						    out var distance)) {
-
 						Vector3 separationVector = direction * distance;
 						_transform.position += separationVector + separationVector.normalized * _skinWidth;
 						_velocity += Normal.Force(_velocity, direction);
 					}
 				}
-
-				_count = Physics.OverlapCapsuleNonAlloc(
-					_point1Transform.position,//transform.position + _point1,
-					_point2Transform.position,//transform.position + _point2,
-					_collider.radius,
-					_OverlapCollidersNonAlloc,
-					_collisionMask);
-			}
+			} while (count > 0 && ++iterations < maxIterations);
 		}
 		
 		public void AirControl() {
