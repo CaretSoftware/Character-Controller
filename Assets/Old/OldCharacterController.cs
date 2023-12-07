@@ -331,7 +331,7 @@ namespace OldController {
 				_OverlapCollidersNonAlloc,
 				_collisionMask);
 
-			while (_count > 0 && _exit++ < 10) {
+			while (_count > 0 && ++_exit < 10) {
 
 				for (int i = 0; i < _count; i++) {
 					if (Physics.ComputePenetration(
@@ -356,7 +356,6 @@ namespace OldController {
 					_collider.radius,
 					_OverlapCollidersNonAlloc,
 					_collisionMask);
-				_exit++;
 			}
 		}
 		
