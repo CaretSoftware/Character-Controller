@@ -14581,7 +14581,7 @@ Transform:
   m_GameObject: {fileID: 1080511263}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 3, y: 1, z: 65}
+  m_LocalPosition: {x: 3, y: 1, z: 67}
   m_LocalScale: {x: 0.75, y: 0.75, z: 0.75}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -17244,7 +17244,7 @@ Transform:
   m_GameObject: {fileID: 1208066212}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
-  m_LocalPosition: {x: 1, y: 1, z: 65}
+  m_LocalPosition: {x: 1, y: 1, z: 67}
   m_LocalScale: {x: 0.75, y: 0.75, z: 0.75}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -18663,7 +18663,7 @@ PrefabInstance:
     - target: {fileID: 1564033684449500098, guid: cf2edf1edd28b14449887e1fd38ecf81,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 65
+      value: 67
       objectReference: {fileID: 0}
     - target: {fileID: 1564033684449500098, guid: cf2edf1edd28b14449887e1fd38ecf81,
         type: 3}
@@ -23433,7 +23433,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1605625605}
-  - component: {fileID: 1605625604}
   - component: {fileID: 1605625606}
   - component: {fileID: 1605625603}
   - component: {fileID: 1605625602}
@@ -23550,29 +23549,6 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!114 &1605625604
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1605625600}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6c96a0c4a2e60b7489d7c5484152e2d0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  debugView: 1
-  characterController: {fileID: 1208066217}
-  cameraOffset: {x: 0, y: 7.17, z: -9.38}
-  lookAheadBound: {x: 9.3, y: 4.72, z: 6.9}
-  lookAheadHeightOffset: 2.42
-  smoothTimeLookahead: 0.467
-  maxLookaheadLength: 4
-  minCharacterVelocity: 1
-  maxCharacterVelocity: 4
-  smoothTimeVertical: 0.1
-  minYClampPosition: -5
 --- !u!4 &1605625605
 Transform:
   m_ObjectHideFlags: 0
@@ -23601,7 +23577,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   clampLookupMax: 44
-  clampLookupMin: 129
+  clampLookupMin: 145
   smoothDampMinVal: 0.05
   smoothDampMaxVal: 0.25
   inputReader: {fileID: 11400000, guid: fe7f5238dc5eb32499d82bf79f1917fd, type: 2}
@@ -23622,6 +23598,9 @@ MonoBehaviour:
   _headHeight: 1.2
   _camera3rdPersonOffset: {x: 2, y: 0, z: -13.22}
   lookUpRotationOffset: -19.2
+  fixedViewCharacter: {fileID: 1080511274}
+  fixedViewSpeed: 180
+  fixedViewAngle: 50
   shakeSpeed: 7.34
   vibrationSpeed: 5.52
   cameraShakeFalloffSpeed: 1.29
@@ -27744,7 +27723,7 @@ Transform:
   m_GameObject: {fileID: 1946190625}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 5, y: 1, z: 65}
+  m_LocalPosition: {x: 5, y: 1, z: 67}
   m_LocalScale: {x: 0.75, y: 0.75, z: 0.75}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -79924,7 +79903,7 @@ Transform:
   m_GameObject: {fileID: 4480914829613824149}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 213, y: 50, z: 65}
+  m_LocalPosition: {x: 213, y: 50, z: 67}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children:

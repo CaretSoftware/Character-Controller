@@ -78,25 +78,30 @@ public class CameraFollowClose : MonoBehaviour {
 	private void Update() => AddGamePadInput();
 
 	private void LateUpdate() {
+		SetGroundedHeight();
+		Lookahead();
+		
 		CameraShake();
 		MoveCamera();
-		
-		SetGroundedHeight(); // TODO
-		Lookahead();
 		
 		currentCameraRotation = Quaternion.Inverse(Quaternion.Euler(0f, _mouseDeltaMovement.x, 0f));
 		cameraRotation?.Invoke(currentCameraRotation);
 	}
 
 	private void AddGamePadInput() {
+		if (target == fixedViewCharacter) return;
 		_mouseDeltaMovement.x += stickInput.x * stickSensitivity;
 		_mouseDeltaMovement.y -= stickInput.y * stickSensitivity;
 		ClampCameraAngle();
 	}
 
-	private void InputGamePad(Vector2 input) => stickInput = input;
+	private void InputGamePad(Vector2 input) {
+		if (target == fixedViewCharacter) return;
+		stickInput = input;
+	}
 
 	private void InputMouse(Vector2 input) {
+		if (target == fixedViewCharacter) return;
 		const float inputConstant = 0.01f;
 		_mouseDeltaMovement.x += inputConstant * mouseSensitivityX * input.x;
 		_mouseDeltaMovement.y -= inputConstant * mouseSensitivityY * input.y;
@@ -110,13 +115,20 @@ public class CameraFollowClose : MonoBehaviour {
 	[SerializeField] private float lookUpRotationOffset = -19.2f;  
 	private float minLimitLookUp = -1f;  
 	private float maxLimitLookUp = 1f;
-	private Quaternion lookUpRotation;  
 	private RaycastHit lineOfSightHit;
-	//private RaycastHit centerPointHit;
 	private RaycastHit minHeightHit;
 	private Vector3 currentCameraCenter;
 	Collider[] colliders = new Collider[10];
+	[SerializeField] private Transform fixedViewCharacter;
+	[SerializeField] private float fixedViewSpeed = 10f;
+	[SerializeField] private float fixedViewAngle = 45f;
+	private bool done;
 	private void MoveCamera() {
+		if (target == fixedViewCharacter)
+			FixedView();
+		else
+			done = false;
+
 		Quaternion rot = _camera.rotation = Quaternion.Euler(_mouseDeltaMovement.y, _mouseDeltaMovement.x, 0.0f);
 		_cam.cullingMask = _firstPerson ? ~playerLayer : -1;	// Don't render the player if First Person
 		Vector3 targetPosition = target.position;
@@ -181,13 +193,34 @@ public class CameraFollowClose : MonoBehaviour {
 		
 		float upLook = Vector3.Dot(Vector3.up, cameraDirection.normalized);
 		float a = Mathf.InverseLerp(minLimitLookUp, maxLimitLookUp, upLook);
-		lookUpRotation = Quaternion.Lerp(quaternion.Euler(new float3(lookUpRotationOffset, 0f, 0f)), Quaternion.identity, a); 
+		Quaternion lookUpRotation = Quaternion.Lerp(quaternion.Euler(new float3(lookUpRotationOffset, 0f, 0f)), Quaternion.identity, a); 
 		
 		_camera.SetPositionAndRotation(
 				origin + _camera.rotation * _smoothObstructionOffset + cameraShakeOffset,
 				cameraShakeRotation * rot * lookUpRotation);
 	}
 
+	private void FixedView() {
+		if (done) return;
+			
+		float movementSpeed = fixedViewSpeed * Time.deltaTime;
+		float negativeModulo = NegativeModulo(_mouseDeltaMovement.x, 360f);
+			
+		if (_mouseDeltaMovement.y < fixedViewAngle)
+			_mouseDeltaMovement.y += Mathf.Min((180f + fixedViewAngle) - (180f + _mouseDeltaMovement.y), movementSpeed);
+			
+		if (negativeModulo <= movementSpeed) {
+			_mouseDeltaMovement.x = 0f;
+			if (_mouseDeltaMovement.y >= fixedViewAngle - 0.001f)
+				done = true;
+			return;
+		}
+
+		float mov = NegativeModulo(_mouseDeltaMovement.x, 360f) < 180 ? -movementSpeed: movementSpeed;
+		_mouseDeltaMovement.x += mov;
+		
+		float NegativeModulo(float x, float mod) => (x % mod + mod) % mod;
+	}
 	
 	private void ShakeCamera(float magnitude) => trauma += magnitude;
 
