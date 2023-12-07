@@ -265,11 +265,12 @@ public class CameraFollowClose : MonoBehaviour {
 		if (characterController == null) {
 			nonCharControllerVel = (target.position - nonCharControllerPos) * (1f / Time.deltaTime);
 			nonCharControllerPos = target.position;
-			Debug.Log(nonCharControllerVel);
 		}
+		
 		Vector3 charVel = characterController != null 
 				? Vector3.ProjectOnPlane(characterController.velocity, Vector3.up) 
 				: nonCharControllerVel;
+		
 		Vector3 eulerAngles = new Vector3(0f, transform.rotation.eulerAngles.y, 0f);
 		Quaternion camRot = Quaternion.Euler(eulerAngles);
 		float velocityFraction = Mathf.InverseLerp(minCharacterVelocity, maxCharacterVelocity, charVel.magnitude);

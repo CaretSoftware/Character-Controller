@@ -21,10 +21,8 @@ public class TankMovement : CharacterState {
     private float nextBoredTime;
     private float boredDuration = 10f;
 
-    public override void Enter() {
-        animator.SetBool(TankEntered, true);
-    }
-    
+    public override void Enter() => animator.SetBool(TankEntered, true);
+
     private void OnValidate() {
         foreach (CharacterState characterState in instanceCopies) {
             TankMovement copy = Cast<TankMovement>(characterState);
@@ -127,7 +125,5 @@ public class TankMovement : CharacterState {
         myTransform.Rotate(Vector3.up, rotationDirection * inputMagnitude * dampedRotationVelocity * Time.deltaTime);
     }
 
-    public override void Exit() {
-        animator.SetBool(TankEntered, false);
-    }
+    public override void Exit() => animator.SetBool(TankEntered, false);
 }
