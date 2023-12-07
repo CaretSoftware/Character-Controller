@@ -30,7 +30,7 @@ public class CharacterSwapper : MonoBehaviour {
 
     private void ShowCursor(bool show) {
         Cursor.visible = show;
-        Cursor.lockState = show ? CursorLockMode.None : CursorLockMode.Locked;
+        Cursor.lockState = show ? CursorLockMode.Confined : CursorLockMode.Locked;
     }
 
     private void OnDestroy() => inputReader.CharacterSwapEvent -= SwapCharacter;

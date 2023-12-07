@@ -2,12 +2,12 @@
 using UnityEditor;
 using UnityEngine.Rendering;
 #endif
+
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class CameraFollowClose : MonoBehaviour {
-	
 	public delegate void CameraRotation(Quaternion cameraVector);
 	public static CameraRotation cameraRotation;
 	
@@ -23,15 +23,14 @@ public class CameraFollowClose : MonoBehaviour {
 	private Vector3 origin;
 	private Vector3 _offsetTarget;
 	private Vector3 cameraDirection;
-	private Vector3 _smoothOffset;
-	private Vector3 _cameraPos;
+	private Vector3 _smoothObstructionOffset;
+	//private Vector3 _cameraPos;
 	private Vector2 _mouseDeltaMovement;
 	private Vector2 stickInput;
 	private float _rotationX;
 	private float _rotationY;
 	private Camera _cam;
 	private Quaternion currentCameraRotation;
-	private bool _debugHit;
 
 	[SerializeField] private float clampLookupMax = 179;
 	[SerializeField] private float clampLookupMin = 12;
@@ -50,19 +49,24 @@ public class CameraFollowClose : MonoBehaviour {
 	[SerializeField, Range(0f, 1f)] private float _smoothCameraPosTime = 0.105f;
 	[SerializeField, Range(0.0f, 2f)] private float _headHeight = 1.6f;
 	[SerializeField] private Vector3 _camera3rdPersonOffset = new Vector3(.8f, 1f, -5f);
-	
-	private void SetTarget(Transform target) => this.target = target;
+	private Collider thisCollider;
+	private void SetTarget(Transform target) {
+		this.target = target;
+		characterController = target.GetComponent<CharacterController>();
+	}
 
 	private void Awake() {
-		_cameraPos = transform.position;
+		//_cameraPos = 
+			centerPoint =
+					transform.position;
+		
 		_cam = Camera.main;
 		inputReader.CameraMoveEvent += InputGamePad;
 		inputReader.MouseMoveCameraEvent += InputMouse;
 		cameraShake += ShakeCamera;
 		CharacterSwapper.swapCameraTarget += SetTarget;
+		thisCollider = GetComponent<Collider>();
 	}
-
-	private void Start() => centerPoint = transform.position;
 
 	private void OnDestroy() {
 		inputReader.CameraMoveEvent -= InputGamePad;
@@ -103,11 +107,15 @@ public class CameraFollowClose : MonoBehaviour {
 		_mouseDeltaMovement.y = Mathf.Clamp(_mouseDeltaMovement.y, 
 			clampLookupMax - LookOffset, clampLookupMin - LookOffset);
 
-	[SerializeField] private float lookUpRotationOffset = -20f;  
-	[SerializeField] private float minLimitLookUp = -1f;  
-	[SerializeField] private float maxLimitLookUp = 1f;
+	[SerializeField] private float lookUpRotationOffset = -19.2f;  
+	private float minLimitLookUp = -1f;  
+	private float maxLimitLookUp = 1f;
 	private Quaternion lookUpRotation;  
 	private RaycastHit lineOfSightHit;
+	//private RaycastHit centerPointHit;
+	private RaycastHit minHeightHit;
+	private Vector3 currentCameraCenter;
+	Collider[] colliders = new Collider[10];
 	private void MoveCamera() {
 		Quaternion rot = _camera.rotation = Quaternion.Euler(_mouseDeltaMovement.y, _mouseDeltaMovement.x, 0.0f);
 		_cam.cullingMask = _firstPerson ? ~playerLayer : -1;	// Don't render the player if First Person
@@ -117,29 +125,51 @@ public class CameraFollowClose : MonoBehaviour {
 			return;
 		}
 		
-		// Lateral Smoothing
-		_cameraPos = Vector3.SmoothDamp(_camera.position, centerPoint, ref _smoothDampCurrentVelocityLateral, _smoothCameraPosTime);
+		int collisionCount;
+		int exit = 0;
+		if (!obstructionCollision)
+			do {
+				collisionCount = Physics.OverlapSphereNonAlloc(centerPoint, _cameraCollisionRadius, colliders, _collisionMask,
+					QueryTriggerInteraction.Ignore);
+				for (int i = 0; i < collisionCount; i++) {
+					if (Physics.ComputePenetration(
+						    thisCollider,
+						    centerPoint,
+						    Quaternion.identity, 
+						    colliders[i], 
+						    colliders[i].gameObject.transform.position, 
+						    colliders[i].gameObject.transform.rotation,
+						    out var direction,
+						    out var distance)) {
 
-		origin = _cameraPos + _headHeight * Vector3.up;
-		cameraDirection = rot * _camera3rdPersonOffset;
-		Physics.SphereCast(origin, // Dolly camera towards player to avoid obstruction
-			_cameraCollisionRadius, 
-			cameraDirection.normalized, 
-			out _hit, 
-			cameraDirection.magnitude, 
-			_collisionMask);
-
-		Vector3 collisionOrigin = targetPosition + _headHeight * Vector3.up;
-		Vector3 collisionDirection = _camera.position - collisionOrigin;
-		Physics.SphereCast(collisionOrigin, // Center camera on player
-			_cameraCollisionRadius, 
-			collisionDirection.normalized, 
-			out lineOfSightHit, 
-			collisionDirection.magnitude, 
-			_collisionMask);
-
-		collision = lineOfSightHit.collider;
+						Vector3 separationVector = direction * distance;
+						centerPoint += separationVector + separationVector.normalized * .01f;
+					}
+				}
+			} while (collisionCount > 0 && ++exit <= 10);
 		
+		origin = centerPoint + _headHeight * Vector3.up;
+		cameraDirection = rot * _camera3rdPersonOffset;
+
+		Physics.SphereCast(origin, // Dolly camera towards player to avoid obstruction
+				_cameraCollisionRadius, 
+				cameraDirection.normalized, 
+				out _hit, 
+				cameraDirection.magnitude, 
+				_collisionMask);
+
+		Vector3 losOrigin = targetPosition + _headHeight * Vector3.up;
+		Vector3 lineOfSightDirection = _camera.position - losOrigin;
+		Physics.SphereCast(losOrigin, // Center camera on player if about to loose line of sight
+				_cameraCollisionRadius, 
+				lineOfSightDirection.normalized, 
+				out lineOfSightHit, 
+				lineOfSightDirection.magnitude, 
+				_collisionMask);
+
+		//centerPointCollision = centerPointHit.collider;
+		obstructionCollision = lineOfSightHit.collider || _hit.collider;
+
 		// set target offset depending if hit
 		_offsetLength = _hit.collider ? _camera3rdPersonOffset.normalized * _hit.distance : _camera3rdPersonOffset;
 		
@@ -147,22 +177,21 @@ public class CameraFollowClose : MonoBehaviour {
 		float _smoothDollyTime = _hit.collider ? smoothDampMinVal : smoothDampMaxVal;
 		
 		// interpolate towards final position
-		_smoothOffset = Vector3.SmoothDamp(_smoothOffset, _offsetLength, ref _smoothDampCurrentVelocity, _smoothDollyTime);
+		_smoothObstructionOffset = Vector3.SmoothDamp(_smoothObstructionOffset, _offsetLength, ref _smoothDampCurrentVelocity, _smoothDollyTime);
 		
 		float upLook = Vector3.Dot(Vector3.up, cameraDirection.normalized);
 		float a = Mathf.InverseLerp(minLimitLookUp, maxLimitLookUp, upLook);
 		lookUpRotation = Quaternion.Lerp(quaternion.Euler(new float3(lookUpRotationOffset, 0f, 0f)), Quaternion.identity, a); 
-
-		_camera.SetPositionAndRotation(
-				origin + _camera.rotation * _smoothOffset + cameraShakeOffset,
-				cameraShakeRotation * rot * lookUpRotation);
 		
-		_debugHit = _hit.collider;
+		_camera.SetPositionAndRotation(
+				origin + _camera.rotation * _smoothObstructionOffset + cameraShakeOffset,
+				cameraShakeRotation * rot * lookUpRotation);
 	}
 
+	
 	private void ShakeCamera(float magnitude) => trauma += magnitude;
 
-	[Header("Camera Shake")]
+	[Space, Header("Camera Shake")]
 	private float trauma;
 	[SerializeField, Range(0f, 10f)] private float shakeSpeed = 1f;
 	[SerializeField, Range(0f, 10f)] private float vibrationSpeed = 1f;
@@ -200,7 +229,7 @@ public class CameraFollowClose : MonoBehaviour {
 
 	private void SetGroundedHeight() {
 		float playerFeet = target.position.y;
-		if (characterController.isGrounded)
+		if (characterController == null || characterController.isGrounded || obstructionCollision)
 			yTargetHeight = playerFeet;
 		else
 			yTargetHeight = Mathf.Min(playerFeet, yTargetHeight);
@@ -209,7 +238,7 @@ public class CameraFollowClose : MonoBehaviour {
 
 	[SerializeField] private CharacterController characterController;
 	private bool lookahead;
-	private bool collision;
+	private bool obstructionCollision;
 	private float yTargetHeight;
 	private float currentYHeight;
 	// Smoothing
@@ -225,12 +254,22 @@ public class CameraFollowClose : MonoBehaviour {
 	[SerializeField] private Vector3 lookAheadBound;
 	[SerializeField] private float maxLookaheadLength;
 
+	private Vector3 nonCharControllerPos; 
+	private Vector3 nonCharControllerVel; 
 	private void Lookahead() {
 		Vector3 newPos = centerPoint;
 		Vector3 targetPos = target.position;
 		targetPos.y = currentYHeight;
 		Vector3 localPoint = (targetPos - centerPoint);
-		Vector3 charVel = Vector3.ProjectOnPlane(characterController.velocity, Vector3.up);
+
+		if (characterController == null) {
+			nonCharControllerVel = (target.position - nonCharControllerPos) * (1f / Time.deltaTime);
+			nonCharControllerPos = target.position;
+			Debug.Log(nonCharControllerVel);
+		}
+		Vector3 charVel = characterController != null 
+				? Vector3.ProjectOnPlane(characterController.velocity, Vector3.up) 
+				: nonCharControllerVel;
 		Vector3 eulerAngles = new Vector3(0f, transform.rotation.eulerAngles.y, 0f);
 		Quaternion camRot = Quaternion.Euler(eulerAngles);
 		float velocityFraction = Mathf.InverseLerp(minCharacterVelocity, maxCharacterVelocity, charVel.magnitude);
@@ -239,12 +278,12 @@ public class CameraFollowClose : MonoBehaviour {
 
 		if (velocityFraction == 0)
 			lookahead = false;
-		else if (Mathf.Abs(inverseTransformPoint.x) > lookAheadBound.x * .5f ||
-		         Mathf.Abs(inverseTransformPoint.y) > lookAheadBound.y * .5f ||
-		         Mathf.Abs(inverseTransformPoint.z) > lookAheadBound.z * .5f)
+		if (Mathf.Abs(inverseTransformPoint.x) > lookAheadBound.x * .5f ||
+		    Mathf.Abs(inverseTransformPoint.y) > lookAheadBound.y * .5f ||
+		    Mathf.Abs(inverseTransformPoint.z) > lookAheadBound.z * .5f)
 			lookahead = true;
 
-		if (lookahead || collision) {
+		if (lookahead || obstructionCollision) {
 			Vector3 lookaheadDirection = Vector3.ProjectOnPlane(charVel, Vector3.up);
 			lookaheadDirection = Vector3.ClampMagnitude(lookaheadDirection, maxLookaheadLength);
 			newPos = targetPos + lookaheadDirection;
@@ -254,7 +293,7 @@ public class CameraFollowClose : MonoBehaviour {
 			smoothTimeLookahead);
 
 		centerPoint.y = Mathf.Clamp(targetPos.y, centerPoint.y - lookAheadBound.y * .5f, centerPoint.y + lookAheadBound.y * .5f);
-
+		
 		Vector3 InverseTransformPoint(Vector3 transformPos, Quaternion transformRotation, Vector3 transformScale, Vector3 pos) {
 			Matrix4x4 matrix = Matrix4x4.TRS(transformPos, transformRotation, transformScale);
 			Matrix4x4 inverse = matrix.inverse;
@@ -268,8 +307,10 @@ public class CameraFollowClose : MonoBehaviour {
 		mainCamera ??= Camera.main;
 		if (mainCamera == null) return;
 		
-		Gizmos.color = _debugHit ? Color.red : Color.white;
+		Gizmos.color = obstructionCollision ? Color.red : Color.white;
 		Gizmos.DrawWireSphere(_camera.position, _cameraCollisionRadius);
+		
+		Gizmos.DrawWireSphere(origin, _cameraCollisionRadius);
 		
 		DrawLookahead();
 		
