@@ -23,7 +23,8 @@ The intention with this project was to have a system of designing behaviours tha
 This repository is meant to serve as inspiration for others (and to learn from my mistakes).  
 Scriptable Objects was a neat idea for such a concept that could be helpful for desingers but they are not meant to be used this way which caused some interresting problems to overcome but ultimately leads to some friction in development for programmers.
 
-![image](https://github.com/CaretSoftware/Character-Controller/assets/69549081/a4870080-7970-4cf0-af38-0058a4951f60)
+![Movement State Machine](https://github.com/CaretSoftware/Character-Controller/assets/69549081/a6469304-4fe1-4acf-85ef-4cb3ea2d4d0d)
+
 
 ### Prerequisites
 
