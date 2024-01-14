@@ -14,7 +14,7 @@ Character Conteroller using a Scriptable Object State Machine.
 
 ## About the Project
 
-Unitys Character Controller controller allows for rudimentary physics interaction and movement.
+Unitys Character Controller allows for rudimentary physics interaction and movement.
 The controller is powered by a state machine where the designer can drop in differently designed movement behaviours (jump, jump-to-ledge, walk, run, climb, idle, click-to-move, combat, etc.) and set variables (i.e. jump height) directly in the inspector.
 Some amount of editor scripting was done to allow for to convenience of seting the variables directly int the inspector of the character.
 
