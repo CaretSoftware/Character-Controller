@@ -34,7 +34,7 @@ Unity 2022.3.12f1
 
 WASD to move, Space to jump, Q & E to swap characters.  
 Mouse to look around.  
-One of the characters are click to move.  
+One of the characters is click to move.  
 (Gamepad controls shown on UI)  
 
 ## License
